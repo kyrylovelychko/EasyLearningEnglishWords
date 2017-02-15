@@ -6,4 +6,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="english_word">Eng: </string>
     <string name="russian_word">Rus:</string>
+    <string name="invalid_query_uri">Invalid query URI</string>
+    <string name="insert_failed">Insert failed</string>
+    <string name="invalid_insert_uri">Invalid query URI</string>
 </resources>
