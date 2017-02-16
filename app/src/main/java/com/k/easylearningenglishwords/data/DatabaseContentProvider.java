@@ -44,7 +44,7 @@ public class DatabaseContentProvider extends ContentProvider {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(Words.TABLE_NAME);
 
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case ONE_WORD:
                 queryBuilder.appendWhere(Words._ID + "=" + uri.getLastPathSegment());
                 break;
@@ -58,6 +58,7 @@ public class DatabaseContentProvider extends ContentProvider {
                 projection, selection, selectionArgs, null, null, sortOrder);
 
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
         return cursor;
     }
 
@@ -72,7 +73,7 @@ public class DatabaseContentProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
         Uri newContactUri = null;
 
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case WORDS:
                 long rowId = dbHelper.getWritableDatabase().insert(Words.TABLE_NAME, null, values);
                 if (rowId > 0) {
@@ -92,11 +93,43 @@ public class DatabaseContentProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        int numberOfRowsDeleted;
+
+        switch (uriMatcher.match(uri)){
+            case ONE_WORD:
+                String id = uri.getLastPathSegment();
+                numberOfRowsDeleted = dbHelper.getWritableDatabase().delete(Words.TABLE_NAME,
+                        Words._ID + "=" + id, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException(getContext().getString(R.string.invalid_delete_uri) + uri);
+        }
+
+        if (numberOfRowsDeleted != 0){
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return numberOfRowsDeleted;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        int numberOfRowsUpdated; // 1, если обновление успешно; 0 при неудаче
+
+        switch (uriMatcher.match(uri)) {
+            case ONE_WORD:
+                String id = uri.getLastPathSegment();
+                numberOfRowsUpdated = dbHelper.getWritableDatabase().update(Words.TABLE_NAME,
+                        values, Words._ID + "=" + id, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException(getContext().getString(R.string.invalid_update_uri) + uri);
+        }
+
+        if (numberOfRowsUpdated != 0){
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return numberOfRowsUpdated;
     }
 }

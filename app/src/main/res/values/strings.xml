@@ -6,7 +6,13 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="english_word">Eng: </string>
     <string name="russian_word">Rus:</string>
-    <string name="invalid_query_uri">Invalid query URI</string>
+    <string name="invalid_query_uri">Invalid QUERY URI</string>
+    <string name="invalid_insert_uri">Invalid INSERT URI</string>
+    <string name="invalid_update_uri">Invalid UPDATE URI</string>
+    <string name="invalid_delete_uri">Invalid DELETE URI</string>
     <string name="insert_failed">Insert failed</string>
-    <string name="invalid_insert_uri">Invalid query URI</string>
+    <string name="en">Англ</string>
+    <string name="ru">Рус</string>
+    <string name="dictionary">Словарь</string>
+    <string name="add_new_word">Добавить слово</string>
 </resources>
