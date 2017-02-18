@@ -15,4 +15,14 @@
     <string name="ru">Рус</string>
     <string name="dictionary">Словарь</string>
     <string name="add_new_word">Добавить слово</string>
+    <string name="delete_word">Удалить слово</string>
+    <string name="word_added">Новое слово добавлено</string>
+    <string name="word_not_added">Новое слово не добавлено</string>
+    <string name="word_updated">Слово обновлено</string>
+    <string name="word_not_updated">Слово не обновлено</string>
+    <string name="confirm_delete_title">Подтвердить удаление</string>
+    <string name="confirm_delete_message">Вы хотите удалить слово?</string>
+    <string name="button_delete">Удалить</string>
+    <string name="button_cancel">Отмена</string>
+
 </resources>

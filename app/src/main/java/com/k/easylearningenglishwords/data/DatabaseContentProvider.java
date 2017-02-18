@@ -21,14 +21,22 @@ public class DatabaseContentProvider extends ContentProvider {
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     // Константы, используемые для определения выполняемой операции
-    private static final int ONE_WORD = 1; // Одно слово
-    private static final int WORDS = 2; // Таблица слов
+    private static final int ONE_DICTIONARY = 101; // Одно слово
+    private static final int DICTIONARIES = 102; // Таблица слов
+    private static final int ONE_WORD = 201; // Одно слово
+    private static final int WORDS = 202; // Таблица слов
 
     static {
-        // Uri для контакта с заданным идентификатором
+        // Uri для словаря с заданным идентификатором
+        uriMatcher.addURI(DatabaseDescription.AUTHORITY, Dictionaries.TABLE_NAME + "/#", ONE_DICTIONARY);
+
+        // Uri для всех записей таблицы словарей
+        uriMatcher.addURI(DatabaseDescription.AUTHORITY, Dictionaries.TABLE_NAME, DICTIONARIES);
+
+        // Uri для слова с заданным идентификатором
         uriMatcher.addURI(DatabaseDescription.AUTHORITY, Words.TABLE_NAME + "/#", ONE_WORD);
 
-        // Uri для таблицы
+        // Uri для всех записей таблицы слов
         uriMatcher.addURI(DatabaseDescription.AUTHORITY, Words.TABLE_NAME, WORDS);
     }
 
@@ -51,7 +59,7 @@ public class DatabaseContentProvider extends ContentProvider {
             case WORDS:
                 break;
             default:
-                throw new UnsupportedOperationException(getContext().getString(R.string.invalid_query_uri) + uri);
+                throw new IllegalArgumentException(getContext().getString(R.string.invalid_query_uri) + uri);
         }
 
         Cursor cursor = queryBuilder.query(dbHelper.getReadableDatabase(),
@@ -71,13 +79,13 @@ public class DatabaseContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        Uri newContactUri = null;
+        Uri newDictionaryUri = null;
 
         switch (uriMatcher.match(uri)) {
             case WORDS:
                 long rowId = dbHelper.getWritableDatabase().insert(Words.TABLE_NAME, null, values);
                 if (rowId > 0) {
-                    newContactUri = Words.buildContactUri(rowId);
+                    newDictionaryUri = Words.buildDictionaryUri(rowId);
 
                     getContext().getContentResolver().notifyChange(uri, null);
                 } else {
@@ -85,10 +93,10 @@ public class DatabaseContentProvider extends ContentProvider {
                 }
                 break;
             default:
-                throw new UnsupportedOperationException(getContext().getString(R.string.invalid_insert_uri) + uri);
+                throw new IllegalArgumentException(getContext().getString(R.string.invalid_insert_uri) + uri);
         }
 
-        return newContactUri;
+        return newDictionaryUri;
     }
 
     @Override
@@ -102,7 +110,7 @@ public class DatabaseContentProvider extends ContentProvider {
                         Words._ID + "=" + id, selectionArgs);
                 break;
             default:
-                throw new UnsupportedOperationException(getContext().getString(R.string.invalid_delete_uri) + uri);
+                throw new IllegalArgumentException(getContext().getString(R.string.invalid_delete_uri) + uri);
         }
 
         if (numberOfRowsDeleted != 0){
@@ -123,7 +131,7 @@ public class DatabaseContentProvider extends ContentProvider {
                         values, Words._ID + "=" + id, selectionArgs);
                 break;
             default:
-                throw new UnsupportedOperationException(getContext().getString(R.string.invalid_update_uri) + uri);
+                throw new IllegalArgumentException(getContext().getString(R.string.invalid_update_uri) + uri);
         }
 
         if (numberOfRowsUpdated != 0){

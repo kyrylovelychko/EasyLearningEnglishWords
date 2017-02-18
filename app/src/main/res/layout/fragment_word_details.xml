@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentWordDetails"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -11,14 +12,13 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/eng"
-            android:text="@string/english_word"
+            android:id="@+id/en"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="@string/english_word" />
 
         <TextView
-            android:id="@+id/eng_word"
-            android:text="Apple"
+            android:id="@+id/en_word"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -27,18 +27,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <TextView
-            android:id="@+id/rus"
-            android:text="@string/russian_word"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/rus_word"
-            android:text="Яблоко"
+            android:id="@+id/ru"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/russian_word" />
+
+        <TextView
+            android:id="@+id/ru_word"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/dict"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dictionary" />
+
+    <TextView
+        android:id="@+id/dictionary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

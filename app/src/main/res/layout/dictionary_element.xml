@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/dictionsaryElement"
+    android:layout_marginTop="@dimen/dict_vert_margin"
+    android:layout_marginBottom="@dimen/dict_vert_margin"
+    android:layout_marginLeft="@dimen/dict_horiz_margin"
+    android:layout_marginRight="@dimen/dict_horiz_margin"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/dictionaryName"
+        android:layout_width="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_height="wrap_content"
+        android:text="Slovar 1"
+        android:textSize="@dimen/dictionary_name_size" />
+
+    <TextView
+        android:id="@+id/words_count"
+        android:layout_width="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_height="wrap_content"
+        android:text="Slov"
+        android:textSize="@dimen/words_count_size" />
+
+    <TextView
+        android:id="@+id/dictionary_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dictionaryName"
+        android:layout_marginTop="@dimen/date_vert_margin"
+        android:text="10.02.2016"
+        android:textSize="@dimen/dictionary_date_size" />
+
+</RelativeLayout>
