@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/dictionaryNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dict_name_et_vert_margin"
+        android:layout_marginLeft="@dimen/dict_name_et_horiz_margin"
+        android:layout_marginRight="@dimen/dict_name_et_horiz_margin"
+        android:layout_marginTop="@dimen/dict_name_et_vert_margin" />
+
+</LinearLayout>

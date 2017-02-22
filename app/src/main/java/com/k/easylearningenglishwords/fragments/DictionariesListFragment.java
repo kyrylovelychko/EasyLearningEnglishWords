@@ -22,7 +22,7 @@ import com.k.easylearningenglishwords.adapters.DictionariesListAdapter;
 import com.k.easylearningenglishwords.data.DatabaseDescription;
 
 public class DictionariesListFragment extends Fragment
-    implements LoaderManager.LoaderCallbacks<Cursor>{
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public interface DictionariesListFragmentListener {
 
@@ -89,7 +89,7 @@ public class DictionariesListFragment extends Fragment
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // Создание CursorLoader на основании аргумента id
-        switch (id){
+        switch (id) {
             case DICTIONARIES_LIST_LOADER:
                 return new CursorLoader(getActivity(),
                         DatabaseDescription.Dictionaries.CONTENT_URI,// Uri таблицы contacts
@@ -136,7 +136,7 @@ public class DictionariesListFragment extends Fragment
     }
 
     // Вызывается из MainActivity при обновлении базы данных другим фрагментом
-    public void updateDictionariesList(){
+    public void updateDictionariesList() {
         dictionariesListAdapter.notifyDataSetChanged();
     }
 }

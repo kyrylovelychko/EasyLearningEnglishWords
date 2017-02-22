@@ -22,7 +22,11 @@
     <string name="word_not_updated">Слово не обновлено</string>
     <string name="confirm_delete_title">Подтвердить удаление</string>
     <string name="confirm_delete_message">Вы хотите удалить слово?</string>
+    <string name="button_add">Добавить</string>
     <string name="button_delete">Удалить</string>
     <string name="button_cancel">Отмена</string>
+    <string name="add_dictionary">Имя нового словаря</string>
+    <string name="add_dictionary_request">Введите название нового словаря:</string>
+    <string name="dictionaryName">Название словаря</string>
 
 </resources>

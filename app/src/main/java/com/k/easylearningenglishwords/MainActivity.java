@@ -10,13 +10,14 @@ import com.k.easylearningenglishwords.fragments.AddEditWordFragment;
 import com.k.easylearningenglishwords.fragments.DictionariesListFragment;
 import com.k.easylearningenglishwords.fragments.DictionaryFragment;
 import com.k.easylearningenglishwords.fragments.WordDetailsFragment;
+import com.k.easylearningenglishwords.fragments.dialogs.AddDictionaryDialog;
 
 public class MainActivity
         extends AppCompatActivity
         implements DictionariesListFragment.DictionariesListFragmentListener,
         DictionaryFragment.DictionaryFragmentListener,
         WordDetailsFragment.WordDetailsFragmentListener,
-        AddEditWordFragment.AddEditWordFragmentListener{
+        AddEditWordFragment.AddEditWordFragmentListener {
 
     // Ключ для сохранения Uri словаря в переданном объекте Bundle
     public static final String DICTIONARY_URI = "dictionary_uri";
@@ -26,6 +27,7 @@ public class MainActivity
     // Вывод списка контактов
     private DictionariesListFragment dictionariesListFragment;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,14 +36,14 @@ public class MainActivity
         setSupportActionBar(toolbar);
         setTitle("Мои словари");
 
-        if (savedInstanceState != null) {
+//        if (savedInstanceState != null) {
             dictionariesListFragment = new DictionariesListFragment();
 
             // Добавление фрагмента в FrameLayout
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.fragmentContainer, dictionariesListFragment);
             transaction.commit(); // Вывод ContactsFragment
-        }
+//        }
     }
 
 
@@ -64,7 +66,7 @@ public class MainActivity
 
     @Override
     public void onAddDictionary() {
-
+        new AddDictionaryDialog().show(getSupportFragmentManager(), "add dictionary");
     }
 
     @Override
@@ -99,7 +101,7 @@ public class MainActivity
 
     }
 
-    private void displayAddEditWordFragment (Uri wordUri){
+    private void displayAddEditWordFragment(Uri wordUri) {
         AddEditWordFragment addEditWordFragment = new AddEditWordFragment();
 
         // Передача URI словаря в аргументе addEditWordFragment
