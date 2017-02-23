@@ -1,16 +1,13 @@
 <resources>
     <string name="app_name">EasyLearningEnglishWords</string>
-    <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="english_word">Eng: </string>
     <string name="russian_word">Rus:</string>
     <string name="invalid_query_uri">Invalid QUERY URI</string>
     <string name="invalid_insert_uri">Invalid INSERT URI</string>
     <string name="invalid_update_uri">Invalid UPDATE URI</string>
     <string name="invalid_delete_uri">Invalid DELETE URI</string>
-    <string name="insert_failed">Insert failed</string>
+    <string name="insert_failed">Insert into table Words failed</string>
     <string name="en">Англ</string>
     <string name="ru">Рус</string>
     <string name="dictionary">Словарь</string>
@@ -20,6 +17,8 @@
     <string name="word_not_added">Новое слово не добавлено</string>
     <string name="word_updated">Слово обновлено</string>
     <string name="word_not_updated">Слово не обновлено</string>
+    <string name="dictionary_added">Новый словарь добавлен</string>
+    <string name="dictionary_not_added">Новый словарь не добавлен</string>
     <string name="confirm_delete_title">Подтвердить удаление</string>
     <string name="confirm_delete_message">Вы хотите удалить слово?</string>
     <string name="button_add">Добавить</string>

@@ -24,15 +24,14 @@ import com.k.easylearningenglishwords.data.DatabaseDescription;
 public class DictionariesListFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public interface DictionariesListFragmentListener {
 
+    public interface DictionariesListFragmentListener {
         //Вызывается при выборе словаря
         void onDictionarySelected(Uri dictionaryUri);
 
         //Вызывается при нажатии кнопки добавления нового словаря
         void onAddDictionary();
     }
-
 
     private static final int DICTIONARIES_LIST_LOADER = 0;
 
@@ -41,8 +40,6 @@ public class DictionariesListFragment extends Fragment
 
     private DictionariesListAdapter dictionariesListAdapter;
 
-    public DictionariesListFragment() {
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -85,35 +82,6 @@ public class DictionariesListFragment extends Fragment
         return view;
     }
 
-    // Вызывается LoaderManager для создания Loader
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        // Создание CursorLoader на основании аргумента id
-        switch (id) {
-            case DICTIONARIES_LIST_LOADER:
-                return new CursorLoader(getActivity(),
-                        DatabaseDescription.Dictionaries.CONTENT_URI,// Uri таблицы contacts
-                        null,// все столбцы
-                        null,// все записи
-                        null,// без аргументов
-                        DatabaseDescription.Dictionaries.COLUMN_NAME + " COLLATE NOCASE ASC");// сортировка
-            default:
-                return null;
-        }
-    }
-
-    // Вызывается LoaderManager при завершении загрузки
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        dictionariesListAdapter.swapCursor(data);
-    }
-
-    // Вызывается LoaderManager при сбросе Loader
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        dictionariesListAdapter.swapCursor(null);
-    }
-
     // Присваивание DictionariesListFragment при присоединении фрагмента
     @Override
     public void onAttach(Context context) {
@@ -139,4 +107,35 @@ public class DictionariesListFragment extends Fragment
     public void updateDictionariesList() {
         dictionariesListAdapter.notifyDataSetChanged();
     }
+
+    // Вызывается LoaderManager для создания Loader
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        // Создание CursorLoader на основании аргумента id
+        switch (id) {
+            case DICTIONARIES_LIST_LOADER:
+                Loader<Cursor> lc = new CursorLoader(getActivity(),
+                        DatabaseDescription.Dictionaries.CONTENT_URI,// Uri таблицы словарей
+                        null,// все столбцы
+                        null,// все записи
+                        null,// без аргументов
+                        DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE + " COLLATE NOCASE DESC");// сортировка
+                return lc;
+            default:
+                return null;
+        }
+    }
+
+    // Вызывается LoaderManager при завершении загрузки
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        dictionariesListAdapter.swapCursor(data);
+    }
+
+    // Вызывается LoaderManager при сбросе Loader
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        dictionariesListAdapter.swapCursor(null);
+    }
+
 }

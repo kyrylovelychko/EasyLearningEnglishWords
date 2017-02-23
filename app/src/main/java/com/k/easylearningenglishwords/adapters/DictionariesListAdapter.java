@@ -11,6 +11,9 @@ import android.widget.TextView;
 import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.data.DatabaseDescription;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class DictionariesListAdapter extends RecyclerView.Adapter<DictionariesListAdapter.ViewHolder> {
 
     // Интерфейс реализуется DictionariesListFragment для обработки
@@ -21,16 +24,23 @@ public class DictionariesListAdapter extends RecyclerView.Adapter<DictionariesLi
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         public TextView name;
-        public TextView date;
-        public TextView words_count;
+        public TextView date_of_change;
         private long rowID;
 
         // Настройка объекта ViewHolder элемента RecyclerView
         public ViewHolder(View itemView) {
             super(itemView);
+            name = (TextView) itemView.findViewById(R.id.dictionary_name);
+            date_of_change = (TextView) itemView.findViewById(R.id.dictionary_date_of_change);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickListener.onClick(DatabaseDescription.Dictionaries.buildDictionariesUri(rowID));
+                }
+            });
         }
 
-        // Идентификатор записи базы данных для контакта в ViewHolder
+        // Идентификатор записи базы данных для контакта во ViewHolder
         public void setRowID(long rowID) {
             this.rowID = rowID;
         }
@@ -59,6 +69,9 @@ public class DictionariesListAdapter extends RecyclerView.Adapter<DictionariesLi
         cursor.moveToPosition(position);
         holder.setRowID(cursor.getLong(cursor.getColumnIndex(DatabaseDescription.Dictionaries._ID)));
         holder.name.setText(cursor.getString(cursor.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME)));
+        long milisec = cursor.getLong(cursor.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE)) * 1000;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        holder.date_of_change.setText(sdf.format(new Date(milisec)));
     }
 
     // Возвращает количество элементов, предоставляемых адаптером

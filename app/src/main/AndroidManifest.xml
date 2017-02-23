@@ -18,6 +18,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <provider
+            android:authorities="com.k.easylearningenglishwords.data"
+            android:name=".data.DatabaseContentProvider"
+            android:enabled="true"
+            android:exported="false"/>
+        
     </application>
 
 </manifest>

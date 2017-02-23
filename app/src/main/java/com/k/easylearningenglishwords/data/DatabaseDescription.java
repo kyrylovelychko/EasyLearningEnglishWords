@@ -22,11 +22,11 @@ public class DatabaseDescription {
 
         // Имена столбцов таблицы
         public static final String COLUMN_NAME = "name";
-        public static final String COLUMN_ADD_EDIT_TIME = "add_edit_time";
+        public static final String COLUMN_DATE_OF_CHANGE = "date_of_change";
 
 
         // Создание Uri для конкретного слова
-        public static Uri buildContactUri (long id){
+        public static Uri buildDictionariesUri (long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
@@ -47,7 +47,7 @@ public class DatabaseDescription {
 
 
         // Создание Uri для конкретного слова
-        public static Uri buildDictionaryUri (long id){
+        public static Uri buildWordsUri (long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }

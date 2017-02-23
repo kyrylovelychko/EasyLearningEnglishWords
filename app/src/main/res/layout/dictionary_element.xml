@@ -9,7 +9,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/dictionaryName"
+        android:id="@+id/dictionary_name"
         android:layout_width="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_height="wrap_content"
@@ -25,12 +25,11 @@
         android:textSize="@dimen/words_count_size" />
 
     <TextView
-        android:id="@+id/dictionary_date"
+        android:id="@+id/dictionary_date_of_change"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dictionaryName"
+        android:layout_below="@id/dictionary_name"
         android:layout_marginTop="@dimen/date_vert_margin"
-        android:text="10.02.2016"
         android:textSize="@dimen/dictionary_date_size" />
 
 </RelativeLayout>

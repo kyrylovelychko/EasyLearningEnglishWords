@@ -21,7 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "CREATE TABLE " + Dictionaries.TABLE_NAME + "(" +
                         Dictionaries._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         Dictionaries.COLUMN_NAME + " TEXT, " +
-                        Dictionaries.COLUMN_ADD_EDIT_TIME + " INTEGER);";
+                        Dictionaries.COLUMN_DATE_OF_CHANGE + " INTEGER);";
         db.execSQL(CREATE_DICTIONARIES_TABLE);
 
         final String CREATE_WORDS_TABLE =

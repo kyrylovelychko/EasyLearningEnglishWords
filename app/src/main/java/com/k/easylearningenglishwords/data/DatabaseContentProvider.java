@@ -10,7 +10,8 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.data.DatabaseDescription.*;
+import com.k.easylearningenglishwords.data.DatabaseDescription.Dictionaries;
+import com.k.easylearningenglishwords.data.DatabaseDescription.Words;
 
 public class DatabaseContentProvider extends ContentProvider {
 
@@ -46,17 +47,18 @@ public class DatabaseContentProvider extends ContentProvider {
         return true;
     }
 
-    @Nullable
+
+        @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-        queryBuilder.setTables(Words.TABLE_NAME);
+        queryBuilder.setTables(Dictionaries.TABLE_NAME);
 
         switch (uriMatcher.match(uri)) {
-            case ONE_WORD:
-                queryBuilder.appendWhere(Words._ID + "=" + uri.getLastPathSegment());
+            case ONE_DICTIONARY:
+                queryBuilder.appendWhere(Dictionaries._ID + "=" + uri.getLastPathSegment());
                 break;
-            case WORDS:
+            case DICTIONARIES:
                 break;
             default:
                 throw new IllegalArgumentException(getContext().getString(R.string.invalid_query_uri) + uri);
@@ -79,13 +81,24 @@ public class DatabaseContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        Uri newDictionaryUri = null;
+        Uri newUri = null;
+        long rowId = 0;
 
         switch (uriMatcher.match(uri)) {
-            case WORDS:
-                long rowId = dbHelper.getWritableDatabase().insert(Words.TABLE_NAME, null, values);
+            case ONE_WORD:
+                rowId = dbHelper.getWritableDatabase().insert(Words.TABLE_NAME, null, values);
                 if (rowId > 0) {
-                    newDictionaryUri = Words.buildDictionaryUri(rowId);
+                    newUri = Words.buildWordsUri(rowId);
+
+                    getContext().getContentResolver().notifyChange(uri, null);
+                } else {
+                    throw new SQLException(getContext().getString(R.string.insert_failed) + uri);
+                }
+                break;
+            case DICTIONARIES:
+                rowId = dbHelper.getWritableDatabase().insert(Dictionaries.TABLE_NAME, null, values);
+                if (rowId > 0) {
+                    newUri = Dictionaries.buildDictionariesUri(rowId);
 
                     getContext().getContentResolver().notifyChange(uri, null);
                 } else {
@@ -96,7 +109,7 @@ public class DatabaseContentProvider extends ContentProvider {
                 throw new IllegalArgumentException(getContext().getString(R.string.invalid_insert_uri) + uri);
         }
 
-        return newDictionaryUri;
+        return newUri;
     }
 
     @Override
