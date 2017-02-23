@@ -1,15 +1,27 @@
 package com.k.easylearningenglishwords.fragments;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.k.easylearningenglishwords.ItemDevider;
 import com.k.easylearningenglishwords.R;
+import com.k.easylearningenglishwords.adapters.DictionaryAdapter;
+import com.k.easylearningenglishwords.data.DatabaseDescription;
 
-public class DictionaryFragment extends Fragment {
+public class DictionaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     public interface DictionaryFragmentListener {
 
@@ -20,16 +32,88 @@ public class DictionaryFragment extends Fragment {
         void onAddWord();
     }
 
-    public DictionaryFragment() {
-        // Required empty public constructor
-    }
+     private static final int DICTIONARY_LOADER = 0;
+
+    private DictionaryFragmentListener listener;
+
+    private DictionaryAdapter dictionaryAdapter;
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dictionary, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        setHasOptionsMenu(true);
+
+        View view = inflater.inflate(R.layout.fragment_dictionary, container, false);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.wordsRecyclerView);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
+
+        dictionaryAdapter = new DictionaryAdapter(new DictionaryAdapter.DictionaryClickListener() {
+            @Override
+            public void onClick(Uri wordUri) {
+                listener.onWordSelected(wordUri);
+            }
+        });
+        recyclerView.setAdapter(dictionaryAdapter);
+
+        recyclerView.addItemDecoration(new ItemDevider(getContext()));
+
+        recyclerView.setHasFixedSize(true);
+
+        FloatingActionButton addWordFAB = (FloatingActionButton) view.findViewById(R.id.addWordFAB);
+        addWordFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onAddWord();
+            }
+        });
+
+        return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        listener = (DictionaryFragmentListener) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getLoaderManager().initLoader(DICTIONARY_LOADER, null, this);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id){
+            case DICTIONARY_LOADER:
+                return new CursorLoader(getActivity(),
+                        DatabaseDescription.Words.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        DatabaseDescription.Words.COLUMN_DATE_OF_CHANGE + " COLLATE NOCASE DESC");
+            default:
+                return null;
+        }
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        dictionaryAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        dictionaryAdapter.swapCursor(null);
     }
 
 }

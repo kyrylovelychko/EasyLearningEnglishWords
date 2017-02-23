@@ -11,5 +11,7 @@
     <dimen name="dict_horiz_margin">16dp</dimen>
     <dimen name="dict_name_et_vert_margin">18dp</dimen>
     <dimen name="dict_name_et_horiz_margin">18dp</dimen>
+    <dimen name="recycler_view_element_padding_vert">16dp</dimen>
+    <dimen name="recycler_view_element_padding_horiz">16dp</dimen>
 
 </resources>

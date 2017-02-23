@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/recycler_view_element_padding_vert"
+    android:paddingLeft="@dimen/recycler_view_element_padding_horiz"
+    android:paddingRight="@dimen/recycler_view_element_padding_horiz"
+    android:paddingTop="@dimen/recycler_view_element_padding_vert">
+
+    <TextView
+        android:id="@+id/wordFrom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-" />
+
+    <TextView
+        android:id="@+id/wordTo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>

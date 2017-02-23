@@ -55,7 +55,7 @@ public class DictionariesListFragment extends Fragment
 
         // создание адаптера recyclerView и слушателя щелчков на элементах
         dictionariesListAdapter = new DictionariesListAdapter(
-                new DictionariesListAdapter.DictionaryClickListener() {
+                new DictionariesListAdapter.DictionariesListClickListener() {
                     @Override
                     public void onClick(Uri dictionariesUri) {
                         listener.onDictionarySelected(dictionariesUri);
@@ -114,13 +114,12 @@ public class DictionariesListFragment extends Fragment
         // Создание CursorLoader на основании аргумента id
         switch (id) {
             case DICTIONARIES_LIST_LOADER:
-                Loader<Cursor> lc = new CursorLoader(getActivity(),
+                return new CursorLoader(getActivity(),
                         DatabaseDescription.Dictionaries.CONTENT_URI,// Uri таблицы словарей
                         null,// все столбцы
                         null,// все записи
                         null,// без аргументов
                         DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE + " COLLATE NOCASE DESC");// сортировка
-                return lc;
             default:
                 return null;
         }

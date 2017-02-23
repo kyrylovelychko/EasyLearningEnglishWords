@@ -144,7 +144,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         // Создание объекта ContentValues с парами "ключ—значение"
         ContentValues contentValues = new ContentValues();
         contentValues.put(Words.COLUMN_EN, enTextInputLayout.getEditText().getText().toString());
-        contentValues.put(Words.COLUMN_RU, ruTextInputLayout.getEditText().getText().toString());
+        contentValues.put(Words.COLUMN_FROM_EN_TO_RU, ruTextInputLayout.getEditText().getText().toString());
         contentValues.put(Words.COLUMN_DICTIONARY_ID, dictTextInputLayout.getEditText().getText().toString());
 
         if(addingNewWord){
@@ -191,7 +191,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         // Если слово существует в базе данных, вывести его информацию
         if (data != null && data.moveToFirst()){
             int enIndex = data.getColumnIndex(Words.COLUMN_EN);
-            int ruIndex = data.getColumnIndex(Words.COLUMN_RU);
+            int ruIndex = data.getColumnIndex(Words.COLUMN_FROM_EN_TO_RU);
             int dictIndex = data.getColumnIndex(Words.COLUMN_DICTIONARY_ID);
 
             enTextInputLayout.getEditText().setText(data.getString(enIndex));

@@ -34,6 +34,9 @@ public class DatabaseDescription {
 
     //Таблица со словами
     public static final class Words implements BaseColumns {
+        public static final int FROM_EN_TO_RU_TRUE = 1;
+        public static final int FROM_EN_TO_RU_FALSE = 0;
+
         public static final String TABLE_NAME = "words";
 
         // Объект Uri для таблицы words
@@ -42,8 +45,9 @@ public class DatabaseDescription {
         // Имена столбцов таблицы
         public static final String COLUMN_EN = "en";
         public static final String COLUMN_RU = "ru";
+        public static final String COLUMN_FROM_EN_TO_RU = "from_en_to_ru";
         public static final String COLUMN_DICTIONARY_ID = "dictionary_id";
-        public static final String COLUMN_ADD_EDIT_TIME = "add_edit_time";
+        public static final String COLUMN_DATE_OF_CHANGE = "add_edit_time";
 
 
         // Создание Uri для конкретного слова

@@ -118,7 +118,7 @@ public class WordDetailsFragment extends Fragment
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data != null && data.moveToFirst()){
             int enIndex = data.getColumnIndex(Words.COLUMN_EN);
-            int ruIndex = data.getColumnIndex(Words.COLUMN_RU);
+            int ruIndex = data.getColumnIndex(Words.COLUMN_FROM_EN_TO_RU);
             int dictIndex = data.getColumnIndex(Words.COLUMN_DICTIONARY_ID);
 
             enWord.setText(data.getString(enIndex));

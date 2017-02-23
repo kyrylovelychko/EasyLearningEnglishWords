@@ -52,14 +52,20 @@ public class DatabaseContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-        queryBuilder.setTables(Dictionaries.TABLE_NAME);
 
         switch (uriMatcher.match(uri)) {
             case ONE_DICTIONARY:
+                queryBuilder.setTables(Dictionaries.TABLE_NAME);
                 queryBuilder.appendWhere(Dictionaries._ID + "=" + uri.getLastPathSegment());
                 break;
             case DICTIONARIES:
+                queryBuilder.setTables(Dictionaries.TABLE_NAME);
                 break;
+            case ONE_WORD:
+                queryBuilder.setTables(Words.TABLE_NAME);
+                queryBuilder.appendWhere(Words._ID + "=" + uri.getLastPathSegment());
+            case WORDS:
+                queryBuilder.setTables(Words.TABLE_NAME);
             default:
                 throw new IllegalArgumentException(getContext().getString(R.string.invalid_query_uri) + uri);
         }

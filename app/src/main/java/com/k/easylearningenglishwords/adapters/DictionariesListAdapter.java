@@ -9,16 +9,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.data.DatabaseDescription;
+import com.k.easylearningenglishwords.data.DatabaseDescription.Dictionaries;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+;
 
 public class DictionariesListAdapter extends RecyclerView.Adapter<DictionariesListAdapter.ViewHolder> {
 
     // Интерфейс реализуется DictionariesListFragment для обработки
     // прикосновения к элементу в списке RecyclerView
-    public interface DictionaryClickListener{
+    public interface DictionariesListClickListener {
         void onClick(Uri dictionaryUri);
     }
 
@@ -35,7 +37,7 @@ public class DictionariesListAdapter extends RecyclerView.Adapter<DictionariesLi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    clickListener.onClick(DatabaseDescription.Dictionaries.buildDictionariesUri(rowID));
+                    clickListener.onClick(Dictionaries.buildDictionariesUri(rowID));
                 }
             });
         }
@@ -47,11 +49,12 @@ public class DictionariesListAdapter extends RecyclerView.Adapter<DictionariesLi
     }
 
 
-    // Переменные экземпляров DictionariesAdapter
+    // Переменные экземпляров DictionariesListAdapter
     private Cursor cursor = null;
-    private final DictionaryClickListener clickListener;
+    private final DictionariesListClickListener clickListener;
 
-    public DictionariesListAdapter(DictionaryClickListener clickListener) {
+    // Конструктор
+    public DictionariesListAdapter(DictionariesListClickListener clickListener) {
         this.clickListener = clickListener;
     }
 
@@ -67,9 +70,9 @@ public class DictionariesListAdapter extends RecyclerView.Adapter<DictionariesLi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         cursor.moveToPosition(position);
-        holder.setRowID(cursor.getLong(cursor.getColumnIndex(DatabaseDescription.Dictionaries._ID)));
-        holder.name.setText(cursor.getString(cursor.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME)));
-        long milisec = cursor.getLong(cursor.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE)) * 1000;
+        holder.setRowID(cursor.getLong(cursor.getColumnIndex(Dictionaries._ID)));
+        holder.name.setText(cursor.getString(cursor.getColumnIndex(Dictionaries.COLUMN_NAME)));
+        long milisec = cursor.getLong(cursor.getColumnIndex(Dictionaries.COLUMN_DATE_OF_CHANGE)) * 1000;
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         holder.date_of_change.setText(sdf.format(new Date(milisec)));
     }
