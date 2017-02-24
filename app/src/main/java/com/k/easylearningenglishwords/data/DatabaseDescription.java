@@ -46,8 +46,8 @@ public class DatabaseDescription {
         public static final String COLUMN_EN = "en";
         public static final String COLUMN_RU = "ru";
         public static final String COLUMN_FROM_EN_TO_RU = "from_en_to_ru";
-        public static final String COLUMN_DICTIONARY_ID = "dictionary_id";
-        public static final String COLUMN_DATE_OF_CHANGE = "add_edit_time";
+        public static final String COLUMN_DICTIONARY = "dictionary";
+        public static final String COLUMN_DATE_OF_CHANGE = "date_of_change";
 
 
         // Создание Uri для конкретного слова

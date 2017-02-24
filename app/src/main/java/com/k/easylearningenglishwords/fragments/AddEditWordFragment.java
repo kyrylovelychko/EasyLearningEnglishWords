@@ -24,6 +24,8 @@ import com.k.easylearningenglishwords.MainActivity;
 import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.data.DatabaseDescription.Words;
 
+import java.util.Date;
+
 public class AddEditWordFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public interface AddEditWordFragmentListener {
@@ -42,6 +44,8 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
     private TextInputLayout enTextInputLayout;
     private TextInputLayout ruTextInputLayout;
     private TextInputLayout dictTextInputLayout;
+
+    private int FROM_EN_TO_RU;
 
     private FloatingActionButton saveWordFAB;
     private CoordinatorLayout coordinatorLayout;// Для SnackBar
@@ -88,6 +92,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                 ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).
                         hideSoftInputFromWindow(getView().getWindowToken(), 0);
                 saveWord();// Сохранение контакта в базе данных
+                getFragmentManager().popBackStack();
             }
         });
         updateSaveButtonFAB();
@@ -96,7 +101,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinatorLayout);
 
         Bundle arguments = getArguments(); // null при создании слова
-        if (arguments != null){
+        if (arguments.getString("word_uri") != null){
             addingNewWord = false;
             wordUri = arguments.getParcelable(MainActivity.WORD_URI);
         }
@@ -123,7 +128,11 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
 
         @Override
         public void afterTextChanged(Editable s) {
-
+            if (!enTextInputLayout.equals("") && ruTextInputLayout.equals("")){
+                FROM_EN_TO_RU = Words.FROM_EN_TO_RU_TRUE;
+            } else if (enTextInputLayout.equals("") && !ruTextInputLayout.equals("")) {
+                FROM_EN_TO_RU = Words.FROM_EN_TO_RU_FALSE;
+            }
         }
     };
 
@@ -144,8 +153,10 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         // Создание объекта ContentValues с парами "ключ—значение"
         ContentValues contentValues = new ContentValues();
         contentValues.put(Words.COLUMN_EN, enTextInputLayout.getEditText().getText().toString());
-        contentValues.put(Words.COLUMN_FROM_EN_TO_RU, ruTextInputLayout.getEditText().getText().toString());
-        contentValues.put(Words.COLUMN_DICTIONARY_ID, dictTextInputLayout.getEditText().getText().toString());
+        contentValues.put(Words.COLUMN_RU, ruTextInputLayout.getEditText().getText().toString());
+        contentValues.put(Words.COLUMN_FROM_EN_TO_RU, FROM_EN_TO_RU);
+        contentValues.put(Words.COLUMN_DICTIONARY, dictTextInputLayout.getEditText().getText().toString());
+        contentValues.put(Words.COLUMN_DATE_OF_CHANGE, new Date().getTime() / 1000);
 
         if(addingNewWord){
             // Использовать объект ContentResolver активности для вызова
@@ -192,7 +203,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         if (data != null && data.moveToFirst()){
             int enIndex = data.getColumnIndex(Words.COLUMN_EN);
             int ruIndex = data.getColumnIndex(Words.COLUMN_FROM_EN_TO_RU);
-            int dictIndex = data.getColumnIndex(Words.COLUMN_DICTIONARY_ID);
+            int dictIndex = data.getColumnIndex(Words.COLUMN_DICTIONARY);
 
             enTextInputLayout.getEditText().setText(data.getString(enIndex));
             ruTextInputLayout.getEditText().setText(data.getString(ruIndex));

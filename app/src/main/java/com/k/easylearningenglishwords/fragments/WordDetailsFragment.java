@@ -31,7 +31,7 @@ public class WordDetailsFragment extends Fragment
     public interface WordDetailsFragmentListener {
 
         //Вызывается при редактировании слова
-        void onWordEdited(Uri wordUri);
+        void onWordEdited(Uri wordUri, int rId);
 
         //Вызывается при удалении слова
         void onWordDeleted();
@@ -119,7 +119,7 @@ public class WordDetailsFragment extends Fragment
         if (data != null && data.moveToFirst()){
             int enIndex = data.getColumnIndex(Words.COLUMN_EN);
             int ruIndex = data.getColumnIndex(Words.COLUMN_FROM_EN_TO_RU);
-            int dictIndex = data.getColumnIndex(Words.COLUMN_DICTIONARY_ID);
+            int dictIndex = data.getColumnIndex(Words.COLUMN_DICTIONARY);
 
             enWord.setText(data.getString(enIndex));
             ruWord.setText(data.getString(ruIndex));

@@ -30,7 +30,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         Words.COLUMN_EN + " TEXT, " +
                         Words.COLUMN_RU + " TEXT, " +
                         Words.COLUMN_FROM_EN_TO_RU + " INTEGER, " +
-                        Words.COLUMN_DICTIONARY_ID + " INTEGER, " +
+                        Words.COLUMN_DICTIONARY + " TEXT, " +
                         Words.COLUMN_DATE_OF_CHANGE + " INTEGER);";
         db.execSQL(CREATE_WORDS_TABLE);
     }

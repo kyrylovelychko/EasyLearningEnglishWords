@@ -29,7 +29,7 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
         void onWordSelected(Uri wordUri);
 
         //Вызывается при нажатии кнопки добавления нового слова
-        void onAddWord();
+        void onAddWord(int rId);
     }
 
      private static final int DICTIONARY_LOADER = 0;
@@ -65,7 +65,7 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
         addWordFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onAddWord();
+                listener.onAddWord(R.id.fragmentDictionary);
             }
         });
 

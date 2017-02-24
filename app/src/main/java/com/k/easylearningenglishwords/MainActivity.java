@@ -44,14 +44,14 @@ public class MainActivity
 
         checkDB();
 
-//        if (savedInstanceState != null) {
+        if (savedInstanceState == null) {
             dictionariesListFragment = new DictionariesListFragment();
 
             // Добавление фрагмента в FrameLayout
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.fragmentContainer, dictionariesListFragment);
             transaction.commit();
-//        }
+        }
     }
 
 
@@ -67,7 +67,7 @@ public class MainActivity
         // Использование FragmentTransaction для отображения
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragmentContainer, dictionaryFragment);
-        transaction.addToBackStack(null);
+        transaction.addToBackStack("MyStack");
         transaction.commit(); // Приводит к отображению DictionaryFragment
         setTitle("Словарь");
     }
@@ -136,19 +136,19 @@ public class MainActivity
         // Использование FragmentTransaction для отображения
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragmentDictionary, wordDetailsFragment);
-        transaction.addToBackStack(null);
+        transaction.addToBackStack("MyStack");
         transaction.commit(); // Приводит к отображению DictionaryFragment
         setTitle("Слово");
     }
 
     @Override
-    public void onAddWord() {
-        displayAddEditWordFragment(null);
+    public void onAddWord(int rId) {
+        displayAddEditWordFragment(null, rId);
     }
 
     @Override
-    public void onWordEdited(Uri wordUri) {
-        displayAddEditWordFragment(wordUri);
+    public void onWordEdited(Uri wordUri, int rId) {
+        displayAddEditWordFragment(wordUri, rId);
     }
 
     @Override
@@ -156,7 +156,7 @@ public class MainActivity
 
     }
 
-    private void displayAddEditWordFragment(Uri wordUri) {
+    private void displayAddEditWordFragment(Uri wordUri, int rId) {
         AddEditWordFragment addEditWordFragment = new AddEditWordFragment();
 
         // Передача URI словаря в аргументе addEditWordFragment
@@ -166,9 +166,10 @@ public class MainActivity
 
         // Использование FragmentTransaction для отображения
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragmentWordDetails, addEditWordFragment);
-        transaction.addToBackStack(null);
-        transaction.commit(); // Приводит к отображению DictionaryFragment
+        transaction.replace(rId, addEditWordFragment);
+        transaction.addToBackStack("MyStack");
+        transaction.commit();
+        setTitle("Добавление слова");
     }
 
     @Override
@@ -180,16 +181,36 @@ public class MainActivity
         final String TAG = "TESTMYBD";
 
         SQLiteDatabase database = new DatabaseHelper(this).getWritableDatabase();
-        Cursor cursor = database.query(DatabaseDescription.Dictionaries.TABLE_NAME, null, null, null, null, null, null);
+        Cursor cursor_1 = database.query(DatabaseDescription.Dictionaries.TABLE_NAME, null, null, null, null, null, null);
+
+        if (cursor_1.moveToFirst()){
+            int indexId = cursor_1.getColumnIndex(DatabaseDescription.Dictionaries._ID);
+            int indexName = cursor_1.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME);
+            int index = cursor_1.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE);
+
+            do {
+                Log.d(TAG, "ID = " + cursor_1.getInt(indexId) +
+                        ", Name = " + cursor_1.getString(indexName) +
+                        ", Date = " + cursor_1.getInt(index));
+            } while (cursor_1.moveToNext());
+        } else {
+            Log.d(TAG, "0 rows");
+        }
+
+        Cursor cursor = database.query(DatabaseDescription.Words.TABLE_NAME, null, null, null, null, null, null);
 
         if (cursor.moveToFirst()){
-            int indexId = cursor.getColumnIndex(DatabaseDescription.Dictionaries._ID);
-            int indexName = cursor.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME);
-            int index = cursor.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE);
+            int indexId = cursor.getColumnIndex(DatabaseDescription.Words._ID);
+            int indexName = cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_EN);
+            int indexName2 = cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_RU);
+            int indexName3 = cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_DICTIONARY);
+            int index = cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_DATE_OF_CHANGE);
 
             do {
                 Log.d(TAG, "ID = " + cursor.getInt(indexId) +
-                        ", Name = " + cursor.getString(indexName) +
+                        ", EN = " + cursor.getString(indexName) +
+                        ", RU = " + cursor.getString(indexName2) +
+                        ", Dictionary = " + cursor.getString(indexName3) +
                         ", Date = " + cursor.getInt(index));
             } while (cursor.moveToNext());
         } else {

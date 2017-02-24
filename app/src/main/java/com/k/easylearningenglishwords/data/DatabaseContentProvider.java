@@ -91,8 +91,17 @@ public class DatabaseContentProvider extends ContentProvider {
         long rowId = 0;
 
         switch (uriMatcher.match(uri)) {
-            case ONE_WORD:
-                rowId = dbHelper.getWritableDatabase().insert(Words.TABLE_NAME, null, values);
+            case WORDS:
+                final String insertNewWord = "INSERT INTO " + Words.TABLE_NAME +
+                        "(en, ru, from_en_to_ru, dictionary, date_of_change) VALUES ( " +
+                        values.getAsString(Words.COLUMN_EN) + " " +
+                        values.getAsString(Words.COLUMN_RU) + " " +
+                        values.getAsString(Words.COLUMN_FROM_EN_TO_RU) + " " +
+                        values.getAsString(Words.COLUMN_DICTIONARY) + " " +
+                        values.getAsString(Words.COLUMN_DATE_OF_CHANGE) + ")";
+
+                rowId = dbHelper.getWritableDatabase().
+                        insert(Words.TABLE_NAME, null, values);
                 if (rowId > 0) {
                     newUri = Words.buildWordsUri(rowId);
 

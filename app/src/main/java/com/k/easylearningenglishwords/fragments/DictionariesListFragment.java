@@ -13,6 +13,9 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -31,6 +34,8 @@ public class DictionariesListFragment extends Fragment
 
         //Вызывается при нажатии кнопки добавления нового словаря
         void onAddDictionary();
+
+        void onAddWord(int rId);
     }
 
     private static final int DICTIONARIES_LIST_LOADER = 0;
@@ -68,6 +73,8 @@ public class DictionariesListFragment extends Fragment
 
         // Улучшает быстродействие, если размер макета RecyclerView не изменяется
         recyclerView.setHasFixedSize(true);
+
+
 
         // Получение FloatingActionButton и настройка слушателя
         FloatingActionButton addDictionaryFAB = (FloatingActionButton) view.findViewById(R.id.addDictionaryFAB);
@@ -135,6 +142,21 @@ public class DictionariesListFragment extends Fragment
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         dictionariesListAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_dictionaries_list_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_add_word:
+                listener.onAddWord(R.id.fragmentContainer);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }
