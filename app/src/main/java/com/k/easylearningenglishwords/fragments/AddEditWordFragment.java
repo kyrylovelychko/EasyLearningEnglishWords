@@ -100,16 +100,26 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         // Используется для отображения SnackBar с короткими сообщениями
         coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinatorLayout);
 
-        Bundle arguments = getArguments(); // null при создании слова
-        if (arguments.getString("word_uri") != null){
-            addingNewWord = false;
+        Bundle arguments = getArguments();
+        if (arguments != null) {
             wordUri = arguments.getParcelable(MainActivity.WORD_URI);
-        }
-        if (wordUri != null){
-            getLoaderManager().initLoader(WORD_LOADER, null, this);
+            if (wordUri != null) {
+                getLoaderManager().initLoader(WORD_LOADER, null, this);
+                addingNewWord = false;
+            }
         }
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (wordUri == null) {
+            getActivity().setTitle("Новое слово");
+        } else {
+            getActivity().setTitle("Редактирование слова");
+        }
     }
 
     // Обнаруживает изменения в тексте поля EditText, связанного
@@ -128,9 +138,11 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
 
         @Override
         public void afterTextChanged(Editable s) {
-            if (!enTextInputLayout.equals("") && ruTextInputLayout.equals("")){
+            if (!enTextInputLayout.getEditText().getText().toString().equals("") &&
+                    ruTextInputLayout.getEditText().getText().toString().equals("")) {
                 FROM_EN_TO_RU = Words.FROM_EN_TO_RU_TRUE;
-            } else if (enTextInputLayout.equals("") && !ruTextInputLayout.equals("")) {
+            } else if (enTextInputLayout.getEditText().getText().toString().equals("") &&
+                    !ruTextInputLayout.getEditText().getText().toString().equals("")) {
                 FROM_EN_TO_RU = Words.FROM_EN_TO_RU_FALSE;
             }
         }
@@ -141,7 +153,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         String en = enTextInputLayout.getEditText().getText().toString();
         String ru = ruTextInputLayout.getEditText().getText().toString();
 
-        if (en.trim().length() != 0 || ru.trim().length() != 0){
+        if (en.trim().length() != 0 || ru.trim().length() != 0) {
             saveWordFAB.show();
         } else {
             saveWordFAB.hide();
@@ -158,11 +170,11 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         contentValues.put(Words.COLUMN_DICTIONARY, dictTextInputLayout.getEditText().getText().toString());
         contentValues.put(Words.COLUMN_DATE_OF_CHANGE, new Date().getTime() / 1000);
 
-        if(addingNewWord){
+        if (addingNewWord) {
             // Использовать объект ContentResolver активности для вызова
             // insert для объекта DatabaseContentProvider
             Uri newWordUri = getActivity().getContentResolver().insert(Words.CONTENT_URI, contentValues);
-            if (newWordUri != null){
+            if (newWordUri != null) {
                 Snackbar.make(coordinatorLayout, R.string.word_added, Snackbar.LENGTH_LONG).show();
                 listener.onAddEditCompleted(newWordUri);
             } else {
@@ -172,7 +184,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
             // Использовать объект ContentResolver активности для вызова
             // update для объекта DatabaseContentProvider
             int updatedRows = getActivity().getContentResolver().update(wordUri, contentValues, null, null);
-            if (updatedRows > 0){
+            if (updatedRows > 0) {
                 listener.onAddEditCompleted(wordUri);
                 Snackbar.make(coordinatorLayout, R.string.word_updated, Snackbar.LENGTH_LONG).show();
             } else {
@@ -184,7 +196,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        switch (id){
+        switch (id) {
             case WORD_LOADER:
                 return new CursorLoader(getActivity(),
                         wordUri,// Uri отображаемого контакта
@@ -200,14 +212,10 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         // Если слово существует в базе данных, вывести его информацию
-        if (data != null && data.moveToFirst()){
-            int enIndex = data.getColumnIndex(Words.COLUMN_EN);
-            int ruIndex = data.getColumnIndex(Words.COLUMN_FROM_EN_TO_RU);
-            int dictIndex = data.getColumnIndex(Words.COLUMN_DICTIONARY);
-
-            enTextInputLayout.getEditText().setText(data.getString(enIndex));
-            ruTextInputLayout.getEditText().setText(data.getString(ruIndex));
-            dictTextInputLayout.getEditText().setText(data.getString(dictIndex));
+        if (data != null && data.moveToFirst()) {
+            enTextInputLayout.getEditText().setText(data.getString(data.getColumnIndex(Words.COLUMN_EN)));
+            ruTextInputLayout.getEditText().setText(data.getString(data.getColumnIndex(Words.COLUMN_RU)));
+            dictTextInputLayout.getEditText().setText(data.getString(data.getColumnIndex(Words.COLUMN_DICTIONARY)));
 
             updateSaveButtonFAB();
         }

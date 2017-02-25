@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -31,7 +32,7 @@ public class WordDetailsFragment extends Fragment
     public interface WordDetailsFragmentListener {
 
         //Вызывается при редактировании слова
-        void onWordEdited(Uri wordUri, int rId);
+        void onWordEdited(Uri wordUri, int rIdFragmentFrom);
 
         //Вызывается при удалении слова
         void onWordDeleted();
@@ -58,13 +59,6 @@ public class WordDetailsFragment extends Fragment
         super.onCreateView(inflater, container, savedInstanceState);
         setHasOptionsMenu(true);// У фрагмента есть команды меню
 
-        // Получение объекта Bundle с аргументами и извлечение URI
-        Bundle arguments = getArguments();
-
-        if (arguments != null){
-            wordUri = arguments.getParcelable(MainActivity.WORD_URI);
-        }
-
         // Заполнение макета WordDetailsFragment
         View view = inflater.inflate(R.layout.fragment_word_details, container, false);
 
@@ -73,10 +67,29 @@ public class WordDetailsFragment extends Fragment
         ruWord = (TextView) view.findViewById(R.id.ru_word);
         dictionary = (TextView) view.findViewById(R.id.dictionary);
 
-        // Загрузка слова
-        getLoaderManager().initLoader(WORD_LOADER, null, this);
+        // Получение объекта Bundle с аргументами и извлечение URI
+        Bundle arguments = getArguments();
+
+        if (arguments != null){
+            wordUri = arguments.getParcelable(MainActivity.WORD_URI);
+            getLoaderManager().initLoader(WORD_LOADER, null, this);
+        }
+
+        FloatingActionButton editWordFAB = (FloatingActionButton) view.findViewById(R.id.editWordFAB);
+        editWordFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onWordEdited(wordUri, R.id.fragmentContainer);
+            }
+        });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle("Слово");
     }
 
     @Override
@@ -117,13 +130,13 @@ public class WordDetailsFragment extends Fragment
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data != null && data.moveToFirst()){
-            int enIndex = data.getColumnIndex(Words.COLUMN_EN);
-            int ruIndex = data.getColumnIndex(Words.COLUMN_FROM_EN_TO_RU);
-            int dictIndex = data.getColumnIndex(Words.COLUMN_DICTIONARY);
+//            int enIndex = data.getColumnIndex(Words.COLUMN_EN);
+//            int ruIndex = data.getColumnIndex(Words.COLUMN_RU);
+//            int dictIndex = data.getColumnIndex(Words.COLUMN_DICTIONARY);
 
-            enWord.setText(data.getString(enIndex));
-            ruWord.setText(data.getString(ruIndex));
-            dictionary.setText(data.getString(dictIndex));
+            enWord.setText(data.getString(data.getColumnIndex(Words.COLUMN_EN)));
+            ruWord.setText(data.getString(data.getColumnIndex(Words.COLUMN_RU)));
+            dictionary.setText(data.getString(data.getColumnIndex(Words.COLUMN_DICTIONARY)));
         }
     }
 

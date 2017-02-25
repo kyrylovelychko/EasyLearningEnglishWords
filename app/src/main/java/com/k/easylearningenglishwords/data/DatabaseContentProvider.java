@@ -64,8 +64,10 @@ public class DatabaseContentProvider extends ContentProvider {
             case ONE_WORD:
                 queryBuilder.setTables(Words.TABLE_NAME);
                 queryBuilder.appendWhere(Words._ID + "=" + uri.getLastPathSegment());
+                break;
             case WORDS:
                 queryBuilder.setTables(Words.TABLE_NAME);
+                break;
             default:
                 throw new IllegalArgumentException(getContext().getString(R.string.invalid_query_uri) + uri);
         }
@@ -92,16 +94,7 @@ public class DatabaseContentProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case WORDS:
-                final String insertNewWord = "INSERT INTO " + Words.TABLE_NAME +
-                        "(en, ru, from_en_to_ru, dictionary, date_of_change) VALUES ( " +
-                        values.getAsString(Words.COLUMN_EN) + " " +
-                        values.getAsString(Words.COLUMN_RU) + " " +
-                        values.getAsString(Words.COLUMN_FROM_EN_TO_RU) + " " +
-                        values.getAsString(Words.COLUMN_DICTIONARY) + " " +
-                        values.getAsString(Words.COLUMN_DATE_OF_CHANGE) + ")";
-
-                rowId = dbHelper.getWritableDatabase().
-                        insert(Words.TABLE_NAME, null, values);
+                rowId = dbHelper.getWritableDatabase().insert(Words.TABLE_NAME, null, values);
                 if (rowId > 0) {
                     newUri = Words.buildWordsUri(rowId);
 

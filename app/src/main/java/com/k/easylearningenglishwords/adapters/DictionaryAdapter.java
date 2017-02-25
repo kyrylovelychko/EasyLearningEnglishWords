@@ -27,7 +27,12 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Vi
             super(itemView);
             wordFrom = (TextView) itemView.findViewById(R.id.wordFrom);
             wordTo = (TextView) itemView.findViewById(R.id.wordTo);
-
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickListener.onClick(Words.buildWordsUri(rowId));
+                }
+            });
         }
 
         public void setRowId(long rowId) {

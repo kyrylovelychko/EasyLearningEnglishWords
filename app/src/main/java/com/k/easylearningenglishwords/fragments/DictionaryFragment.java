@@ -17,11 +17,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.k.easylearningenglishwords.ItemDevider;
+import com.k.easylearningenglishwords.MainActivity;
 import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.adapters.DictionaryAdapter;
 import com.k.easylearningenglishwords.data.DatabaseDescription;
 
-public class DictionaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class DictionaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public interface DictionaryFragmentListener {
 
@@ -29,10 +30,13 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
         void onWordSelected(Uri wordUri);
 
         //Вызывается при нажатии кнопки добавления нового слова
-        void onAddWord(int rId);
+        void onAddWord(int rIdFragmentFrom);
     }
 
-     private static final int DICTIONARY_LOADER = 0;
+    private static final int DICTIONARY_LOADER = 0;
+    private static final int DICTIONARY_NAME_LOADER = 1;
+
+    private Uri dictionaryUri;
 
     private DictionaryFragmentListener listener;
 
@@ -65,9 +69,15 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
         addWordFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onAddWord(R.id.fragmentDictionary);
+                listener.onAddWord(R.id.fragmentContainer);
             }
         });
+
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            dictionaryUri = arguments.getParcelable(MainActivity.DICTIONARY_URI);
+            getLoaderManager().initLoader(DICTIONARY_NAME_LOADER, null, this);
+        }
 
         return view;
     }
@@ -92,7 +102,7 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id){
+        switch (id) {
             case DICTIONARY_LOADER:
                 return new CursorLoader(getActivity(),
                         DatabaseDescription.Words.CONTENT_URI,
@@ -100,6 +110,13 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
                         null,
                         null,
                         DatabaseDescription.Words.COLUMN_DATE_OF_CHANGE + " COLLATE NOCASE DESC");
+            case DICTIONARY_NAME_LOADER:
+                return new CursorLoader(getActivity(),
+                        dictionaryUri,
+                        null,
+                        null,
+                        null,
+                        null);
             default:
                 return null;
         }
@@ -108,7 +125,16 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        dictionaryAdapter.swapCursor(data);
+        switch (loader.getId()) {
+            case DICTIONARY_LOADER:
+                dictionaryAdapter.swapCursor(data);
+                break;
+            case DICTIONARY_NAME_LOADER:
+                data.moveToFirst();
+                getActivity().setTitle(data.getString(
+                        data.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME)));
+                break;
+        }
     }
 
     @Override

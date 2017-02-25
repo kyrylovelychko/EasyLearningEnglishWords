@@ -56,7 +56,7 @@ public class MainActivity
 
 
     @Override
-    public void onDictionarySelected(Uri dictionaryUri) {
+    public void onDictionarySelected(Uri dictionaryUri, int rIdFragmentFrom) {
         DictionaryFragment dictionaryFragment = new DictionaryFragment();
 
         // Передача URI словаря в аргументе dictionaryFragment
@@ -66,10 +66,9 @@ public class MainActivity
 
         // Использование FragmentTransaction для отображения
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragmentContainer, dictionaryFragment);
+        transaction.replace(rIdFragmentFrom, dictionaryFragment);
         transaction.addToBackStack("MyStack");
         transaction.commit(); // Приводит к отображению DictionaryFragment
-        setTitle("Словарь");
     }
 
     @Override
@@ -135,20 +134,19 @@ public class MainActivity
 
         // Использование FragmentTransaction для отображения
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragmentDictionary, wordDetailsFragment);
+        transaction.replace(R.id.fragmentContainer, wordDetailsFragment);
         transaction.addToBackStack("MyStack");
         transaction.commit(); // Приводит к отображению DictionaryFragment
-        setTitle("Слово");
     }
 
     @Override
-    public void onAddWord(int rId) {
-        displayAddEditWordFragment(null, rId);
+    public void onAddWord(int rIdFragmentFrom) {
+        displayAddEditWordFragment(null, rIdFragmentFrom);
     }
 
     @Override
-    public void onWordEdited(Uri wordUri, int rId) {
-        displayAddEditWordFragment(wordUri, rId);
+    public void onWordEdited(Uri wordUri, int rIdFragmentFrom) {
+        displayAddEditWordFragment(wordUri, rIdFragmentFrom);
     }
 
     @Override
@@ -156,7 +154,7 @@ public class MainActivity
 
     }
 
-    private void displayAddEditWordFragment(Uri wordUri, int rId) {
+    private void displayAddEditWordFragment(Uri wordUri, int rIdFragmentFrom) {
         AddEditWordFragment addEditWordFragment = new AddEditWordFragment();
 
         // Передача URI словаря в аргументе addEditWordFragment
@@ -166,10 +164,9 @@ public class MainActivity
 
         // Использование FragmentTransaction для отображения
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(rId, addEditWordFragment);
+        transaction.replace(rIdFragmentFrom, addEditWordFragment);
         transaction.addToBackStack("MyStack");
         transaction.commit();
-        setTitle("Добавление слова");
     }
 
     @Override
@@ -203,6 +200,7 @@ public class MainActivity
             int indexId = cursor.getColumnIndex(DatabaseDescription.Words._ID);
             int indexName = cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_EN);
             int indexName2 = cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_RU);
+            int indexName25 = cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_FROM_EN_TO_RU);
             int indexName3 = cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_DICTIONARY);
             int index = cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_DATE_OF_CHANGE);
 
@@ -210,6 +208,7 @@ public class MainActivity
                 Log.d(TAG, "ID = " + cursor.getInt(indexId) +
                         ", EN = " + cursor.getString(indexName) +
                         ", RU = " + cursor.getString(indexName2) +
+                        ", FROM_EN_TO_RU = " + cursor.getString(indexName25) +
                         ", Dictionary = " + cursor.getString(indexName3) +
                         ", Date = " + cursor.getInt(index));
             } while (cursor.moveToNext());

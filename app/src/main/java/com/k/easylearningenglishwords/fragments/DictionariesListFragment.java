@@ -30,12 +30,12 @@ public class DictionariesListFragment extends Fragment
 
     public interface DictionariesListFragmentListener {
         //Вызывается при выборе словаря
-        void onDictionarySelected(Uri dictionaryUri);
+        void onDictionarySelected(Uri dictionaryUri, int rIdFragmentFrom);
 
         //Вызывается при нажатии кнопки добавления нового словаря
         void onAddDictionary();
 
-        void onAddWord(int rId);
+        void onAddWord(int rIdFragmentFrom);
     }
 
     private static final int DICTIONARIES_LIST_LOADER = 0;
@@ -63,7 +63,7 @@ public class DictionariesListFragment extends Fragment
                 new DictionariesListAdapter.DictionariesListClickListener() {
                     @Override
                     public void onClick(Uri dictionariesUri) {
-                        listener.onDictionarySelected(dictionariesUri);
+                        listener.onDictionarySelected(dictionariesUri, R.id.fragmentContainer);
                     }
                 });
         recyclerView.setAdapter(dictionariesListAdapter);
@@ -87,6 +87,12 @@ public class DictionariesListFragment extends Fragment
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle("Мои словари");
     }
 
     // Присваивание DictionariesListFragment при присоединении фрагмента
