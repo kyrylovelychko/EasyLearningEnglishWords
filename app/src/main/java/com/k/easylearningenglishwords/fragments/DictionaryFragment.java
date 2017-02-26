@@ -21,6 +21,7 @@ import com.k.easylearningenglishwords.MainActivity;
 import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.adapters.DictionaryAdapter;
 import com.k.easylearningenglishwords.data.DatabaseDescription;
+import com.k.easylearningenglishwords.data.DatabaseHelper;
 
 public class DictionaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -37,6 +38,7 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
     private static final int DICTIONARY_NAME_LOADER = 1;
 
     private Uri dictionaryUri;
+    private String dictionaryName;
 
     private DictionaryFragmentListener listener;
 
@@ -76,7 +78,22 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
         Bundle arguments = getArguments();
         if (arguments != null) {
             dictionaryUri = arguments.getParcelable(MainActivity.DICTIONARY_URI);
-            getLoaderManager().initLoader(DICTIONARY_NAME_LOADER, null, this);
+            String dictionaryID = dictionaryUri.getLastPathSegment();
+            Cursor cursor = new DatabaseHelper(getActivity()).getReadableDatabase().
+                    query(DatabaseDescription.Dictionaries.TABLE_NAME,
+                            null,
+                            DatabaseDescription.Dictionaries._ID+"=?",
+                            new String[]{""+dictionaryID},
+                            null,
+                            null,
+                            null
+                    );
+            if (cursor != null){
+                cursor.moveToFirst();
+                dictionaryName = cursor.getString(cursor.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME));
+                getActivity().setTitle(dictionaryName);
+            }
+//            getLoaderManager().initLoader(DICTIONARY_NAME_LOADER, null, this);
         }
 
         return view;
@@ -106,17 +123,17 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
             case DICTIONARY_LOADER:
                 return new CursorLoader(getActivity(),
                         DatabaseDescription.Words.CONTENT_URI,
-                        null,
-                        null,
-                        null,
+                        DatabaseDescription.Words.default_projection,
+                        DatabaseDescription.Words.COLUMN_DICTIONARY + "=?",
+                        new String[]{""+dictionaryName},
                         DatabaseDescription.Words.COLUMN_DATE_OF_CHANGE + " COLLATE NOCASE DESC");
-            case DICTIONARY_NAME_LOADER:
-                return new CursorLoader(getActivity(),
-                        dictionaryUri,
-                        null,
-                        null,
-                        null,
-                        null);
+//            case DICTIONARY_NAME_LOADER:
+//                return new CursorLoader(getActivity(),
+//                        dictionaryUri,
+//                        null,
+//                        null,
+//                        null,
+//                        null);
             default:
                 return null;
         }
@@ -129,11 +146,12 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
             case DICTIONARY_LOADER:
                 dictionaryAdapter.swapCursor(data);
                 break;
-            case DICTIONARY_NAME_LOADER:
-                data.moveToFirst();
-                getActivity().setTitle(data.getString(
-                        data.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME)));
-                break;
+//            case DICTIONARY_NAME_LOADER:
+//                data.moveToFirst();
+//                dictionaryName = data.getString(
+//                        data.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME));
+//                getActivity().setTitle(dictionaryName);
+//                break;
         }
     }
 
