@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.data.DatabaseDescription;
 import com.k.easylearningenglishwords.data.DatabaseDescription.Dictionaries;
+import com.k.easylearningenglishwords.data.DatabaseHelper;
 
 import java.util.Date;
 
@@ -46,15 +48,23 @@ public class AddDictionaryDialog extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         newDictionaryName = (EditText) getDialog().findViewById(R.id.dictionaryNameEditText);
 
-                        ContentValues cv = new ContentValues();
-                        cv.put(Dictionaries.COLUMN_NAME, newDictionaryName.getText().toString().trim());
-                        cv.put(Dictionaries.COLUMN_DATE_OF_CHANGE, new Date().getTime()/1000);
-                        Uri newDictionaryUri = getActivity().getContentResolver().insert(DatabaseDescription.Dictionaries.CONTENT_URI, cv);
-                        if (newDictionaryUri != null) {
-                            Snackbar.make(coordinatorLayout, R.string.dictionary_added, Snackbar.LENGTH_LONG).show();
+                        Cursor dictionaryExistCursor = new DatabaseHelper(getActivity()).getReadableDatabase().
+                                query(Dictionaries.TABLE_NAME, null, Dictionaries.COLUMN_NAME + "=?",
+                                        new String[]{""+newDictionaryName.getText().toString().trim()}, null, null, null);
+                        if (dictionaryExistCursor.getCount() == 0) {
+                            ContentValues cv = new ContentValues();
+                            cv.put(Dictionaries.COLUMN_NAME, newDictionaryName.getText().toString().trim());
+                            cv.put(Dictionaries.COLUMN_DATE_OF_CHANGE, new Date().getTime() / 1000);
+                            Uri newDictionaryUri = getActivity().getContentResolver().insert(DatabaseDescription.Dictionaries.CONTENT_URI, cv);
+                            if (newDictionaryUri != null) {
+                                Snackbar.make(coordinatorLayout, R.string.dictionary_added, Snackbar.LENGTH_LONG).show();
+                            } else {
+                                Snackbar.make(coordinatorLayout, R.string.dictionary_not_added, Snackbar.LENGTH_LONG).show();
+                            }
                         } else {
-                            Snackbar.make(coordinatorLayout, R.string.dictionary_not_added, Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(coordinatorLayout, "Словарь с таким названием уже есть", Snackbar.LENGTH_LONG).show();
                         }
+
                     }
                 })
                 .setCancelable(false);
