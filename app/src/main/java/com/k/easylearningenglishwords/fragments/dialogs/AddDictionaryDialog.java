@@ -49,8 +49,13 @@ public class AddDictionaryDialog extends DialogFragment {
                         newDictionaryName = (EditText) getDialog().findViewById(R.id.dictionaryNameEditText);
 
                         Cursor dictionaryExistCursor = new DatabaseHelper(getActivity()).getReadableDatabase().
-                                query(Dictionaries.TABLE_NAME, null, Dictionaries.COLUMN_NAME + "=?",
-                                        new String[]{""+newDictionaryName.getText().toString().trim()}, null, null, null);
+                                query(Dictionaries.TABLE_NAME,
+                                        null,
+                                        Dictionaries.COLUMN_NAME + "=?",
+                                        new String[]{""+newDictionaryName.getText().toString().trim()},
+                                        null,
+                                        null,
+                                        null);
                         if (dictionaryExistCursor.getCount() == 0) {
                             ContentValues cv = new ContentValues();
                             cv.put(Dictionaries.COLUMN_NAME, newDictionaryName.getText().toString().trim());

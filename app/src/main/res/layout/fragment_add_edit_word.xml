@@ -54,7 +54,7 @@
                     android:id="@+id/chooseDictionaryButton"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:background="@drawable/ic_find_replace_black_24dp" />
+                    android:background="@drawable/ic_search_black_24dp" />
 
             </LinearLayout>
 

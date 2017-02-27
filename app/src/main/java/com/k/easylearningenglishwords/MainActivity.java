@@ -16,6 +16,7 @@ import com.k.easylearningenglishwords.fragments.DictionariesListFragment;
 import com.k.easylearningenglishwords.fragments.DictionaryFragment;
 import com.k.easylearningenglishwords.fragments.WordDetailsFragment;
 import com.k.easylearningenglishwords.fragments.dialogs.AddDictionaryDialog;
+import com.k.easylearningenglishwords.fragments.dialogs.DeleteDictionaryDialog;
 
 public class MainActivity
         extends AppCompatActivity
@@ -26,6 +27,7 @@ public class MainActivity
 
     // Ключ для сохранения Uri словаря в переданном объекте Bundle
     public static final String DICTIONARY_URI = "dictionary_uri";
+    public static final String DICTIONARY_NAME = "dictionary_name";
     // Ключ для сохранения Uri слова в переданном объекте Bundle
     public static final String WORD_URI = "word_uri";
 
@@ -124,7 +126,7 @@ public class MainActivity
     }
 
     @Override
-    public void onWordSelected(Uri wordUri) {
+    public void onSelectWord(Uri wordUri) {
         WordDetailsFragment wordDetailsFragment = new WordDetailsFragment();
 
         // Передача URI словаря в аргументе wordDetailsFragment
@@ -142,6 +144,16 @@ public class MainActivity
     @Override
     public void onAddWord(int rIdFragmentFrom) {
         displayAddEditWordFragment(null, rIdFragmentFrom);
+    }
+
+    @Override
+    public void onDeleteDictionary(String dictionaryName) {
+        DeleteDictionaryDialog dialog = new DeleteDictionaryDialog();
+        Bundle arguments = new Bundle();
+//        arguments.putParcelable(DICTIONARY_URI, dictionaryUri);
+        arguments.putString(DICTIONARY_NAME, dictionaryName);
+        dialog.setArguments(arguments);
+        dialog.show(getSupportFragmentManager(), "delete dictionary");
     }
 
     @Override

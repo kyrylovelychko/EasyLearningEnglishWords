@@ -123,12 +123,27 @@ public class DatabaseContentProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int numberOfRowsDeleted;
+        String id;
 
         switch (uriMatcher.match(uri)){
             case ONE_WORD:
-                String id = uri.getLastPathSegment();
-                numberOfRowsDeleted = dbHelper.getWritableDatabase().delete(Words.TABLE_NAME,
-                        Words._ID + "=" + id, selectionArgs);
+                id = uri.getLastPathSegment();
+                numberOfRowsDeleted = dbHelper.getWritableDatabase().delete(
+                        Words.TABLE_NAME,
+                        Words._ID + "=" + id,
+                        selectionArgs);
+                break;
+            case WORDS:
+                numberOfRowsDeleted = dbHelper.getWritableDatabase().delete(
+                        Words.TABLE_NAME,
+                        selection,
+                        selectionArgs);
+                break;
+            case DICTIONARIES:
+                numberOfRowsDeleted = dbHelper.getWritableDatabase().delete(
+                        Dictionaries.TABLE_NAME,
+                        selection,
+                        selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException(getContext().getString(R.string.invalid_delete_uri) + uri);

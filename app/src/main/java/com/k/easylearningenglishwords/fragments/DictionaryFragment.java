@@ -13,6 +13,9 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -28,14 +31,15 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
     public interface DictionaryFragmentListener {
 
         //Вызывается при выборе слова
-        void onWordSelected(Uri wordUri);
+        void onSelectWord(Uri wordUri);
 
         //Вызывается при нажатии кнопки добавления нового слова
         void onAddWord(int rIdFragmentFrom);
+
+        void onDeleteDictionary(String dictionaryName);
     }
 
     private static final int DICTIONARY_LOADER = 0;
-    private static final int DICTIONARY_NAME_LOADER = 1;
 
     private Uri dictionaryUri;
     private String dictionaryName;
@@ -58,7 +62,7 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
         dictionaryAdapter = new DictionaryAdapter(new DictionaryAdapter.DictionaryClickListener() {
             @Override
             public void onClick(Uri wordUri) {
-                listener.onWordSelected(wordUri);
+                listener.onSelectWord(wordUri);
             }
         });
         recyclerView.setAdapter(dictionaryAdapter);
@@ -78,22 +82,19 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
         Bundle arguments = getArguments();
         if (arguments != null) {
             dictionaryUri = arguments.getParcelable(MainActivity.DICTIONARY_URI);
-            String dictionaryID = dictionaryUri.getLastPathSegment();
             Cursor cursor = new DatabaseHelper(getActivity()).getReadableDatabase().
                     query(DatabaseDescription.Dictionaries.TABLE_NAME,
                             null,
-                            DatabaseDescription.Dictionaries._ID+"=?",
-                            new String[]{""+dictionaryID},
+                            DatabaseDescription.Dictionaries._ID + "=?",
+                            new String[]{"" + dictionaryUri.getLastPathSegment()},
                             null,
                             null,
-                            null
-                    );
-            if (cursor != null){
+                            null);
+            if (cursor != null) {
                 cursor.moveToFirst();
                 dictionaryName = cursor.getString(cursor.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME));
                 getActivity().setTitle(dictionaryName);
             }
-//            getLoaderManager().initLoader(DICTIONARY_NAME_LOADER, null, this);
         }
 
         return view;
@@ -125,15 +126,8 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
                         DatabaseDescription.Words.CONTENT_URI,
                         DatabaseDescription.Words.default_projection,
                         DatabaseDescription.Words.COLUMN_DICTIONARY + "=?",
-                        new String[]{""+dictionaryName},
+                        new String[]{"" + dictionaryName},
                         DatabaseDescription.Words.COLUMN_DATE_OF_CHANGE + " COLLATE NOCASE DESC");
-//            case DICTIONARY_NAME_LOADER:
-//                return new CursorLoader(getActivity(),
-//                        dictionaryUri,
-//                        null,
-//                        null,
-//                        null,
-//                        null);
             default:
                 return null;
         }
@@ -146,12 +140,6 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
             case DICTIONARY_LOADER:
                 dictionaryAdapter.swapCursor(data);
                 break;
-//            case DICTIONARY_NAME_LOADER:
-//                data.moveToFirst();
-//                dictionaryName = data.getString(
-//                        data.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME));
-//                getActivity().setTitle(dictionaryName);
-//                break;
         }
     }
 
@@ -160,4 +148,19 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
         dictionaryAdapter.swapCursor(null);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_dictionary_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete_dictionary:
+                listener.onDeleteDictionary(dictionaryName);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
