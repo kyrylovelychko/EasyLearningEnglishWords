@@ -144,12 +144,18 @@ public class DatabaseContentProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int numberOfRowsUpdated; // 1, если обновление успешно; 0 при неудаче
+        String id;
 
         switch (uriMatcher.match(uri)) {
             case ONE_WORD:
-                String id = uri.getLastPathSegment();
+                id = uri.getLastPathSegment();
                 numberOfRowsUpdated = dbHelper.getWritableDatabase().update(Words.TABLE_NAME,
                         values, Words._ID + "=" + id, selectionArgs);
+                break;
+            case ONE_DICTIONARY:
+                id = uri.getLastPathSegment();
+                numberOfRowsUpdated = dbHelper.getWritableDatabase().update(Dictionaries.TABLE_NAME,
+                        values, Dictionaries._ID + "=" + id, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException(getContext().getString(R.string.invalid_update_uri) + uri);

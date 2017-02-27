@@ -27,5 +27,6 @@
     <string name="add_dictionary">Имя нового словаря</string>
     <string name="add_dictionary_request">Введите название нового словаря:</string>
     <string name="dictionaryName">Название словаря</string>
+    <string name="button_ok">OK</string>
 
 </resources>

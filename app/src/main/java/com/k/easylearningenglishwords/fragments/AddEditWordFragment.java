@@ -1,7 +1,9 @@
 package com.k.easylearningenglishwords.fragments;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,10 +21,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.k.easylearningenglishwords.MainActivity;
 import com.k.easylearningenglishwords.R;
+import com.k.easylearningenglishwords.data.DatabaseDescription.Dictionaries;
 import com.k.easylearningenglishwords.data.DatabaseDescription.Words;
+import com.k.easylearningenglishwords.fragments.dialogs.AddDictionaryDialog;
 
 import java.util.Date;
 
@@ -36,6 +42,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
 
     // Константа для идентификации Loader
     private static final int WORD_LOADER = 0;
+    private static final int DICTIONARY_LIST_LOADER = 1;
 
     private AddEditWordFragmentListener listener;// MainActivity
     private Uri wordUri;// Uri выбранного контакта
@@ -43,9 +50,15 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
 
     private TextInputLayout enTextInputLayout;
     private TextInputLayout ruTextInputLayout;
-    private TextInputLayout dictTextInputLayout;
+    private TextView dictionary;
+    private String dictionaryName;
+    private Button chooseDictionaryButton;
+    String[] dictionariesNameArray;
 
     private int FROM_EN_TO_RU;
+
+    private Cursor cursor;
+    private int currentPositionInArray = 0;
 
     private FloatingActionButton saveWordFAB;
     private CoordinatorLayout coordinatorLayout;// Для SnackBar
@@ -81,7 +94,14 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         enTextInputLayout.getEditText().addTextChangedListener(enOrRuFilled);
         ruTextInputLayout = (TextInputLayout) view.findViewById(R.id.ruTextInputLayout);
         ruTextInputLayout.getEditText().addTextChangedListener(enOrRuFilled);
-        dictTextInputLayout = (TextInputLayout) view.findViewById(R.id.dictTextInputLayout);
+        dictionary = (TextView) view.findViewById(R.id.dictionary);
+        chooseDictionaryButton = (Button) view.findViewById(R.id.chooseDictionaryButton);
+        chooseDictionaryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseDictionaryDialog();
+            }
+        });
 
         // Назначение слушателя событий FloatingActionButton
         saveWordFAB = (FloatingActionButton) view.findViewById(R.id.saveWordFAB);
@@ -106,6 +126,8 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
             if (wordUri != null) {
                 getLoaderManager().initLoader(WORD_LOADER, null, this);
                 addingNewWord = false;
+            } else {
+                getLoaderManager().initLoader(DICTIONARY_LIST_LOADER, null, this);
             }
         }
 
@@ -164,10 +186,10 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
     private void saveWord() {
         // Создание объекта ContentValues с парами "ключ—значение"
         ContentValues contentValues = new ContentValues();
-        contentValues.put(Words.COLUMN_EN, enTextInputLayout.getEditText().getText().toString());
-        contentValues.put(Words.COLUMN_RU, ruTextInputLayout.getEditText().getText().toString());
+        contentValues.put(Words.COLUMN_EN, enTextInputLayout.getEditText().getText().toString().trim());
+        contentValues.put(Words.COLUMN_RU, ruTextInputLayout.getEditText().getText().toString().trim());
         contentValues.put(Words.COLUMN_FROM_EN_TO_RU, FROM_EN_TO_RU);
-        contentValues.put(Words.COLUMN_DICTIONARY, dictTextInputLayout.getEditText().getText().toString());
+        contentValues.put(Words.COLUMN_DICTIONARY, dictionaryName);
         contentValues.put(Words.COLUMN_DATE_OF_CHANGE, new Date().getTime() / 1000);
 
         if (addingNewWord) {
@@ -191,6 +213,24 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                 Snackbar.make(coordinatorLayout, R.string.word_not_updated, Snackbar.LENGTH_LONG).show();
             }
         }
+
+        cursor.moveToFirst();
+        while (cursor.moveToNext()) {
+            String str = cursor.getString(cursor.getColumnIndex(Dictionaries.COLUMN_NAME));
+            if (dictionaryName.equals(str)){
+                int id = cursor.getInt(cursor.getColumnIndex(Dictionaries._ID));
+                Uri dictionaryUri = Dictionaries.buildDictionariesUri(id);
+                ContentValues cv = new ContentValues();
+                cv.put(Dictionaries._ID, id);
+                cv.put(Dictionaries.COLUMN_NAME, dictionaryName);
+                cv.put(Dictionaries.COLUMN_DATE_OF_CHANGE, new Date().getTime() / 1000);
+                int updatedRows = getActivity().getContentResolver().update(dictionaryUri, cv, null, null);
+                if (updatedRows > 0) {
+                    updatedRows = 0;
+                }
+                break;
+            }
+        }
     }
 
     @Override
@@ -204,6 +244,13 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                         null,// Все записи
                         null,// Без аргументов
                         null);// Порядок сортировки
+            case DICTIONARY_LIST_LOADER:
+                return new CursorLoader(getActivity(),
+                        Dictionaries.CONTENT_URI,// Uri отображаемого контакта
+                        null,// Все столбцы
+                        null,// Все записи
+                        null,// Без аргументов
+                        Dictionaries.COLUMN_DATE_OF_CHANGE + " COLLATE NOCASE DESC");// Порядок сортировки
             default:
                 return null;
         }
@@ -211,19 +258,80 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        // Если слово существует в базе данных, вывести его информацию
-        if (data != null && data.moveToFirst()) {
-            enTextInputLayout.getEditText().setText(data.getString(data.getColumnIndex(Words.COLUMN_EN)));
-            ruTextInputLayout.getEditText().setText(data.getString(data.getColumnIndex(Words.COLUMN_RU)));
-            dictTextInputLayout.getEditText().setText(data.getString(data.getColumnIndex(Words.COLUMN_DICTIONARY)));
+        if (loader.getId() == WORD_LOADER) {
+            // Если слово существует в базе данных, вывести его информацию
+            if (data != null && data.moveToFirst()) {
+                enTextInputLayout.getEditText().setText(data.getString(data.getColumnIndex(Words.COLUMN_EN)));
+                ruTextInputLayout.getEditText().setText(data.getString(data.getColumnIndex(Words.COLUMN_RU)));
+                dictionaryName = data.getString(data.getColumnIndex(Words.COLUMN_DICTIONARY));
+                dictionary.setText(dictionaryName);
 
-            updateSaveButtonFAB();
+                updateSaveButtonFAB();
+            }
+            getLoaderManager().initLoader(DICTIONARY_LIST_LOADER, null, this);
+        } else if (loader.getId() == DICTIONARY_LIST_LOADER) {
+            dictionariesNameArray = new String[data.getCount()];
+            int counter;
+            if (dictionaryName != null) {
+                dictionariesNameArray[0] = dictionaryName;
+                counter = 1;
+                while (data.moveToNext()) {
+                    String dictName = data.getString(data.getColumnIndex(Dictionaries.COLUMN_NAME));
+                    if (!dictName.equals(dictionaryName)) {
+                        dictionariesNameArray[counter] = dictName;
+                        counter++;
+                    }
+                }
+            } else {
+                counter = 0;
+                while (data.moveToNext()) {
+                    dictionariesNameArray[counter] = data.getString(data.getColumnIndex(Dictionaries.COLUMN_NAME));
+                    counter++;
+                }
+            }
         }
+        cursor = data;
     }
+
+
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    private void chooseDictionaryDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Выберите словарь")
+                .setSingleChoiceItems(dictionariesNameArray, currentPositionInArray, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        currentPositionInArray = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                        dictionaryName = dictionariesNameArray[currentPositionInArray];
+                        dictionary.setText(dictionaryName);
+                        dialog.cancel();
+                    }
+                })
+                .setNeutralButton("Новый словарь", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new AddDictionaryDialog().show(getActivity().getSupportFragmentManager(), "add dictionary");
+                    }
+                })
+                .setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        builder.create().show();
     }
 
 

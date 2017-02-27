@@ -47,7 +47,7 @@ public class AddDictionaryDialog extends DialogFragment {
                         newDictionaryName = (EditText) getDialog().findViewById(R.id.dictionaryNameEditText);
 
                         ContentValues cv = new ContentValues();
-                        cv.put(Dictionaries.COLUMN_NAME, newDictionaryName.getText().toString());
+                        cv.put(Dictionaries.COLUMN_NAME, newDictionaryName.getText().toString().trim());
                         cv.put(Dictionaries.COLUMN_DATE_OF_CHANGE, new Date().getTime()/1000);
                         Uri newDictionaryUri = getActivity().getContentResolver().insert(DatabaseDescription.Dictionaries.CONTENT_URI, cv);
                         if (newDictionaryUri != null) {

@@ -38,18 +38,25 @@
                     android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/dictTextInputLayout"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="@string/dictionary"
-                    android:imeOptions="actionDone"
-                    android:inputType="text|textCapSentences" />
-            </android.support.design.widget.TextInputLayout>
+                <TextView
+                    android:id="@+id/dictionary"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+
+
+                <Button
+                    android:id="@+id/chooseDictionaryButton"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/ic_find_replace_black_24dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
