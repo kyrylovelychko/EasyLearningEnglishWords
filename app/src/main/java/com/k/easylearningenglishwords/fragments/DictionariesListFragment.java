@@ -30,7 +30,7 @@ public class DictionariesListFragment extends Fragment
 
     public interface DictionariesListFragmentListener {
         //Вызывается при выборе словаря
-        void onDictionarySelected(Uri dictionaryUri, int rIdFragmentFrom);
+        void onSelectDictionary(Uri dictionaryUri, int rIdFragmentFrom);
 
         //Вызывается при нажатии кнопки добавления нового словаря
         void onAddDictionary();
@@ -45,6 +45,8 @@ public class DictionariesListFragment extends Fragment
 
     private DictionariesListAdapter dictionariesListAdapter;
 
+    public DictionariesListFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -63,7 +65,7 @@ public class DictionariesListFragment extends Fragment
                 new DictionariesListAdapter.DictionariesListClickListener() {
                     @Override
                     public void onClick(Uri dictionariesUri) {
-                        listener.onDictionarySelected(dictionariesUri, R.id.fragmentContainer);
+                        listener.onSelectDictionary(dictionariesUri, R.id.fragmentContainer);
                     }
                 });
         recyclerView.setAdapter(dictionariesListAdapter);
@@ -73,8 +75,6 @@ public class DictionariesListFragment extends Fragment
 
         // Улучшает быстродействие, если размер макета RecyclerView не изменяется
         recyclerView.setHasFixedSize(true);
-
-
 
         // Получение FloatingActionButton и настройка слушателя
         FloatingActionButton addDictionaryFAB = (FloatingActionButton) view.findViewById(R.id.addDictionaryFAB);
@@ -161,6 +161,7 @@ public class DictionariesListFragment extends Fragment
         switch (item.getItemId()){
             case R.id.action_add_word:
                 listener.onAddWord(R.id.fragmentContainer);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

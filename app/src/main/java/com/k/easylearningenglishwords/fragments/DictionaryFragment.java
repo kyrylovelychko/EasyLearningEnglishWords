@@ -49,6 +49,7 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
     private DictionaryAdapter dictionaryAdapter;
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -159,8 +160,9 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
         switch (item.getItemId()) {
             case R.id.action_delete_dictionary:
                 listener.onDeleteDictionary(dictionaryName);
-                break;
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

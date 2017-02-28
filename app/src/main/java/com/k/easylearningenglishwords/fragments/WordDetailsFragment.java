@@ -1,15 +1,10 @@
 package com.k.easylearningenglishwords.fragments;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -32,10 +27,10 @@ public class WordDetailsFragment extends Fragment
     public interface WordDetailsFragmentListener {
 
         //Вызывается при редактировании слова
-        void onWordEdited(Uri wordUri, int rIdFragmentFrom);
+        void onEditWord(Uri wordUri, int rIdFragmentFrom);
 
         //Вызывается при удалении слова
-        void onWordDeleted();
+        void onDeleteWord(Uri wordUri);
     }
 
     // Идентифицирует Loader
@@ -79,7 +74,7 @@ public class WordDetailsFragment extends Fragment
         editWordFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onWordEdited(wordUri, R.id.fragmentContainer);
+                listener.onEditWord(wordUri, R.id.fragmentContainer);
             }
         });
 
@@ -130,10 +125,6 @@ public class WordDetailsFragment extends Fragment
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data != null && data.moveToFirst()){
-//            int enIndex = data.getColumnIndex(Words.COLUMN_EN);
-//            int ruIndex = data.getColumnIndex(Words.COLUMN_RU);
-//            int dictIndex = data.getColumnIndex(Words.COLUMN_DICTIONARY);
-
             enWord.setText(data.getString(data.getColumnIndex(Words.COLUMN_EN)));
             ruWord.setText(data.getString(data.getColumnIndex(Words.COLUMN_RU)));
             dictionary.setText(data.getString(data.getColumnIndex(Words.COLUMN_DICTIONARY)));
@@ -155,42 +146,43 @@ public class WordDetailsFragment extends Fragment
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_delete_word:
-                deleteWord();
+                listener.onDeleteWord(wordUri);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    // Удаление слова
-    private void deleteWord() {
-        // FragmentManager используется для отображения confirmDelete
-        confirmDelete.show(getFragmentManager(), "confirm delete");
-    }
+//    // Удаление слова
+//    private void deleteWord() {
+//        // FragmentManager используется для отображения confirmDelete
+//        confirmDelete.show(getFragmentManager(), "confirm delete");
+//    }
+//
+//    // DialogFragment для подтверждения удаления слова
+//    private final DialogFragment confirmDelete = new DialogFragment(){
+//        // Создание объекта AlertDialog и его возвращение
+//        @NonNull
+//        @Override
+//        public Dialog onCreateDialog(Bundle savedInstanceState) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//
+//            builder.setTitle(R.string.confirm_delete_title);
+//            builder.setMessage(R.string.confirm_delete_message);
+//
+//            builder.setPositiveButton(R.string.button_delete, new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    // объект ContentResolver используется для вызова delete в DatabaseContentProvider.
+//                    // последние два аргумента равны null, потому что идентификатор записи удаляемого
+//                    // контакта встроен в URI
+//                    getActivity().getContentResolver().delete(wordUri, null, null);
+//                    listener.onDeletWord();// Оповещение слушателя
+//                }
+//            });
+//
+//            builder.setNegativeButton(R.string.button_cancel, null);
+//            return builder.create();
+//        }
+//    };
 
-    // DialogFragment для подтверждения удаления слова
-    private final DialogFragment confirmDelete = new DialogFragment(){
-        // Создание объекта AlertDialog и его возвращение
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-            builder.setTitle(R.string.confirm_delete_title);
-            builder.setMessage(R.string.confirm_delete_message);
-
-            builder.setPositiveButton(R.string.button_delete, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // объект ContentResolver используется для вызова delete в DatabaseContentProvider.
-                    // последние два аргумента равны null, потому что идентификатор записи удаляемого
-                    // контакта встроен в URI
-                    getActivity().getContentResolver().delete(wordUri, null, null);
-                    listener.onWordDeleted();// Оповещение слушателя
-                }
-            });
-
-            builder.setNegativeButton(R.string.button_cancel, null);
-            return builder.create();
-        }
-    };
 }

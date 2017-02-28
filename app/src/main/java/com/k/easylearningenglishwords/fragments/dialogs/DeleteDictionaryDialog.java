@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.widget.Toast;
 
 import com.k.easylearningenglishwords.MainActivity;
 import com.k.easylearningenglishwords.R;
@@ -19,9 +18,8 @@ public class DeleteDictionaryDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        if (getArguments().size() == 0){
-            Toast.makeText(getActivity(), "Ошибка удаления словаря", Toast.LENGTH_LONG);
-            return null;
+        if (getArguments().size() == 0) {
+            throw new IllegalArgumentException(getContext().getString(R.string.exept_empty_saved_instance_state));
         }
 
         final String dictionaryName = getArguments().getString(MainActivity.DICTIONARY_NAME);
@@ -45,12 +43,7 @@ public class DeleteDictionaryDialog extends DialogFragment {
                         getFragmentManager().popBackStack();
                     }
                 })
-                .setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
+                .setNegativeButton(R.string.button_cancel, null);
 
         return builder.create();
     }

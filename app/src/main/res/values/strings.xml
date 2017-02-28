@@ -28,5 +28,6 @@
     <string name="add_dictionary_request">Введите название нового словаря:</string>
     <string name="dictionaryName">Название словаря</string>
     <string name="button_ok">OK</string>
+    <string name="exept_empty_saved_instance_state">Empty savedInstanceState</string>
 
 </resources>

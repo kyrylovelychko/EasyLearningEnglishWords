@@ -37,12 +37,7 @@ public class AddDictionaryDialog extends DialogFragment {
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_add_dictionary, null);
         builder.setTitle(R.string.add_dictionary_request)
                 .setView(view)
-                .setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
+                .setNegativeButton(R.string.button_cancel, null)
                 .setPositiveButton(R.string.button_add, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

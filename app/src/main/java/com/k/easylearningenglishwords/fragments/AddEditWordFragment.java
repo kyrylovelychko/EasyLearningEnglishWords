@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -37,12 +38,14 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
     public interface AddEditWordFragmentListener {
 
         //Вызывается при завершении редактирования слова
-        void onAddEditCompleted(Uri wordUri);
+        void onAddEditWordCompleted(Uri wordUri, String dictionaryName);
+
+        void updateDateOfChangeDictionary(String dictionaryName);
     }
 
     // Константа для идентификации Loader
     private static final int WORD_LOADER = 0;
-    private static final int DICTIONARY_LIST_LOADER = 1;
+    private static final int DICTIONARIES_LOADER = 1;
 
     private AddEditWordFragmentListener listener;// MainActivity
     private Uri wordUri;// Uri выбранного контакта
@@ -65,20 +68,6 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
 
     public AddEditWordFragment() {
         // Required empty public constructor
-    }
-
-    // Назначение AddEditWordFragmentListener при присоединении фрагмента
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        listener = (AddEditWordFragmentListener) context;
-    }
-
-    // Удаление AddEditWordFragmentListener при отсоединении фрагмента
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        listener = null;
     }
 
     // Вызывается при создании представлений фрагмента
@@ -124,14 +113,21 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         if (arguments != null) {
             wordUri = arguments.getParcelable(MainActivity.WORD_URI);
             if (wordUri != null) {
-                getLoaderManager().initLoader(WORD_LOADER, null, this);
                 addingNewWord = false;
-            } else {
-                getLoaderManager().initLoader(DICTIONARY_LIST_LOADER, null, this);
             }
         }
 
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (addingNewWord == false) {
+            getLoaderManager().initLoader(WORD_LOADER, null, this);
+        } else {
+            getLoaderManager().initLoader(DICTIONARIES_LOADER, null, this);
+        }
     }
 
     @Override
@@ -142,6 +138,20 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         } else {
             getActivity().setTitle("Редактирование слова");
         }
+    }
+
+    // Назначение AddEditWordFragmentListener при присоединении фрагмента
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        listener = (AddEditWordFragmentListener) context;
+    }
+
+    // Удаление AddEditWordFragmentListener при отсоединении фрагмента
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 
     // Обнаруживает изменения в тексте поля EditText, связанного
@@ -198,7 +208,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
             Uri newWordUri = getActivity().getContentResolver().insert(Words.CONTENT_URI, contentValues);
             if (newWordUri != null) {
                 Snackbar.make(coordinatorLayout, R.string.word_added, Snackbar.LENGTH_LONG).show();
-                listener.onAddEditCompleted(newWordUri);
+                listener.onAddEditWordCompleted(newWordUri, dictionaryName);
             } else {
                 Snackbar.make(coordinatorLayout, R.string.word_not_added, Snackbar.LENGTH_LONG).show();
             }
@@ -207,30 +217,14 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
             // update для объекта DatabaseContentProvider
             int updatedRows = getActivity().getContentResolver().update(wordUri, contentValues, null, null);
             if (updatedRows > 0) {
-                listener.onAddEditCompleted(wordUri);
+                listener.onAddEditWordCompleted(wordUri, dictionaryName);
                 Snackbar.make(coordinatorLayout, R.string.word_updated, Snackbar.LENGTH_LONG).show();
             } else {
                 Snackbar.make(coordinatorLayout, R.string.word_not_updated, Snackbar.LENGTH_LONG).show();
             }
         }
 
-        cursor.moveToFirst();
-        while (cursor.moveToNext()) {
-            String str = cursor.getString(cursor.getColumnIndex(Dictionaries.COLUMN_NAME));
-            if (dictionaryName.equals(str)){
-                int id = cursor.getInt(cursor.getColumnIndex(Dictionaries._ID));
-                Uri dictionaryUri = Dictionaries.buildDictionariesUri(id);
-                ContentValues cv = new ContentValues();
-                cv.put(Dictionaries._ID, id);
-                cv.put(Dictionaries.COLUMN_NAME, dictionaryName);
-                cv.put(Dictionaries.COLUMN_DATE_OF_CHANGE, new Date().getTime() / 1000);
-                int updatedRows = getActivity().getContentResolver().update(dictionaryUri, cv, null, null);
-                if (updatedRows > 0) {
-                    updatedRows = 0;
-                }
-                break;
-            }
-        }
+        listener.updateDateOfChangeDictionary(dictionaryName);
     }
 
     @Override
@@ -244,7 +238,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                         null,// Все записи
                         null,// Без аргументов
                         null);// Порядок сортировки
-            case DICTIONARY_LIST_LOADER:
+            case DICTIONARIES_LOADER:
                 return new CursorLoader(getActivity(),
                         Dictionaries.CONTENT_URI,// Uri отображаемого контакта
                         null,// Все столбцы
@@ -268,8 +262,9 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
 
                 updateSaveButtonFAB();
             }
-            getLoaderManager().initLoader(DICTIONARY_LIST_LOADER, null, this);
-        } else if (loader.getId() == DICTIONARY_LIST_LOADER) {
+            getLoaderManager().initLoader(DICTIONARIES_LOADER, null, this);
+
+        } else if (loader.getId() == DICTIONARIES_LOADER) {
             dictionariesNameArray = new String[data.getCount()];
             int counter;
             if (dictionaryName != null) {
@@ -289,10 +284,9 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                     counter++;
                 }
             }
+            cursor = data;
         }
-        cursor = data;
     }
-
 
 
     @Override
@@ -334,5 +328,23 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         builder.create().show();
     }
 
-
+//    private void updateForDateOfChangeDictionary(){
+//        cursor.moveToFirst();
+//        while (cursor.moveToNext()) {
+//            String str = cursor.getString(cursor.getColumnIndex(Dictionaries.COLUMN_NAME));
+//            if (dictionaryName.equals(str)){
+//                int id = cursor.getInt(cursor.getColumnIndex(Dictionaries._ID));
+//                Uri dictionaryUri = Dictionaries.buildDictionariesUri(id);
+//                ContentValues cv = new ContentValues();
+//                cv.put(Dictionaries._ID, id);
+//                cv.put(Dictionaries.COLUMN_NAME, dictionaryName);
+//                cv.put(Dictionaries.COLUMN_DATE_OF_CHANGE, new Date().getTime() / 1000);
+//                int updatedRows = getActivity().getContentResolver().update(dictionaryUri, cv, null, null);
+//                if (updatedRows < 0) {
+//                    throw new SQLException(getContext().getString(R.string.invalid_update_uri)+ dictionaryUri);
+//                }
+//                break;
+//            }
+//        }
+//    }
 }

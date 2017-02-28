@@ -1,6 +1,8 @@
 package com.k.easylearningenglishwords;
 
+import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.k.easylearningenglishwords.data.DatabaseDescription;
+import com.k.easylearningenglishwords.data.DatabaseDescription.Dictionaries;
 import com.k.easylearningenglishwords.data.DatabaseHelper;
 import com.k.easylearningenglishwords.fragments.AddEditWordFragment;
 import com.k.easylearningenglishwords.fragments.DictionariesListFragment;
@@ -17,13 +20,17 @@ import com.k.easylearningenglishwords.fragments.DictionaryFragment;
 import com.k.easylearningenglishwords.fragments.WordDetailsFragment;
 import com.k.easylearningenglishwords.fragments.dialogs.AddDictionaryDialog;
 import com.k.easylearningenglishwords.fragments.dialogs.DeleteDictionaryDialog;
+import com.k.easylearningenglishwords.fragments.dialogs.DeleteWordDialog;
+
+import java.util.Date;
 
 public class MainActivity
         extends AppCompatActivity
         implements DictionariesListFragment.DictionariesListFragmentListener,
         DictionaryFragment.DictionaryFragmentListener,
         WordDetailsFragment.WordDetailsFragmentListener,
-        AddEditWordFragment.AddEditWordFragmentListener {
+        AddEditWordFragment.AddEditWordFragmentListener,
+        DeleteWordDialog.DeleteWordDialogListener {
 
     // Ключ для сохранения Uri словаря в переданном объекте Bundle
     public static final String DICTIONARY_URI = "dictionary_uri";
@@ -33,7 +40,6 @@ public class MainActivity
 
     // Вывод списка контактов
     private DictionariesListFragment dictionariesListFragment;
-
 
 
     @Override
@@ -54,23 +60,6 @@ public class MainActivity
             transaction.add(R.id.fragmentContainer, dictionariesListFragment);
             transaction.commit();
         }
-    }
-
-
-    @Override
-    public void onDictionarySelected(Uri dictionaryUri, int rIdFragmentFrom) {
-        DictionaryFragment dictionaryFragment = new DictionaryFragment();
-
-        // Передача URI словаря в аргументе dictionaryFragment
-        Bundle arguments = new Bundle();
-        arguments.putParcelable(DICTIONARY_URI, dictionaryUri);
-        dictionaryFragment.setArguments(arguments);
-
-        // Использование FragmentTransaction для отображения
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(rIdFragmentFrom, dictionaryFragment);
-        transaction.addToBackStack("MyStack");
-        transaction.commit(); // Приводит к отображению DictionaryFragment
     }
 
     @Override
@@ -126,6 +115,36 @@ public class MainActivity
     }
 
     @Override
+    public void onSelectDictionary(Uri dictionaryUri, int rIdFragmentFrom) {
+        DictionaryFragment dictionaryFragment = new DictionaryFragment();
+
+        // Передача URI словаря в аргументе dictionaryFragment
+        Bundle arguments = new Bundle();
+        arguments.putParcelable(DICTIONARY_URI, dictionaryUri);
+        dictionaryFragment.setArguments(arguments);
+
+        // Использование FragmentTransaction для отображения
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(rIdFragmentFrom, dictionaryFragment);
+        transaction.addToBackStack("MyStack");
+        transaction.commit(); // Приводит к отображению DictionaryFragment
+    }
+
+    @Override
+    public void onDeleteDictionary(String dictionaryName) {
+        DeleteDictionaryDialog dialog = new DeleteDictionaryDialog();
+        Bundle arguments = new Bundle();
+        arguments.putString(DICTIONARY_NAME, dictionaryName);
+        dialog.setArguments(arguments);
+        dialog.show(getSupportFragmentManager(), "delete dictionary");
+    }
+
+    @Override
+    public void onAddWord(int rIdFragmentFrom) {
+        displayAddEditWordFragment(null, rIdFragmentFrom);
+    }
+
+    @Override
     public void onSelectWord(Uri wordUri) {
         WordDetailsFragment wordDetailsFragment = new WordDetailsFragment();
 
@@ -142,28 +161,17 @@ public class MainActivity
     }
 
     @Override
-    public void onAddWord(int rIdFragmentFrom) {
-        displayAddEditWordFragment(null, rIdFragmentFrom);
-    }
-
-    @Override
-    public void onDeleteDictionary(String dictionaryName) {
-        DeleteDictionaryDialog dialog = new DeleteDictionaryDialog();
-        Bundle arguments = new Bundle();
-//        arguments.putParcelable(DICTIONARY_URI, dictionaryUri);
-        arguments.putString(DICTIONARY_NAME, dictionaryName);
-        dialog.setArguments(arguments);
-        dialog.show(getSupportFragmentManager(), "delete dictionary");
-    }
-
-    @Override
-    public void onWordEdited(Uri wordUri, int rIdFragmentFrom) {
+    public void onEditWord(Uri wordUri, int rIdFragmentFrom) {
         displayAddEditWordFragment(wordUri, rIdFragmentFrom);
     }
 
     @Override
-    public void onWordDeleted() {
-
+    public void onDeleteWord(Uri wordUri) {
+        DeleteWordDialog dialog = new DeleteWordDialog();
+        Bundle arguments = new Bundle();
+        arguments.putParcelable(WORD_URI, wordUri);
+        dialog.setArguments(arguments);
+        dialog.show(getSupportFragmentManager(), "delete word");
     }
 
     private void displayAddEditWordFragment(Uri wordUri, int rIdFragmentFrom) {
@@ -182,25 +190,65 @@ public class MainActivity
     }
 
     @Override
-    public void onAddEditCompleted(Uri wordUri) {
-
+    public void onAddEditWordCompleted(Uri wordUri, String dictionaryName) {
+//        if (addingNewWord){
+//            updateDateOfChangeDictionary(dictionaryName);
+//        } else {
+//            updateDateOfChangeWord(wordUri);
+        updateDateOfChangeDictionary(dictionaryName);
+//        }
+        getContentResolver().notifyChange(Dictionaries.CONTENT_URI, null);
     }
 
-    private void checkDB (){
+//    public void updateDateOfChangeWord(Uri wordUri){
+//        String updateSQL = "UPDATE " + Words.TABLE_NAME +
+//                " SET " + Words.COLUMN_DATE_OF_CHANGE + "=" + new Date().getTime() / 1000 +
+//                " WHERE " + Words._ID + "=" + wordUri.getLastPathSegment();
+//        new DatabaseHelper(this).getWritableDatabase().execSQL(updateSQL);
+//    }
+
+    @Override
+    public void updateDateOfChangeDictionary(String dictionaryName) {
+        Cursor cursor = new DatabaseHelper(this).getReadableDatabase().query(
+                Dictionaries.TABLE_NAME,
+                null,
+                Dictionaries.COLUMN_NAME + "=?",
+                new String[]{dictionaryName},
+                null,
+                null,
+                null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            int id = cursor.getInt(cursor.getColumnIndex(Dictionaries._ID));
+            Uri dictionaryUri = Dictionaries.buildDictionariesUri(id);
+            ContentValues cv = new ContentValues();
+            cv.put(Dictionaries._ID, id);
+            cv.put(Dictionaries.COLUMN_NAME, dictionaryName);
+            cv.put(Dictionaries.COLUMN_DATE_OF_CHANGE, new Date().getTime() / 1000);
+            int updatedRows = getContentResolver().update(dictionaryUri, cv, null, null);
+            if (updatedRows < 0) {
+                throw new SQLException(""+ R.string.invalid_update_uri + dictionaryUri);
+            }
+        }
+
+
+//        String updateSQL = "UPDATE " + Dictionaries.TABLE_NAME +
+//                " SET " + Dictionaries.COLUMN_DATE_OF_CHANGE + "=" + new Date().getTime() / 1000 +
+//                " WHERE " + Dictionaries.COLUMN_NAME + "='" + dictionaryName + "'";
+//        new DatabaseHelper(this).getWritableDatabase().execSQL(updateSQL);
+    }
+
+    private void checkDB() {
         final String TAG = "TESTMYBD";
 
         SQLiteDatabase database = new DatabaseHelper(this).getWritableDatabase();
         Cursor cursor_1 = database.query(DatabaseDescription.Dictionaries.TABLE_NAME, null, null, null, null, null, null);
 
-        if (cursor_1.moveToFirst()){
-            int indexId = cursor_1.getColumnIndex(DatabaseDescription.Dictionaries._ID);
-            int indexName = cursor_1.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME);
-            int index = cursor_1.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE);
-
+        if (cursor_1.moveToFirst()) {
             do {
-                Log.d(TAG, "ID = " + cursor_1.getInt(indexId) +
-                        ", Name = " + cursor_1.getString(indexName) +
-                        ", Date = " + cursor_1.getInt(index));
+                Log.d(TAG, "ID = " + cursor_1.getInt(cursor_1.getColumnIndex(DatabaseDescription.Dictionaries._ID)) +
+                        ", Name = " + cursor_1.getString(cursor_1.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME)) +
+                        ", Date = " + cursor_1.getInt(cursor_1.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE)));
             } while (cursor_1.moveToNext());
         } else {
             Log.d(TAG, "0 rows");
@@ -208,24 +256,18 @@ public class MainActivity
 
         Cursor cursor = database.query(DatabaseDescription.Words.TABLE_NAME, null, null, null, null, null, null);
 
-        if (cursor.moveToFirst()){
-            int indexId = cursor.getColumnIndex(DatabaseDescription.Words._ID);
-            int indexName = cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_EN);
-            int indexName2 = cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_RU);
-            int indexName25 = cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_FROM_EN_TO_RU);
-            int indexName3 = cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_DICTIONARY);
-            int index = cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_DATE_OF_CHANGE);
-
+        if (cursor.moveToFirst()) {
             do {
-                Log.d(TAG, "ID = " + cursor.getInt(indexId) +
-                        ", EN = " + cursor.getString(indexName) +
-                        ", RU = " + cursor.getString(indexName2) +
-                        ", FROM_EN_TO_RU = " + cursor.getString(indexName25) +
-                        ", Dictionary = " + cursor.getString(indexName3) +
-                        ", Date = " + cursor.getInt(index));
+                Log.d(TAG, "ID = " + cursor.getInt(cursor.getColumnIndex(DatabaseDescription.Words._ID)) +
+                        ", EN = " + cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_EN)) +
+                        ", RU = " + cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_RU)) +
+                        ", FROM_EN_TO_RU = " + cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_FROM_EN_TO_RU)) +
+                        ", Dictionary = " + cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_DICTIONARY)) +
+                        ", Date = " + cursor.getInt(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_DATE_OF_CHANGE)));
             } while (cursor.moveToNext());
         } else {
             Log.d(TAG, "0 rows");
         }
     }
+
 }
