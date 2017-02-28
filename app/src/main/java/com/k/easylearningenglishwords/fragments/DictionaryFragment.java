@@ -37,6 +37,8 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
         void onAddWord(int rIdFragmentFrom);
 
         void onDeleteDictionary(String dictionaryName);
+
+        void onRenameDictionary(String dictionaryName);
     }
 
     private static final int DICTIONARY_LOADER = 0;
@@ -161,6 +163,8 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
             case R.id.action_delete_dictionary:
                 listener.onDeleteDictionary(dictionaryName);
                 return true;
+            case R.id.action_rename_dictionary:
+                listener.onRenameDictionary(dictionaryName);
         }
         return super.onOptionsItemSelected(item);
     }

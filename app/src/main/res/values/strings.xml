@@ -29,5 +29,6 @@
     <string name="dictionaryName">Название словаря</string>
     <string name="button_ok">OK</string>
     <string name="exept_empty_saved_instance_state">Empty savedInstanceState</string>
+    <string name="button_save">Сохранить</string>
 
 </resources>

@@ -167,6 +167,10 @@ public class DatabaseContentProvider extends ContentProvider {
                 numberOfRowsUpdated = dbHelper.getWritableDatabase().update(Words.TABLE_NAME,
                         values, Words._ID + "=" + id, selectionArgs);
                 break;
+            case WORDS:
+                numberOfRowsUpdated = dbHelper.getWritableDatabase().update(Words.TABLE_NAME,
+                        values, selection, selectionArgs);
+                break;
             case ONE_DICTIONARY:
                 id = uri.getLastPathSegment();
                 numberOfRowsUpdated = dbHelper.getWritableDatabase().update(Dictionaries.TABLE_NAME,

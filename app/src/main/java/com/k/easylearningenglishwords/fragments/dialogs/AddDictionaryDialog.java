@@ -25,7 +25,7 @@ import java.util.Date;
 
 public class AddDictionaryDialog extends DialogFragment {
 
-    EditText newDictionaryName;
+    EditText dictionaryName;
     private CoordinatorLayout coordinatorLayout;
 
     @NonNull
@@ -37,23 +37,24 @@ public class AddDictionaryDialog extends DialogFragment {
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_add_dictionary, null);
         builder.setTitle(R.string.add_dictionary_request)
                 .setView(view)
+                .setCancelable(false)
                 .setNegativeButton(R.string.button_cancel, null)
                 .setPositiveButton(R.string.button_add, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        newDictionaryName = (EditText) getDialog().findViewById(R.id.dictionaryNameEditText);
+                        dictionaryName = (EditText) getDialog().findViewById(R.id.dictionaryNameEditText);
 
                         Cursor dictionaryExistCursor = new DatabaseHelper(getActivity()).getReadableDatabase().
                                 query(Dictionaries.TABLE_NAME,
                                         null,
                                         Dictionaries.COLUMN_NAME + "=?",
-                                        new String[]{""+newDictionaryName.getText().toString().trim()},
+                                        new String[]{""+ dictionaryName.getText().toString().trim()},
                                         null,
                                         null,
                                         null);
                         if (dictionaryExistCursor.getCount() == 0) {
                             ContentValues cv = new ContentValues();
-                            cv.put(Dictionaries.COLUMN_NAME, newDictionaryName.getText().toString().trim());
+                            cv.put(Dictionaries.COLUMN_NAME, dictionaryName.getText().toString().trim());
                             cv.put(Dictionaries.COLUMN_DATE_OF_CHANGE, new Date().getTime() / 1000);
                             Uri newDictionaryUri = getActivity().getContentResolver().insert(DatabaseDescription.Dictionaries.CONTENT_URI, cv);
                             if (newDictionaryUri != null) {
@@ -66,8 +67,7 @@ public class AddDictionaryDialog extends DialogFragment {
                         }
 
                     }
-                })
-                .setCancelable(false);
+                });
 
 
         return builder.create();

@@ -30,7 +30,7 @@ public class DictionariesListFragment extends Fragment
 
     public interface DictionariesListFragmentListener {
         //Вызывается при выборе словаря
-        void onSelectDictionary(Uri dictionaryUri, int rIdFragmentFrom);
+        void onSelectDictionary(Uri dictionaryUri);
 
         //Вызывается при нажатии кнопки добавления нового словаря
         void onAddDictionary();
@@ -65,7 +65,7 @@ public class DictionariesListFragment extends Fragment
                 new DictionariesListAdapter.DictionariesListClickListener() {
                     @Override
                     public void onClick(Uri dictionariesUri) {
-                        listener.onSelectDictionary(dictionariesUri, R.id.fragmentContainer);
+                        listener.onSelectDictionary(dictionariesUri);
                     }
                 });
         recyclerView.setAdapter(dictionariesListAdapter);

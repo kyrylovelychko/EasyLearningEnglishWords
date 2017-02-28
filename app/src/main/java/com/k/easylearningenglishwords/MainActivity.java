@@ -21,6 +21,7 @@ import com.k.easylearningenglishwords.fragments.WordDetailsFragment;
 import com.k.easylearningenglishwords.fragments.dialogs.AddDictionaryDialog;
 import com.k.easylearningenglishwords.fragments.dialogs.DeleteDictionaryDialog;
 import com.k.easylearningenglishwords.fragments.dialogs.DeleteWordDialog;
+import com.k.easylearningenglishwords.fragments.dialogs.RenameDictionaryDialog;
 
 import java.util.Date;
 
@@ -30,7 +31,9 @@ public class MainActivity
         DictionaryFragment.DictionaryFragmentListener,
         WordDetailsFragment.WordDetailsFragmentListener,
         AddEditWordFragment.AddEditWordFragmentListener,
-        DeleteWordDialog.DeleteWordDialogListener {
+        DeleteWordDialog.DeleteWordDialogListener,
+        RenameDictionaryDialog.RenameDictionaryDialoglistener
+{
 
     // Ключ для сохранения Uri словаря в переданном объекте Bundle
     public static final String DICTIONARY_URI = "dictionary_uri";
@@ -115,7 +118,7 @@ public class MainActivity
     }
 
     @Override
-    public void onSelectDictionary(Uri dictionaryUri, int rIdFragmentFrom) {
+    public void onSelectDictionary(Uri dictionaryUri) {
         DictionaryFragment dictionaryFragment = new DictionaryFragment();
 
         // Передача URI словаря в аргументе dictionaryFragment
@@ -125,9 +128,18 @@ public class MainActivity
 
         // Использование FragmentTransaction для отображения
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(rIdFragmentFrom, dictionaryFragment);
+        transaction.replace(R.id.fragmentContainer, dictionaryFragment);
         transaction.addToBackStack("MyStack");
         transaction.commit(); // Приводит к отображению DictionaryFragment
+    }
+
+    @Override
+    public void onRenameDictionary(String dictionaryName) {
+        RenameDictionaryDialog dialog = new RenameDictionaryDialog();
+        Bundle arguments = new Bundle();
+        arguments.putString(DICTIONARY_NAME, dictionaryName);
+        dialog.setArguments(arguments);
+        dialog.show(getSupportFragmentManager(), "rename dictionary");
     }
 
     @Override
