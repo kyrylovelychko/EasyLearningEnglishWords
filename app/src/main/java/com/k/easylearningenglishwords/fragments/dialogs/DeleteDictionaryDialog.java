@@ -19,17 +19,17 @@ public class DeleteDictionaryDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         if (getArguments().size() == 0) {
-            throw new IllegalArgumentException(getContext().getString(R.string.exept_empty_saved_instance_state));
+            throw new IllegalArgumentException(getContext().getString(R.string.exc_empty_saved_instance_state));
         }
 
         final String dictionaryName = getArguments().getString(MainActivity.DICTIONARY_NAME);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Подтверждение удаление словаря")
-                .setMessage("Внимание! Словарь и все слова этого словаря будут удалены!")
+        builder.setTitle(R.string.title_confirm_delete_dictionary)
+                .setMessage(R.string.dialog_message_delete_dictionary)
                 .setIcon(R.drawable.ic_warning_yellow_24dp)
                 .setCancelable(false)
-                .setPositiveButton(R.string.button_delete, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.dialog_button_delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         getActivity().getContentResolver().delete(
@@ -43,7 +43,7 @@ public class DeleteDictionaryDialog extends DialogFragment {
                         getFragmentManager().popBackStack();
                     }
                 })
-                .setNegativeButton(R.string.button_cancel, null);
+                .setNegativeButton(R.string.dialog_button_cancel, null);
 
         return builder.create();
     }

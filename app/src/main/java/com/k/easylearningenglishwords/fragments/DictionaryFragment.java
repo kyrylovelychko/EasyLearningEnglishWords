@@ -30,26 +30,30 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
 
     public interface DictionaryFragmentListener {
 
-        //Вызывается при выборе слова
+        //Вызывается при выборе слова в словаре
         void onSelectWord(Uri wordUri);
 
         //Вызывается при нажатии кнопки добавления нового слова
-        void onAddWord(int rIdFragmentFrom);
+        void onAddWord(String dictionaryName);
 
+        //Вызывается при нажатии кнопки удаления словаря
         void onDeleteDictionary(String dictionaryName);
 
+        //Вызывается при нажатии кнопки переименования словаря
         void onRenameDictionary(String dictionaryName);
     }
 
     private static final int DICTIONARY_LOADER = 0;
 
+    //Uri текущего словаря
     private Uri dictionaryUri;
+    //Название текущего словаря
     private String dictionaryName;
 
+    // Сообщает MainActivity о действии во фрагменте
     private DictionaryFragmentListener listener;
 
     private DictionaryAdapter dictionaryAdapter;
-
 
 
     @Override
@@ -74,14 +78,25 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
 
         recyclerView.setHasFixedSize(true);
 
+        //В Bundle получили Uri словаря. Используя Uri, находим название
+        getDictionaryUriAndName();
+
         FloatingActionButton addWordFAB = (FloatingActionButton) view.findViewById(R.id.addWordFAB);
         addWordFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onAddWord(R.id.fragmentContainer);
+                listener.onAddWord(dictionaryName);
             }
         });
 
+        //Установка заголовка
+        getActivity().setTitle(dictionaryName);
+
+        return view;
+    }
+
+    //В Bundle получили Uri словаря. Используя Uri, находим название
+    private void getDictionaryUriAndName() {
         Bundle arguments = getArguments();
         if (arguments != null) {
             dictionaryUri = arguments.getParcelable(MainActivity.DICTIONARY_URI);
@@ -93,14 +108,11 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
                             null,
                             null,
                             null);
-            if (cursor != null) {
+            if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 dictionaryName = cursor.getString(cursor.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME));
-                getActivity().setTitle(dictionaryName);
             }
         }
-
-        return view;
     }
 
     @Override
@@ -127,7 +139,7 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
             case DICTIONARY_LOADER:
                 return new CursorLoader(getActivity(),
                         DatabaseDescription.Words.CONTENT_URI,
-                        DatabaseDescription.Words.default_projection,
+                        null,
                         DatabaseDescription.Words.COLUMN_DICTIONARY + "=?",
                         new String[]{"" + dictionaryName},
                         DatabaseDescription.Words.COLUMN_DATE_OF_CHANGE + " COLLATE NOCASE DESC");

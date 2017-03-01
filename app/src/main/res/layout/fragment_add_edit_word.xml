@@ -20,7 +20,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:hint="@string/en"
+                    android:hint="@string/hint_en"
                     android:imeOptions="actionNext"
                     android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
@@ -33,7 +33,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:hint="@string/ru"
+                    android:hint="@string/hint_ru"
                     android:imeOptions="actionNext"
                     android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
@@ -46,14 +46,14 @@
                 <TextView
                     android:id="@+id/dictionary"
                     android:layout_width="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
 
 
                 <Button
                     android:id="@+id/chooseDictionaryButton"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/ic_search_black_24dp" />
 
             </LinearLayout>

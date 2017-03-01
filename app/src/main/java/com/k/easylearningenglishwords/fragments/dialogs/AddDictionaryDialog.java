@@ -35,15 +35,18 @@ public class AddDictionaryDialog extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_add_dictionary, null);
-        builder.setTitle(R.string.add_dictionary_request)
+        builder.setTitle(R.string.title_add_dictionary_request)
                 .setView(view)
                 .setCancelable(false)
-                .setNegativeButton(R.string.button_cancel, null)
-                .setPositiveButton(R.string.button_add, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.dialog_button_cancel, null)
+                .setPositiveButton(R.string.dialog_button_add, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dictionaryName = (EditText) getDialog().findViewById(R.id.dictionaryNameEditText);
 
+                        // Ищем словарь (в таблице словарей) с именем, которое ввел пользователь.
+                        // Если нашли, значит словарь с таким именем уже есть - сообщаем пользователю,
+                        // новый не добавляем. Если нет, добавляем новый словарь.
                         Cursor dictionaryExistCursor = new DatabaseHelper(getActivity()).getReadableDatabase().
                                 query(Dictionaries.TABLE_NAME,
                                         null,
@@ -58,12 +61,12 @@ public class AddDictionaryDialog extends DialogFragment {
                             cv.put(Dictionaries.COLUMN_DATE_OF_CHANGE, new Date().getTime() / 1000);
                             Uri newDictionaryUri = getActivity().getContentResolver().insert(DatabaseDescription.Dictionaries.CONTENT_URI, cv);
                             if (newDictionaryUri != null) {
-                                Snackbar.make(coordinatorLayout, R.string.dictionary_added, Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(coordinatorLayout, R.string.snack_dictionary_added, Snackbar.LENGTH_LONG).show();
                             } else {
-                                Snackbar.make(coordinatorLayout, R.string.dictionary_not_added, Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(coordinatorLayout, R.string.snack_dictionary_not_added, Snackbar.LENGTH_LONG).show();
                             }
                         } else {
-                            Snackbar.make(coordinatorLayout, "Словарь с таким названием уже есть", Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(coordinatorLayout, R.string.snack_dictionary_has_existed, Snackbar.LENGTH_LONG).show();
                         }
 
                     }
@@ -73,6 +76,7 @@ public class AddDictionaryDialog extends DialogFragment {
         return builder.create();
     }
 
+    // Показываем клавиатуру сразу, чтобы пользователь вводил название нового словаря
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

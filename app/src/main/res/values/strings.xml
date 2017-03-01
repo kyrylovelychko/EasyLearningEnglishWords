@@ -1,34 +1,59 @@
 <resources>
     <string name="app_name">EasyLearningEnglishWords</string>
 
-    <string name="english_word">Eng: </string>
-    <string name="russian_word">Rus:</string>
-    <string name="invalid_query_uri">Invalid QUERY URI</string>
-    <string name="invalid_insert_uri">Invalid INSERT URI</string>
-    <string name="invalid_update_uri">Invalid UPDATE URI</string>
-    <string name="invalid_delete_uri">Invalid DELETE URI</string>
-    <string name="insert_failed">Insert into table Words failed</string>
-    <string name="en">Англ</string>
-    <string name="ru">Рус</string>
+    <!--Layout-->
+    <string name="hint_en">Английский</string>
+    <string name="hint_ru">Русский</string>
+    <string name="english_word">Английский: </string>
+    <string name="russian_word">Русский:</string>
     <string name="dictionary">Словарь: </string>
-    <string name="add_new_word">Добавить слово</string>
-    <string name="delete_word">Удалить слово</string>
-    <string name="word_added">Новое слово добавлено</string>
-    <string name="word_not_added">Новое слово не добавлено</string>
-    <string name="word_updated">Слово обновлено</string>
-    <string name="word_not_updated">Слово не обновлено</string>
-    <string name="dictionary_added">Новый словарь добавлен</string>
-    <string name="dictionary_not_added">Новый словарь не добавлен</string>
-    <string name="confirm_delete_title">Подтвердить удаление</string>
-    <string name="confirm_delete_message">Вы хотите удалить слово?</string>
-    <string name="button_add">Добавить</string>
-    <string name="button_delete">Удалить</string>
-    <string name="button_cancel">Отмена</string>
-    <string name="add_dictionary">Имя нового словаря</string>
-    <string name="add_dictionary_request">Введите название нового словаря:</string>
-    <string name="dictionaryName">Название словаря</string>
-    <string name="button_ok">OK</string>
-    <string name="exept_empty_saved_instance_state">Empty savedInstanceState</string>
-    <string name="button_save">Сохранить</string>
+
+    <!--Menu-->
+    <string name="menu_add_new_word">Добавить слово</string>
+    <string name="menu_rename_dictionary">Переименовать словарь</string>
+    <string name="menu_delete_dictionary">Удалить словарь</string>
+
+    <!--Titles-->
+    <string name="title_my_dictionaries">Мои словари</string>
+    <string name="title_new_word">Новое слово</string>
+    <string name="title_editing_word">Редактирвание слова</string>
+    <string name="title_word_details">Слово</string>
+    <string name="title_confirm_delete_dictionary">Подтверждение удаление словаря</string>
+    <string name="title_confirm_delete">Подтвердить удаление</string>
+    <string name="title_add_dictionary_request">Введите название нового словаря:</string>
+    <string name="title_dictionary_name">Название словаря</string>
+
+    <!--Dialogs-->
+    <string name="dialog_choose_dictionary">Выберите словарь</string>
+    <string name="dialog_new_dictionary">Новый словарь</string>
+    <string name="dialog_message_delete_dictionary">Внимание! Словарь и все слова этого словаря будут удалены!</string>
+    <string name="dialog_message_confirm_delete">Вы хотите удалить слово?</string>
+    <string name="dialog_button_add">Добавить</string>
+    <string name="dialog_button_delete">Удалить</string>
+    <string name="dialog_button_ok">OK</string>
+    <string name="dialog_button_cancel">Отмена</string>
+    <string name="dialog_button_save">Сохранить</string>
+
+    <!--SnackBar-->
+    <string name="snack_dictionary_name_not_changed">Название словаря не изменилось</string>
+    <string name="snack_dictionary_name_changed">Название словаря обновлено</string>
+    <string name="snack_dictionary_added">Новый словарь добавлен</string>
+    <string name="snack_dictionary_not_added">Новый словарь не добавлен</string>
+    <string name="snack_dictionary_has_existed">Словарь с таким названием уже есть</string>
+    <string name="snack_word_added">Новое слово добавлено</string>
+    <string name="snack_word_not_added">Новое слово не добавлено</string>
+    <string name="snack_word_updated">Слово обновлено</string>
+    <string name="snack_word_not_updated">Слово не обновлено</string>
+
+    <!--Exceptions-->
+    <string name="exc_invalid_query_uri">Invalid QUERY URI </string>
+    <string name="exc_invalid_insert_uri">Invalid INSERT URI </string>
+    <string name="exc_invalid_update_uri">Invalid UPDATE URI </string>
+    <string name="exc_invalid_delete_uri">Invalid DELETE URI </string>
+    <string name="exc_insert_into_words_failed">Вставка в таблицу Words не произошла</string>
+    <string name="exc_insert_into_dictionaries_failed">Вставка в таблицу Dictionaries не произошла</string>
+    <string name="exc_empty_saved_instance_state">Empty savedInstanceState</string>
+
+
 
 </resources>

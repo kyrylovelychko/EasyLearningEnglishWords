@@ -29,18 +29,19 @@ public class DictionariesListFragment extends Fragment
 
 
     public interface DictionariesListFragmentListener {
-        //Вызывается при выборе словаря
+        //Вызывается при выборе словаря в списке словарей
         void onSelectDictionary(Uri dictionaryUri);
 
         //Вызывается при нажатии кнопки добавления нового словаря
         void onAddDictionary();
 
-        void onAddWord(int rIdFragmentFrom);
+        //Вызывается при нажатии кнопки добавления нового слова
+        void onAddWord(String dictionaryName);
     }
 
     private static final int DICTIONARIES_LIST_LOADER = 0;
 
-    // Сообщает MainActivity о выборе
+    // Сообщает MainActivity о действии во фрагменте
     private DictionariesListFragmentListener listener;
 
     private DictionariesListAdapter dictionariesListAdapter;
@@ -51,16 +52,13 @@ public class DictionariesListFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        setHasOptionsMenu(true);// У фрагмента есть команды меню
+        setHasOptionsMenu(true);
 
-        // Заполнение GUI и получение ссылки на RecyclerView
         View view = inflater.inflate(R.layout.fragment_dictionaries_list, container, false);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.dictionariesRecyclerView);
 
-        // recyclerView выводит элементы в вертикальном списке
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
 
-        // создание адаптера recyclerView и слушателя щелчков на элементах
         dictionariesListAdapter = new DictionariesListAdapter(
                 new DictionariesListAdapter.DictionariesListClickListener() {
                     @Override
@@ -70,16 +68,12 @@ public class DictionariesListFragment extends Fragment
                 });
         recyclerView.setAdapter(dictionariesListAdapter);
 
-        // Присоединение ItemDecorator для вывода разделителей
         recyclerView.addItemDecoration(new ItemDevider(getContext()));
 
-        // Улучшает быстродействие, если размер макета RecyclerView не изменяется
         recyclerView.setHasFixedSize(true);
 
-        // Получение FloatingActionButton и настройка слушателя
         FloatingActionButton addDictionaryFAB = (FloatingActionButton) view.findViewById(R.id.addDictionaryFAB);
         addDictionaryFAB.setOnClickListener(new View.OnClickListener() {
-            // Отображение AddEditWordFragment при касании FAB
             @Override
             public void onClick(View v) {
                 listener.onAddDictionary();
@@ -92,7 +86,7 @@ public class DictionariesListFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle("Мои словари");
+        getActivity().setTitle(R.string.title_my_dictionaries);
     }
 
     // Присваивание DictionariesListFragment при присоединении фрагмента
@@ -121,30 +115,30 @@ public class DictionariesListFragment extends Fragment
         dictionariesListAdapter.notifyDataSetChanged();
     }
 
-    // Вызывается LoaderManager для создания Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        // Создание CursorLoader на основании аргумента id
         switch (id) {
             case DICTIONARIES_LIST_LOADER:
                 return new CursorLoader(getActivity(),
-                        DatabaseDescription.Dictionaries.CONTENT_URI,// Uri таблицы словарей
-                        null,// все столбцы
-                        null,// все записи
-                        null,// без аргументов
-                        DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE + " COLLATE NOCASE DESC");// сортировка
+                        DatabaseDescription.Dictionaries.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE + " COLLATE NOCASE DESC");
             default:
                 return null;
         }
     }
 
-    // Вызывается LoaderManager при завершении загрузки
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        dictionariesListAdapter.swapCursor(data);
+        switch (loader.getId()) {
+            case DICTIONARIES_LIST_LOADER:
+                dictionariesListAdapter.swapCursor(data);
+                break;
+        }
     }
 
-    // Вызывается LoaderManager при сбросе Loader
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         dictionariesListAdapter.swapCursor(null);
@@ -158,9 +152,9 @@ public class DictionariesListFragment extends Fragment
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_add_word:
-                listener.onAddWord(R.id.fragmentContainer);
+                listener.onAddWord(null);
                 return true;
         }
         return super.onOptionsItemSelected(item);

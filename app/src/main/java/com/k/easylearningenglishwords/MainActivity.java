@@ -32,8 +32,7 @@ public class MainActivity
         WordDetailsFragment.WordDetailsFragmentListener,
         AddEditWordFragment.AddEditWordFragmentListener,
         DeleteWordDialog.DeleteWordDialogListener,
-        RenameDictionaryDialog.RenameDictionaryDialoglistener
-{
+        RenameDictionaryDialog.RenameDictionaryDialogListener {
 
     // Ключ для сохранения Uri словаря в переданном объекте Bundle
     public static final String DICTIONARY_URI = "dictionary_uri";
@@ -51,14 +50,13 @@ public class MainActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setTitle("Мои словари");
+        setTitle(R.string.title_my_dictionaries);
 
         checkDB();
 
+        //  Вывод фрагмента со списком словарей
         if (savedInstanceState == null) {
             dictionariesListFragment = new DictionariesListFragment();
-
-            // Добавление фрагмента в FrameLayout
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.fragmentContainer, dictionariesListFragment);
             transaction.commit();
@@ -67,74 +65,30 @@ public class MainActivity
 
     @Override
     public void onAddDictionary() {
+        // Вызов диалога добавления нового словаря
         new AddDictionaryDialog().show(getSupportFragmentManager(), "add dictionary");
-//        DialogFragment dialog = new DialogFragment(){
-//            EditText newDictionaryName;
-//            private CoordinatorLayout coordinatorLayout;
-//
-//            @NonNull
-//            @Override
-//            public Dialog onCreateDialog(Bundle savedInstanceState) {
-//                coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinatorLayout);
-//
-//                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//                View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_add_dictionary, null);
-//                builder.setTitle(R.string.add_dictionary_request)
-//                        .setView(view)
-//                        .setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//
-//                            }
-//                        })
-//                        .setPositiveButton(R.string.button_add, new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                newDictionaryName = (EditText) getView().findViewById(R.id.dictionaryNameEditText);
-//
-//                                ContentValues cv = new ContentValues();
-//                                cv.put(DatabaseDescription.Dictionaries.COLUMN_NAME, newDictionaryName.getText().toString());
-//                                cv.put(DatabaseDescription.Dictionaries.COLUMN_EDIT_TIME, new Date().getTime());
-//                                Uri newDictionaryUri = getContentResolver().insert(DatabaseDescription.Dictionaries.CONTENT_URI, cv);
-//                                if (newDictionaryUri != null){
-//                                    Snackbar.make(coordinatorLayout, R.string.dictionary_added, Snackbar.LENGTH_LONG).show();
-//                                } else {
-//                                    Snackbar.make(coordinatorLayout, R.string.dictionary_not_added, Snackbar.LENGTH_LONG).show();
-//                                }
-//                            }
-//                        })
-//                        .setCancelable(false);
-//                return builder.create();
-//            }
-//
-//            @Override
-//            public void onActivityCreated(Bundle savedInstanceState) {
-//                super.onActivityCreated(savedInstanceState);
-//                getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-//            }
-//        };
-//        dialog.show(getSupportFragmentManager(), "add dictionary");
-//        dictionariesListFragment.updateDictionariesList();
     }
+
 
     @Override
     public void onSelectDictionary(Uri dictionaryUri) {
+        // Вывод фрагмента со словами конкретного словаря
+        // Uri словаря передаем параметром
         DictionaryFragment dictionaryFragment = new DictionaryFragment();
-
-        // Передача URI словаря в аргументе dictionaryFragment
         Bundle arguments = new Bundle();
         arguments.putParcelable(DICTIONARY_URI, dictionaryUri);
         dictionaryFragment.setArguments(arguments);
 
-        // Использование FragmentTransaction для отображения
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragmentContainer, dictionaryFragment);
         transaction.addToBackStack("MyStack");
-        transaction.commit(); // Приводит к отображению DictionaryFragment
+        transaction.commit();
     }
 
     @Override
     public void onRenameDictionary(String dictionaryName) {
+        // Вызов диалога переименования словаря
+        // Имя словаря передаем параметром
         RenameDictionaryDialog dialog = new RenameDictionaryDialog();
         Bundle arguments = new Bundle();
         arguments.putString(DICTIONARY_NAME, dictionaryName);
@@ -144,6 +98,8 @@ public class MainActivity
 
     @Override
     public void onDeleteDictionary(String dictionaryName) {
+        // Вызов диалога для подтверждения удаления словаря. Удаление словаря
+        // Имя словаря передаем параметром
         DeleteDictionaryDialog dialog = new DeleteDictionaryDialog();
         Bundle arguments = new Bundle();
         arguments.putString(DICTIONARY_NAME, dictionaryName);
@@ -152,20 +108,20 @@ public class MainActivity
     }
 
     @Override
-    public void onAddWord(int rIdFragmentFrom) {
-        displayAddEditWordFragment(null, rIdFragmentFrom);
+    public void onAddWord(String dictionaryName) {
+        // Вывод фрагмента добавления/редактирования слова
+        displayAddEditWordFragment(null, dictionaryName);
     }
 
     @Override
     public void onSelectWord(Uri wordUri) {
+        // Вывод фрагмента с деталями конкретного слова
+        // Uri слова передаем параметром
         WordDetailsFragment wordDetailsFragment = new WordDetailsFragment();
-
-        // Передача URI словаря в аргументе wordDetailsFragment
         Bundle arguments = new Bundle();
         arguments.putParcelable(WORD_URI, wordUri);
         wordDetailsFragment.setArguments(arguments);
 
-        // Использование FragmentTransaction для отображения
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragmentContainer, wordDetailsFragment);
         transaction.addToBackStack("MyStack");
@@ -173,8 +129,9 @@ public class MainActivity
     }
 
     @Override
-    public void onEditWord(Uri wordUri, int rIdFragmentFrom) {
-        displayAddEditWordFragment(wordUri, rIdFragmentFrom);
+    public void onEditWord(Uri wordUri) {
+        // Вывод фрагмента добавления/редактирования слова
+        displayAddEditWordFragment(wordUri, null);
     }
 
     @Override
@@ -186,41 +143,31 @@ public class MainActivity
         dialog.show(getSupportFragmentManager(), "delete word");
     }
 
-    private void displayAddEditWordFragment(Uri wordUri, int rIdFragmentFrom) {
+    private void displayAddEditWordFragment(Uri wordUri, String dictionaryName) {
+        // Вывод фрагмента добавления/редактирования слова
+        // Если редактирование слова - Uri слова передаем параметром
+        // Если добавление нового слова - Uri будет содержать null
         AddEditWordFragment addEditWordFragment = new AddEditWordFragment();
-
-        // Передача URI словаря в аргументе addEditWordFragment
         Bundle arguments = new Bundle();
         arguments.putParcelable(WORD_URI, wordUri);
+        arguments.putString(DICTIONARY_NAME, dictionaryName);
         addEditWordFragment.setArguments(arguments);
 
-        // Использование FragmentTransaction для отображения
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(rIdFragmentFrom, addEditWordFragment);
+        transaction.replace(R.id.fragmentContainer, addEditWordFragment);
         transaction.addToBackStack("MyStack");
         transaction.commit();
     }
 
     @Override
     public void onAddEditWordCompleted(Uri wordUri, String dictionaryName) {
-//        if (addingNewWord){
-//            updateDateOfChangeDictionary(dictionaryName);
-//        } else {
-//            updateDateOfChangeWord(wordUri);
         updateDateOfChangeDictionary(dictionaryName);
-//        }
-        getContentResolver().notifyChange(Dictionaries.CONTENT_URI, null);
     }
 
-//    public void updateDateOfChangeWord(Uri wordUri){
-//        String updateSQL = "UPDATE " + Words.TABLE_NAME +
-//                " SET " + Words.COLUMN_DATE_OF_CHANGE + "=" + new Date().getTime() / 1000 +
-//                " WHERE " + Words._ID + "=" + wordUri.getLastPathSegment();
-//        new DatabaseHelper(this).getWritableDatabase().execSQL(updateSQL);
-//    }
-
+    // Обновление даты последнего изменения для словаря в таблице словарвей
     @Override
     public void updateDateOfChangeDictionary(String dictionaryName) {
+        // Получаем _ID словаря по имени
         Cursor cursor = new DatabaseHelper(this).getReadableDatabase().query(
                 Dictionaries.TABLE_NAME,
                 null,
@@ -230,24 +177,23 @@ public class MainActivity
                 null,
                 null);
         if (cursor.getCount() > 0) {
+            // Обновляем дату последнего изменения словаря по Uri словаря
             cursor.moveToFirst();
             int id = cursor.getInt(cursor.getColumnIndex(Dictionaries._ID));
             Uri dictionaryUri = Dictionaries.buildDictionariesUri(id);
             ContentValues cv = new ContentValues();
-            cv.put(Dictionaries._ID, id);
-            cv.put(Dictionaries.COLUMN_NAME, dictionaryName);
+//            cv.put(Dictionaries._ID, id);
+//            cv.put(Dictionaries.COLUMN_NAME, dictionaryName);
             cv.put(Dictionaries.COLUMN_DATE_OF_CHANGE, new Date().getTime() / 1000);
-            int updatedRows = getContentResolver().update(dictionaryUri, cv, null, null);
+            int updatedRows = getContentResolver().update(
+                    dictionaryUri,
+                    cv,
+                    null,
+                    null);
             if (updatedRows < 0) {
-                throw new SQLException(""+ R.string.invalid_update_uri + dictionaryUri);
+                throw new SQLException("" + R.string.exc_invalid_update_uri + dictionaryUri);
             }
         }
-
-
-//        String updateSQL = "UPDATE " + Dictionaries.TABLE_NAME +
-//                " SET " + Dictionaries.COLUMN_DATE_OF_CHANGE + "=" + new Date().getTime() / 1000 +
-//                " WHERE " + Dictionaries.COLUMN_NAME + "='" + dictionaryName + "'";
-//        new DatabaseHelper(this).getWritableDatabase().execSQL(updateSQL);
     }
 
     private void checkDB() {

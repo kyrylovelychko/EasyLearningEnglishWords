@@ -17,12 +17,6 @@ public class DatabaseDescription {
     public static final class Dictionaries implements BaseColumns {
         public static final String TABLE_NAME = "dictionaries";
 
-        public static final String[] default_projection = {
-                Dictionaries._ID,
-                Dictionaries.COLUMN_NAME,
-                Dictionaries.COLUMN_DATE_OF_CHANGE
-        };
-
         // Объект Uri для таблицы dictionaries
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
 
@@ -44,15 +38,6 @@ public class DatabaseDescription {
         public static final int FROM_EN_TO_RU_FALSE = 0;
 
         public static final String TABLE_NAME = "words";
-
-        public static final String[] default_projection = {
-                Words._ID,
-                Words.COLUMN_EN,
-                Words.COLUMN_RU,
-                Words.COLUMN_FROM_EN_TO_RU,
-                Words.COLUMN_DICTIONARY,
-                Words.COLUMN_DATE_OF_CHANGE
-        };
 
         // Объект Uri для таблицы words
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();

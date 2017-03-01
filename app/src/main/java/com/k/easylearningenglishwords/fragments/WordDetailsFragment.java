@@ -22,61 +22,56 @@ import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.data.DatabaseDescription.Words;
 
 public class WordDetailsFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<Cursor>{
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public interface WordDetailsFragmentListener {
 
         //Вызывается при редактировании слова
-        void onEditWord(Uri wordUri, int rIdFragmentFrom);
+        void onEditWord(Uri wordUri);
 
         //Вызывается при удалении слова
         void onDeleteWord(Uri wordUri);
     }
 
-    // Идентифицирует Loader
     private static final int WORD_LOADER = 0;
 
-    private WordDetailsFragmentListener listener;// MainActivity
-    private Uri wordUri;// Uri выбранного слова
+    // Сообщает MainActivity о действии во фрагменте
+    private WordDetailsFragmentListener listener;
+    // Uri выбранного слова
+    private Uri wordUri;
 
     private TextView enWord;
     private TextView ruWord;
     private TextView dictionary;
 
     public WordDetailsFragment() {
-        // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        setHasOptionsMenu(true);// У фрагмента есть команды меню
+        setHasOptionsMenu(true);
 
-        // Заполнение макета WordDetailsFragment
         View view = inflater.inflate(R.layout.fragment_word_details, container, false);
 
-        // Получение компонентов EditTexts
         enWord = (TextView) view.findViewById(R.id.en_word);
         ruWord = (TextView) view.findViewById(R.id.ru_word);
         dictionary = (TextView) view.findViewById(R.id.dictionary);
-
-        // Получение объекта Bundle с аргументами и извлечение URI
-        Bundle arguments = getArguments();
-
-        if (arguments != null){
-            wordUri = arguments.getParcelable(MainActivity.WORD_URI);
-            getLoaderManager().initLoader(WORD_LOADER, null, this);
-        }
 
         FloatingActionButton editWordFAB = (FloatingActionButton) view.findViewById(R.id.editWordFAB);
         editWordFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onEditWord(wordUri, R.id.fragmentContainer);
+                listener.onEditWord(wordUri);
             }
         });
+
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            wordUri = arguments.getParcelable(MainActivity.WORD_URI);
+            getLoaderManager().initLoader(WORD_LOADER, null, this);
+        }
 
         return view;
     }
@@ -84,7 +79,7 @@ public class WordDetailsFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle("Слово");
+        getActivity().setTitle(R.string.title_word_details);
     }
 
     @Override
@@ -99,32 +94,24 @@ public class WordDetailsFragment extends Fragment
         listener = null;
     }
 
-    // Вызывается LoaderManager для создания Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        // Создание CursorLoader на основании аргумента id
-        CursorLoader cursorLoader;
-
-        switch (id){
+        switch (id) {
             case WORD_LOADER:
-                cursorLoader = new CursorLoader(getActivity(),
+                return new CursorLoader(getActivity(),
                         wordUri,// Uri отображаемого контакта
                         null,// Все столбцы
                         null,// Все записи
                         null,// Без аргументов
                         null);// Порядок сортировки
-                break;
             default:
-                cursorLoader = null;
-                break;
+                return null;
         }
-
-        return cursorLoader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data != null && data.moveToFirst()){
+        if (data != null && data.moveToFirst()) {
             enWord.setText(data.getString(data.getColumnIndex(Words.COLUMN_EN)));
             ruWord.setText(data.getString(data.getColumnIndex(Words.COLUMN_RU)));
             dictionary.setText(data.getString(data.getColumnIndex(Words.COLUMN_DICTIONARY)));
@@ -144,7 +131,7 @@ public class WordDetailsFragment extends Fragment
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_delete_word:
                 listener.onDeleteWord(wordUri);
                 return true;

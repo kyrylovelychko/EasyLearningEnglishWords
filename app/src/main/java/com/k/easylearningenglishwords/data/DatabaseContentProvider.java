@@ -69,7 +69,7 @@ public class DatabaseContentProvider extends ContentProvider {
                 queryBuilder.setTables(Words.TABLE_NAME);
                 break;
             default:
-                throw new IllegalArgumentException(getContext().getString(R.string.invalid_query_uri) + uri);
+                throw new IllegalArgumentException(getContext().getString(R.string.exc_invalid_query_uri) + uri);
         }
 
         Cursor cursor = queryBuilder.query(dbHelper.getReadableDatabase(),
@@ -100,7 +100,7 @@ public class DatabaseContentProvider extends ContentProvider {
 
                     getContext().getContentResolver().notifyChange(uri, null);
                 } else {
-                    throw new SQLException(getContext().getString(R.string.insert_failed) + uri);
+                    throw new SQLException(getContext().getString(R.string.exc_insert_into_words_failed) + uri);
                 }
                 break;
             case DICTIONARIES:
@@ -110,11 +110,11 @@ public class DatabaseContentProvider extends ContentProvider {
 
                     getContext().getContentResolver().notifyChange(uri, null);
                 } else {
-                    throw new SQLException(getContext().getString(R.string.insert_failed) + uri);
+                    throw new SQLException(getContext().getString(R.string.exc_insert_into_dictionaries_failed) + uri);
                 }
                 break;
             default:
-                throw new IllegalArgumentException(getContext().getString(R.string.invalid_insert_uri) + uri);
+                throw new IllegalArgumentException(getContext().getString(R.string.exc_invalid_insert_uri) + uri);
         }
 
         return newUri;
@@ -146,7 +146,7 @@ public class DatabaseContentProvider extends ContentProvider {
                         selectionArgs);
                 break;
             default:
-                throw new IllegalArgumentException(getContext().getString(R.string.invalid_delete_uri) + uri);
+                throw new IllegalArgumentException(getContext().getString(R.string.exc_invalid_delete_uri) + uri);
         }
 
         if (numberOfRowsDeleted != 0){
@@ -158,7 +158,7 @@ public class DatabaseContentProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        int numberOfRowsUpdated; // 1, если обновление успешно; 0 при неудаче
+        int numberOfRowsUpdated;
         String id;
 
         switch (uriMatcher.match(uri)) {
@@ -177,7 +177,7 @@ public class DatabaseContentProvider extends ContentProvider {
                         values, Dictionaries._ID + "=" + id, selectionArgs);
                 break;
             default:
-                throw new IllegalArgumentException(getContext().getString(R.string.invalid_update_uri) + uri);
+                throw new IllegalArgumentException(getContext().getString(R.string.exc_invalid_update_uri) + uri);
         }
 
         if (numberOfRowsUpdated != 0){
