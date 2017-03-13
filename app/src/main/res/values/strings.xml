@@ -45,6 +45,7 @@
     <string name="snack_word_not_added">Новое слово не добавлено</string>
     <string name="snack_word_updated">Слово обновлено</string>
     <string name="snack_word_not_updated">Слово не обновлено</string>
+    <string name="snack_choose_dictionary">Выберите словарь для сохранения слова</string>
 
     <!--Exceptions-->
     <string name="exc_invalid_query_uri">Invalid QUERY URI </string>

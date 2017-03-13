@@ -1,4 +1,4 @@
-package com.k.easylearningenglishwords.data.network;
+package com.k.easylearningenglishwords.data.network.YandexTranslate;
 
 
 import com.google.gson.annotations.Expose;
@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class TranslateResponse {
+public class YandexTranslateResponse {
 
     @SerializedName("code")
     @Expose

@@ -28,12 +28,16 @@ import android.widget.TextView;
 import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Dictionaries;
 import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Words;
-import com.k.easylearningenglishwords.data.network.AppRetrofit;
-import com.k.easylearningenglishwords.data.network.TranslateResponse;
+import com.k.easylearningenglishwords.data.network.YandexDictionary.YandexDictionaryResponse;
+import com.k.easylearningenglishwords.data.network.YandexDictionary.YandexDictionaryRetrofit;
+import com.k.easylearningenglishwords.data.network.YandexTranslate.YandexTranslateResponse;
+import com.k.easylearningenglishwords.data.network.YandexTranslate.YandexTranslateRetrofit;
 import com.k.easylearningenglishwords.ui.activities.MainActivity;
 import com.k.easylearningenglishwords.ui.fragments.dialogs.AddDictionaryDialog;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -101,15 +105,15 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         chooseDictionaryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chooseDictionaryDialog();
+                chooseDictionaryDialog(false);
             }
         });
         translateToEn = (Button) view.findViewById(R.id.translateToEnBtn);
         translateToRu = (Button) view.findViewById(R.id.translateToRuBtn);
         translateToEn.setVisibility(View.GONE);
-        translateToEn.setOnClickListener(onClickTranslate);
+        translateToEn.setOnClickListener(getOnClickTranslate());
         translateToRu.setVisibility(View.GONE);
-        translateToRu.setOnClickListener(onClickTranslate);
+        translateToRu.setOnClickListener(getOnClickTranslate());
 
 
         saveWordFAB = (FloatingActionButton) view.findViewById(R.id.saveWordFAB);
@@ -118,8 +122,12 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
             public void onClick(View v) {
                 ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).
                         hideSoftInputFromWindow(getView().getWindowToken(), 0);
-                saveWord();// Сохранение слова в базе данных
-                getFragmentManager().popBackStack();
+                if (dictionary.getText().equals("")) {
+                    chooseDictionaryDialog(true);
+                } else {
+                    saveWord();// Сохранение слова в базе данных
+                    getFragmentManager().popBackStack();
+                }
             }
         });
         updateSaveButtonFAB();
@@ -153,6 +161,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
             // словарей - этот список будем предлагать на выбор пользователю
             getLoaderManager().initLoader(DICTIONARIES_LOADER, null, this);
         }
+        enTextInputLayout.getEditText().setText("table");
     }
 
     @Override
@@ -206,7 +215,8 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                     !ruTextInputLayout.getEditText().getText().toString().equals("")) {
                 FROM_EN_TO_RU = Words.FROM_EN_TO_RU_FALSE;
                 translateToEn.setVisibility(View.VISIBLE);
-            } else {
+            } else if (enTextInputLayout.getEditText().getText().toString().equals("") &&
+                    ruTextInputLayout.getEditText().getText().toString().equals("")) {
                 translateToEn.setVisibility(View.GONE);
                 translateToRu.setVisibility(View.GONE);
             }
@@ -340,7 +350,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
     }
 
     // Диалог выбора словаря
-    private void chooseDictionaryDialog() {
+    private void chooseDictionaryDialog(final boolean saveWordAfterChoosing) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.dialog_choose_dictionary)
                 .setSingleChoiceItems(dictionariesNameArray, currentPositionInArray, null)
@@ -353,6 +363,10 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                         dictionaryName = dictionariesNameArray[currentPositionInArray];
                         dictionary.setText(dictionaryName);
                         dialog.cancel();
+                        if (saveWordAfterChoosing == true) {
+                            saveWord();// Сохранение слова в базе данных
+                            getFragmentManager().popBackStack();
+                        }
                     }
                 })
                 .setNeutralButton(R.string.dialog_new_dictionary, new DialogInterface.OnClickListener() {
@@ -371,51 +385,118 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         builder.create().show();
     }
 
-    private View.OnClickListener onClickTranslate = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            String text = null;
-            String lang = null;
-            switch (FROM_EN_TO_RU) {
-                case Words.FROM_EN_TO_RU_TRUE:
-                    text = enTextInputLayout.getEditText().getText().toString();
-                    lang = "en-ru";
-                    break;
-                case Words.FROM_EN_TO_RU_FALSE:
-                    text = ruTextInputLayout.getEditText().getText().toString();
-                    lang = "ru-en";
-                    break;
+    private View.OnClickListener getOnClickTranslate() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = null;
+                String lang = null;
+                switch (FROM_EN_TO_RU) {
+                    case Words.FROM_EN_TO_RU_TRUE:
+                        text = enTextInputLayout.getEditText().getText().toString().trim();
+                        lang = "en-ru";
+                        break;
+                    case Words.FROM_EN_TO_RU_FALSE:
+                        text = ruTextInputLayout.getEditText().getText().toString().trim();
+                        lang = "ru-en";
+                        break;
+                }
+                if (text.contains(" ")) {
+                    tryToTranslateText(text, lang);
+                } else {
+                    tryToTranslateWord(text, lang);
+                }
             }
-            AppRetrofit.translateText(text, lang).enqueue(new Callback<TranslateResponse>() {
-                @Override
-                public void onResponse(Call<TranslateResponse> call, final Response<TranslateResponse> response) {
-                    if (response.code() == 200) {
-                        new AlertDialog.Builder(getContext())
-                                .setTitle(R.string.title_choose_translate)
-                                .setSingleChoiceItems(response.body().text.toArray(new String[response.body().text.size()]), -1, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        switch (FROM_EN_TO_RU) {
-                                            case Words.FROM_EN_TO_RU_TRUE:
-                                                ruTextInputLayout.getEditText().setText(response.body().text.get(which).trim());
-                                                break;
-                                            case Words.FROM_EN_TO_RU_FALSE:
-                                                enTextInputLayout.getEditText().setText(response.body().text.get(which).trim());
-                                                break;
-                                        }
-                                    }
-                                })
-                                .create().show();
+        };
+    }
+
+    private void tryToTranslateText(String text, String lang) {
+        YandexTranslateRetrofit.translateText(text, lang).enqueue(new Callback<YandexTranslateResponse>() {
+            @Override
+            public void onResponse(Call<YandexTranslateResponse> call, final Response<YandexTranslateResponse> response) {
+                if (response.code() == 200) {
+                    switch (FROM_EN_TO_RU) {
+                        case Words.FROM_EN_TO_RU_TRUE:
+                            ruTextInputLayout.getEditText().setText(response.body().text.get(0).trim());
+                            break;
+                        case Words.FROM_EN_TO_RU_FALSE:
+                            enTextInputLayout.getEditText().setText(response.body().text.get(0).trim());
+                            break;
                     }
                 }
+            }
 
-                @Override
-                public void onFailure(Call<TranslateResponse> call, Throwable t) {
+            @Override
+            public void onFailure(Call<YandexTranslateResponse> call, Throwable t) {
 
+            }
+        });
+    }
+
+    private void tryToTranslateWord(final String text, final String lang) {
+        YandexDictionaryRetrofit.translateWord(text, lang).enqueue(new Callback<YandexDictionaryResponse>() {
+            @Override
+            public void onResponse(Call<YandexDictionaryResponse> call, final Response<YandexDictionaryResponse> response) {
+                if (response.code() == 200) {
+                    final ArrayList<String> arrayList = getArrayListWithResultOfTranslate(response);
+
+                    if (arrayList.size() > 0) {
+                        createDialogForChoosingTranslate(arrayList);
+                    } else {
+                        tryToTranslateText(text, lang);
+                    }
                 }
-            });
+            }
+
+            @Override
+            public void onFailure(Call<YandexDictionaryResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private ArrayList<String> getArrayListWithResultOfTranslate(Response<YandexDictionaryResponse> response) {
+        ArrayList<String> arrayList = new ArrayList<>();
+        List<YandexDictionaryResponse.Def> responseDef = response.body().def;
+        for (YandexDictionaryResponse.Def def : responseDef) {
+            for (YandexDictionaryResponse.Tr tr : def.tr) {
+                if (arrayList.size() < 8) {
+                    arrayList.add(tr.text.toString());
+                } else {
+                    break;
+                }
+            }
         }
-    };
+        return arrayList;
+    }
+
+    private void createDialogForChoosingTranslate(final ArrayList<String> arrayList) {
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.title_choose_translate)
+                .setSingleChoiceItems(arrayList.toArray(new String[arrayList.size()]), 0, null)
+                .setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        int checkedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                        switch (FROM_EN_TO_RU) {
+                            case Words.FROM_EN_TO_RU_TRUE:
+                                ruTextInputLayout.getEditText().setText(arrayList.get(checkedPosition).trim());
+                                break;
+                            case Words.FROM_EN_TO_RU_FALSE:
+                                enTextInputLayout.getEditText().setText(arrayList.get(checkedPosition).trim());
+                                break;
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
+    }
 
 }

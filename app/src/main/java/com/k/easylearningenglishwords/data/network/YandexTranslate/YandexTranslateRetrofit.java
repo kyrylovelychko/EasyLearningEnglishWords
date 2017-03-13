@@ -1,4 +1,4 @@
-package com.k.easylearningenglishwords.data.network;
+package com.k.easylearningenglishwords.data.network.YandexTranslate;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
-public class AppRetrofit {
+public class YandexTranslateRetrofit {
 
     private static final String API_KEY = "trnsl.1.1.20170312T185630Z.999885ba056dff88.c6b112b4cab8c824c4616ba1deb5f3e8ca6c1f1e";
     private static final String BASE_URL = "https://translate.yandex.net/api/";
@@ -15,9 +15,9 @@ public class AppRetrofit {
 
     interface ApiInterface {
         @POST("v1.5/tr.json/translate")
-        Call<TranslateResponse> translateText(@Query("key") String key,
-                                              @Query("text") String text,
-                                              @Query("lang") String lang);
+        Call<YandexTranslateResponse> translateText(@Query("key") String key,
+                                                    @Query("text") String text,
+                                                    @Query("lang") String lang);
     }
 
     static {
@@ -33,7 +33,7 @@ public class AppRetrofit {
         apiInterface = retrofit.create(ApiInterface.class);
     }
 
-    public static Call<TranslateResponse> translateText(String text, String lang) {
+    public static Call<YandexTranslateResponse> translateText(String text, String lang) {
         return apiInterface.translateText(API_KEY, text, lang);
     }
 
