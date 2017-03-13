@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.data.DatabaseDescription.Dictionaries;
+import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Dictionaries;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

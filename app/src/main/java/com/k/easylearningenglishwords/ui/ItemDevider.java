@@ -1,4 +1,4 @@
-package com.k.easylearningenglishwords;
+package com.k.easylearningenglishwords.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

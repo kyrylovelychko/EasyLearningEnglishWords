@@ -1,4 +1,4 @@
-package com.k.easylearningenglishwords.fragments;
+package com.k.easylearningenglishwords.ui.fragments;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -17,9 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.k.easylearningenglishwords.MainActivity;
+import com.k.easylearningenglishwords.ui.activities.MainActivity;
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.data.DatabaseDescription.Words;
+import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Words;
 
 public class WordDetailsFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor> {

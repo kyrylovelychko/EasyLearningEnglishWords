@@ -1,4 +1,4 @@
-package com.k.easylearningenglishwords.fragments;
+package com.k.easylearningenglishwords.ui.fragments;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -25,13 +25,19 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.k.easylearningenglishwords.MainActivity;
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.data.DatabaseDescription.Dictionaries;
-import com.k.easylearningenglishwords.data.DatabaseDescription.Words;
-import com.k.easylearningenglishwords.fragments.dialogs.AddDictionaryDialog;
+import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Dictionaries;
+import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Words;
+import com.k.easylearningenglishwords.data.network.AppRetrofit;
+import com.k.easylearningenglishwords.data.network.TranslateResponse;
+import com.k.easylearningenglishwords.ui.activities.MainActivity;
+import com.k.easylearningenglishwords.ui.fragments.dialogs.AddDictionaryDialog;
 
 import java.util.Date;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddEditWordFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -61,6 +67,9 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
     private TextView dictionary;
     private String dictionaryName;
     private Button chooseDictionaryButton;
+    private Button translateToEn;
+    private Button translateToRu;
+
 
     String[] dictionariesNameArray;
     //private Cursor cursor;
@@ -95,6 +104,13 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                 chooseDictionaryDialog();
             }
         });
+        translateToEn = (Button) view.findViewById(R.id.translateToEnBtn);
+        translateToRu = (Button) view.findViewById(R.id.translateToRuBtn);
+        translateToEn.setVisibility(View.GONE);
+        translateToEn.setOnClickListener(onClickTranslate);
+        translateToRu.setVisibility(View.GONE);
+        translateToRu.setOnClickListener(onClickTranslate);
+
 
         saveWordFAB = (FloatingActionButton) view.findViewById(R.id.saveWordFAB);
         saveWordFAB.setOnClickListener(new View.OnClickListener() {
@@ -133,8 +149,8 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
             // потом все словари
             getLoaderManager().initLoader(WORD_LOADER, null, this);
         } else {
-            // Если добавление нового слова, то инициализируем Loader, который загрузит список всех словарей -
-            // Этот список будем предлагать на выбор пользователю
+            // Если добавление нового слова, то инициализируем Loader, который загрузит список всех
+            // словарей - этот список будем предлагать на выбор пользователю
             getLoaderManager().initLoader(DICTIONARIES_LOADER, null, this);
         }
     }
@@ -184,10 +200,17 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
             if (!enTextInputLayout.getEditText().getText().toString().equals("") &&
                     ruTextInputLayout.getEditText().getText().toString().equals("")) {
                 FROM_EN_TO_RU = Words.FROM_EN_TO_RU_TRUE;
+                translateToRu.setVisibility(View.VISIBLE);
+                translateToRu.setEnabled(true);
             } else if (enTextInputLayout.getEditText().getText().toString().equals("") &&
                     !ruTextInputLayout.getEditText().getText().toString().equals("")) {
                 FROM_EN_TO_RU = Words.FROM_EN_TO_RU_FALSE;
+                translateToEn.setVisibility(View.VISIBLE);
+            } else {
+                translateToEn.setVisibility(View.GONE);
+                translateToRu.setVisibility(View.GONE);
             }
+
         }
     };
 
@@ -347,4 +370,52 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
 
         builder.create().show();
     }
+
+    private View.OnClickListener onClickTranslate = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String text = null;
+            String lang = null;
+            switch (FROM_EN_TO_RU) {
+                case Words.FROM_EN_TO_RU_TRUE:
+                    text = enTextInputLayout.getEditText().getText().toString();
+                    lang = "en-ru";
+                    break;
+                case Words.FROM_EN_TO_RU_FALSE:
+                    text = ruTextInputLayout.getEditText().getText().toString();
+                    lang = "ru-en";
+                    break;
+            }
+            AppRetrofit.translateText(text, lang).enqueue(new Callback<TranslateResponse>() {
+                @Override
+                public void onResponse(Call<TranslateResponse> call, final Response<TranslateResponse> response) {
+                    if (response.code() == 200) {
+                        new AlertDialog.Builder(getContext())
+                                .setTitle(R.string.title_choose_translate)
+                                .setSingleChoiceItems(response.body().text.toArray(new String[response.body().text.size()]), -1, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        switch (FROM_EN_TO_RU) {
+                                            case Words.FROM_EN_TO_RU_TRUE:
+                                                ruTextInputLayout.getEditText().setText(response.body().text.get(which).trim());
+                                                break;
+                                            case Words.FROM_EN_TO_RU_FALSE:
+                                                enTextInputLayout.getEditText().setText(response.body().text.get(which).trim());
+                                                break;
+                                        }
+                                    }
+                                })
+                                .create().show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<TranslateResponse> call, Throwable t) {
+
+                }
+            });
+        }
+    };
+
 }

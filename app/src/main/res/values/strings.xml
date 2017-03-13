@@ -22,6 +22,7 @@
     <string name="title_confirm_delete">Подтвердить удаление</string>
     <string name="title_add_dictionary_request">Введите название нового словаря:</string>
     <string name="title_dictionary_name">Название словаря</string>
+    <string name="title_choose_translate">Выберите перевод</string>
 
     <!--Dialogs-->
     <string name="dialog_choose_dictionary">Выберите словарь</string>

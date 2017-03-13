@@ -1,4 +1,4 @@
-package com.k.easylearningenglishwords.data;
+package com.k.easylearningenglishwords.data.SQLite;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -10,8 +10,6 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.data.DatabaseDescription.Dictionaries;
-import com.k.easylearningenglishwords.data.DatabaseDescription.Words;
 
 public class DatabaseContentProvider extends ContentProvider {
 
@@ -29,16 +27,16 @@ public class DatabaseContentProvider extends ContentProvider {
 
     static {
         // Uri для словаря с заданным идентификатором
-        uriMatcher.addURI(DatabaseDescription.AUTHORITY, Dictionaries.TABLE_NAME + "/#", ONE_DICTIONARY);
+        uriMatcher.addURI(DatabaseDescription.AUTHORITY, DatabaseDescription.Dictionaries.TABLE_NAME + "/#", ONE_DICTIONARY);
 
         // Uri для всех записей таблицы словарей
-        uriMatcher.addURI(DatabaseDescription.AUTHORITY, Dictionaries.TABLE_NAME, DICTIONARIES);
+        uriMatcher.addURI(DatabaseDescription.AUTHORITY, DatabaseDescription.Dictionaries.TABLE_NAME, DICTIONARIES);
 
         // Uri для слова с заданным идентификатором
-        uriMatcher.addURI(DatabaseDescription.AUTHORITY, Words.TABLE_NAME + "/#", ONE_WORD);
+        uriMatcher.addURI(DatabaseDescription.AUTHORITY, DatabaseDescription.Words.TABLE_NAME + "/#", ONE_WORD);
 
         // Uri для всех записей таблицы слов
-        uriMatcher.addURI(DatabaseDescription.AUTHORITY, Words.TABLE_NAME, WORDS);
+        uriMatcher.addURI(DatabaseDescription.AUTHORITY, DatabaseDescription.Words.TABLE_NAME, WORDS);
     }
 
     @Override
@@ -55,18 +53,18 @@ public class DatabaseContentProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case ONE_DICTIONARY:
-                queryBuilder.setTables(Dictionaries.TABLE_NAME);
-                queryBuilder.appendWhere(Dictionaries._ID + "=" + uri.getLastPathSegment());
+                queryBuilder.setTables(DatabaseDescription.Dictionaries.TABLE_NAME);
+                queryBuilder.appendWhere(DatabaseDescription.Dictionaries._ID + "=" + uri.getLastPathSegment());
                 break;
             case DICTIONARIES:
-                queryBuilder.setTables(Dictionaries.TABLE_NAME);
+                queryBuilder.setTables(DatabaseDescription.Dictionaries.TABLE_NAME);
                 break;
             case ONE_WORD:
-                queryBuilder.setTables(Words.TABLE_NAME);
-                queryBuilder.appendWhere(Words._ID + "=" + uri.getLastPathSegment());
+                queryBuilder.setTables(DatabaseDescription.Words.TABLE_NAME);
+                queryBuilder.appendWhere(DatabaseDescription.Words._ID + "=" + uri.getLastPathSegment());
                 break;
             case WORDS:
-                queryBuilder.setTables(Words.TABLE_NAME);
+                queryBuilder.setTables(DatabaseDescription.Words.TABLE_NAME);
                 break;
             default:
                 throw new IllegalArgumentException(getContext().getString(R.string.exc_invalid_query_uri) + uri);
@@ -94,9 +92,9 @@ public class DatabaseContentProvider extends ContentProvider {
 
         switch (uriMatcher.match(uri)) {
             case WORDS:
-                rowId = dbHelper.getWritableDatabase().insert(Words.TABLE_NAME, null, values);
+                rowId = dbHelper.getWritableDatabase().insert(DatabaseDescription.Words.TABLE_NAME, null, values);
                 if (rowId > 0) {
-                    newUri = Words.buildWordsUri(rowId);
+                    newUri = DatabaseDescription.Words.buildWordsUri(rowId);
 
                     getContext().getContentResolver().notifyChange(uri, null);
                 } else {
@@ -104,9 +102,9 @@ public class DatabaseContentProvider extends ContentProvider {
                 }
                 break;
             case DICTIONARIES:
-                rowId = dbHelper.getWritableDatabase().insert(Dictionaries.TABLE_NAME, null, values);
+                rowId = dbHelper.getWritableDatabase().insert(DatabaseDescription.Dictionaries.TABLE_NAME, null, values);
                 if (rowId > 0) {
-                    newUri = Dictionaries.buildDictionariesUri(rowId);
+                    newUri = DatabaseDescription.Dictionaries.buildDictionariesUri(rowId);
 
                     getContext().getContentResolver().notifyChange(uri, null);
                 } else {
@@ -129,19 +127,19 @@ public class DatabaseContentProvider extends ContentProvider {
             case ONE_WORD:
                 id = uri.getLastPathSegment();
                 numberOfRowsDeleted = dbHelper.getWritableDatabase().delete(
-                        Words.TABLE_NAME,
-                        Words._ID + "=" + id,
+                        DatabaseDescription.Words.TABLE_NAME,
+                        DatabaseDescription.Words._ID + "=" + id,
                         selectionArgs);
                 break;
             case WORDS:
                 numberOfRowsDeleted = dbHelper.getWritableDatabase().delete(
-                        Words.TABLE_NAME,
+                        DatabaseDescription.Words.TABLE_NAME,
                         selection,
                         selectionArgs);
                 break;
             case DICTIONARIES:
                 numberOfRowsDeleted = dbHelper.getWritableDatabase().delete(
-                        Dictionaries.TABLE_NAME,
+                        DatabaseDescription.Dictionaries.TABLE_NAME,
                         selection,
                         selectionArgs);
                 break;
@@ -164,17 +162,17 @@ public class DatabaseContentProvider extends ContentProvider {
         switch (uriMatcher.match(uri)) {
             case ONE_WORD:
                 id = uri.getLastPathSegment();
-                numberOfRowsUpdated = dbHelper.getWritableDatabase().update(Words.TABLE_NAME,
-                        values, Words._ID + "=" + id, selectionArgs);
+                numberOfRowsUpdated = dbHelper.getWritableDatabase().update(DatabaseDescription.Words.TABLE_NAME,
+                        values, DatabaseDescription.Words._ID + "=" + id, selectionArgs);
                 break;
             case WORDS:
-                numberOfRowsUpdated = dbHelper.getWritableDatabase().update(Words.TABLE_NAME,
+                numberOfRowsUpdated = dbHelper.getWritableDatabase().update(DatabaseDescription.Words.TABLE_NAME,
                         values, selection, selectionArgs);
                 break;
             case ONE_DICTIONARY:
                 id = uri.getLastPathSegment();
-                numberOfRowsUpdated = dbHelper.getWritableDatabase().update(Dictionaries.TABLE_NAME,
-                        values, Dictionaries._ID + "=" + id, selectionArgs);
+                numberOfRowsUpdated = dbHelper.getWritableDatabase().update(DatabaseDescription.Dictionaries.TABLE_NAME,
+                        values, DatabaseDescription.Dictionaries._ID + "=" + id, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException(getContext().getString(R.string.exc_invalid_update_uri) + uri);

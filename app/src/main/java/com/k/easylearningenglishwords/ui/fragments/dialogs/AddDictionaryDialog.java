@@ -1,4 +1,4 @@
-package com.k.easylearningenglishwords.fragments.dialogs;
+package com.k.easylearningenglishwords.ui.fragments.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -16,9 +16,9 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.data.DatabaseDescription;
-import com.k.easylearningenglishwords.data.DatabaseDescription.Dictionaries;
-import com.k.easylearningenglishwords.data.DatabaseHelper;
+import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription;
+import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Dictionaries;
+import com.k.easylearningenglishwords.data.SQLite.DatabaseHelper;
 
 import java.util.Date;
 

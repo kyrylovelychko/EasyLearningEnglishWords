@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context="com.k.easylearningenglishwords.fragments.WordDetailsFragment">
+    tools:context="com.k.easylearningenglishwords.ui.fragments.WordDetailsFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

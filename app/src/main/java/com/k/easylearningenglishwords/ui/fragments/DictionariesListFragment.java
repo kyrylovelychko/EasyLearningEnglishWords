@@ -1,4 +1,4 @@
-package com.k.easylearningenglishwords.fragments;
+package com.k.easylearningenglishwords.ui.fragments;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -19,10 +19,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.k.easylearningenglishwords.ItemDevider;
+import com.k.easylearningenglishwords.ui.ItemDevider;
 import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.adapters.DictionariesListAdapter;
-import com.k.easylearningenglishwords.data.DatabaseDescription;
+import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription;
 
 public class DictionariesListFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor> {

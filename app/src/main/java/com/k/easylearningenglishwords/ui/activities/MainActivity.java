@@ -1,4 +1,4 @@
-package com.k.easylearningenglishwords;
+package com.k.easylearningenglishwords.ui.activities;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -11,17 +11,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
-import com.k.easylearningenglishwords.data.DatabaseDescription;
-import com.k.easylearningenglishwords.data.DatabaseDescription.Dictionaries;
-import com.k.easylearningenglishwords.data.DatabaseHelper;
-import com.k.easylearningenglishwords.fragments.AddEditWordFragment;
-import com.k.easylearningenglishwords.fragments.DictionariesListFragment;
-import com.k.easylearningenglishwords.fragments.DictionaryFragment;
-import com.k.easylearningenglishwords.fragments.WordDetailsFragment;
-import com.k.easylearningenglishwords.fragments.dialogs.AddDictionaryDialog;
-import com.k.easylearningenglishwords.fragments.dialogs.DeleteDictionaryDialog;
-import com.k.easylearningenglishwords.fragments.dialogs.DeleteWordDialog;
-import com.k.easylearningenglishwords.fragments.dialogs.RenameDictionaryDialog;
+import com.k.easylearningenglishwords.R;
+import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription;
+import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Dictionaries;
+import com.k.easylearningenglishwords.data.SQLite.DatabaseHelper;
+import com.k.easylearningenglishwords.ui.fragments.AddEditWordFragment;
+import com.k.easylearningenglishwords.ui.fragments.DictionariesListFragment;
+import com.k.easylearningenglishwords.ui.fragments.DictionaryFragment;
+import com.k.easylearningenglishwords.ui.fragments.WordDetailsFragment;
+import com.k.easylearningenglishwords.ui.fragments.dialogs.AddDictionaryDialog;
+import com.k.easylearningenglishwords.ui.fragments.dialogs.DeleteDictionaryDialog;
+import com.k.easylearningenglishwords.ui.fragments.dialogs.DeleteWordDialog;
+import com.k.easylearningenglishwords.ui.fragments.dialogs.RenameDictionaryDialog;
 
 import java.util.Date;
 

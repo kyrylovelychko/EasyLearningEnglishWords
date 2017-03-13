@@ -1,4 +1,4 @@
-package com.k.easylearningenglishwords.data;
+package com.k.easylearningenglishwords.data.SQLite;
 
 import android.content.ContentUris;
 import android.net.Uri;

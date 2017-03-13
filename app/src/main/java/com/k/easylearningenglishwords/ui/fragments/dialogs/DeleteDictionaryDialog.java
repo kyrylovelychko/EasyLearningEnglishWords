@@ -1,4 +1,4 @@
-package com.k.easylearningenglishwords.fragments.dialogs;
+package com.k.easylearningenglishwords.ui.fragments.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
-import com.k.easylearningenglishwords.MainActivity;
+import com.k.easylearningenglishwords.ui.activities.MainActivity;
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.data.DatabaseDescription.Dictionaries;
-import com.k.easylearningenglishwords.data.DatabaseDescription.Words;
+import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Dictionaries;
+import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Words;
 
 
 public class DeleteDictionaryDialog extends DialogFragment {
