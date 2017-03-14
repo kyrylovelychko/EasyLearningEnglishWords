@@ -2,16 +2,22 @@
     <string name="app_name">EasyLearningEnglishWords</string>
 
     <!--Layout-->
-    <string name="hint_en">Английский</string>
-    <string name="hint_ru">Русский</string>
+    <string name="hint_en">По-английски</string>
+    <string name="hint_ru">По-русски</string>
     <string name="english_word">Английский: </string>
-    <string name="russian_word">Русский:</string>
+    <string name="russian_word">Русский: </string>
     <string name="dictionary">Словарь: </string>
 
     <!--Menu-->
     <string name="menu_add_new_word">Добавить слово</string>
     <string name="menu_rename_dictionary">Переименовать словарь</string>
     <string name="menu_delete_dictionary">Удалить словарь</string>
+    <string name="navigation_my_dictionaries">Мои словари</string>
+    <string name="navigation_studying">Изучение слов</string>
+    <string name="navigation_settings">Настройки</string>
+    <string name="navigation_about_app">О приложении</string>
+    <string name="navigation_open">Открыть</string>
+    <string name="navigation_close">Закрыть</string>
 
     <!--Titles-->
     <string name="title_my_dictionaries">Мои словари</string>
@@ -46,6 +52,8 @@
     <string name="snack_word_updated">Слово обновлено</string>
     <string name="snack_word_not_updated">Слово не обновлено</string>
     <string name="snack_choose_dictionary">Выберите словарь для сохранения слова</string>
+    <string name="snack_confirm_exit">Вы хотите выйти?</string>
+    <string name="snack_exit">Выйти</string>
 
     <!--Exceptions-->
     <string name="exc_invalid_query_uri">Invalid QUERY URI </string>

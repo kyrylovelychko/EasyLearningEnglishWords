@@ -3,16 +3,21 @@ package com.k.easylearningenglishwords.ui.activities;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
 
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription;
 import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Dictionaries;
 import com.k.easylearningenglishwords.data.SQLite.DatabaseHelper;
 import com.k.easylearningenglishwords.ui.fragments.AddEditWordFragment;
@@ -35,34 +40,60 @@ public class MainActivity
         DeleteWordDialog.DeleteWordDialogListener,
         RenameDictionaryDialog.RenameDictionaryDialogListener {
 
+    //region ===== Константы =====
     // Ключ для сохранения Uri словаря в переданном объекте Bundle
     public static final String DICTIONARY_URI = "dictionary_uri";
     public static final String DICTIONARY_NAME = "dictionary_name";
     // Ключ для сохранения Uri слова в переданном объекте Bundle
     public static final String WORD_URI = "word_uri";
+    //endregion
 
-    // Вывод списка контактов
-    private DictionariesListFragment dictionariesListFragment;
-
+    Toolbar toolbar;
+    DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setTitle(R.string.title_my_dictionaries);
 
-        checkDB();
+        initNavigationView();
 
         //  Вывод фрагмента со списком словарей
         if (savedInstanceState == null) {
-            dictionariesListFragment = new DictionariesListFragment();
+            DictionariesListFragment dictionariesListFragment = new DictionariesListFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.fragmentContainer, dictionariesListFragment);
             transaction.commit();
         }
     }
+
+    private void initNavigationView() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_open, R.string.navigation_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                drawerLayout.closeDrawers();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                switch (item.getItemId()) {
+                    case R.id.navigation_my_dictionaries:
+                        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        transaction.replace(R.id.fragmentContainer, new DictionariesListFragment());
+                }
+                transaction.commit();
+                return true;
+            }
+        });
+    }
+
+    //region ===== Взаимодействие с фрагментами для работы со словарями =====
 
     @Override
     public void onAddDictionary() {
@@ -107,6 +138,10 @@ public class MainActivity
         dialog.setArguments(arguments);
         dialog.show(getSupportFragmentManager(), "delete dictionary");
     }
+
+    //endregion
+
+    //region ===== Взаимодействие с фрагментами для работы со словами =====
 
     @Override
     public void onAddWord(String dictionaryName) {
@@ -197,36 +232,55 @@ public class MainActivity
         }
     }
 
-    private void checkDB() {
-        final String TAG = "TESTMYBD";
+    //endregion
 
-        SQLiteDatabase database = new DatabaseHelper(this).getWritableDatabase();
-        Cursor cursor_1 = database.query(DatabaseDescription.Dictionaries.TABLE_NAME, null, null, null, null, null, null);
-
-        if (cursor_1.moveToFirst()) {
-            do {
-                Log.d(TAG, "ID = " + cursor_1.getInt(cursor_1.getColumnIndex(DatabaseDescription.Dictionaries._ID)) +
-                        ", Name = " + cursor_1.getString(cursor_1.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME)) +
-                        ", Date = " + cursor_1.getInt(cursor_1.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE)));
-            } while (cursor_1.moveToNext());
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0){
+            Snackbar.make(findViewById(R.id.coordinatorLayout), R.string.snack_confirm_exit, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.snack_exit, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            finish();
+                        }
+                    }).show();
         } else {
-            Log.d(TAG, "0 rows");
-        }
-
-        Cursor cursor = database.query(DatabaseDescription.Words.TABLE_NAME, null, null, null, null, null, null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                Log.d(TAG, "ID = " + cursor.getInt(cursor.getColumnIndex(DatabaseDescription.Words._ID)) +
-                        ", EN = " + cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_EN)) +
-                        ", RU = " + cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_RU)) +
-                        ", FROM_EN_TO_RU = " + cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_FROM_EN_TO_RU)) +
-                        ", Dictionary = " + cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_DICTIONARY)) +
-                        ", Date = " + cursor.getInt(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_DATE_OF_CHANGE)));
-            } while (cursor.moveToNext());
-        } else {
-            Log.d(TAG, "0 rows");
+            super.onBackPressed();
         }
     }
 
+
+//region checkDB
+//    private void checkDB() {
+//        final String TAG = "TESTMYBD";
+//
+//        SQLiteDatabase database = new DatabaseHelper(this).getWritableDatabase();
+//        Cursor cursor_1 = database.query(DatabaseDescription.Dictionaries.TABLE_NAME, null, null, null, null, null, null);
+//
+//        if (cursor_1.moveToFirst()) {
+//            do {
+//                Log.d(TAG, "ID = " + cursor_1.getInt(cursor_1.getColumnIndex(DatabaseDescription.Dictionaries._ID)) +
+//                        ", Name = " + cursor_1.getString(cursor_1.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME)) +
+//                        ", Date = " + cursor_1.getInt(cursor_1.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE)));
+//            } while (cursor_1.moveToNext());
+//        } else {
+//            Log.d(TAG, "0 rows");
+//        }
+//
+//        Cursor cursor = database.query(DatabaseDescription.Words.TABLE_NAME, null, null, null, null, null, null);
+//
+//        if (cursor.moveToFirst()) {
+//            do {
+//                Log.d(TAG, "ID = " + cursor.getInt(cursor.getColumnIndex(DatabaseDescription.Words._ID)) +
+//                        ", EN = " + cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_EN)) +
+//                        ", RU = " + cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_RU)) +
+//                        ", FROM_EN_TO_RU = " + cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_FROM_EN_TO_RU)) +
+//                        ", Dictionary = " + cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_DICTIONARY)) +
+//                        ", Date = " + cursor.getInt(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_DATE_OF_CHANGE)));
+//            } while (cursor.moveToNext());
+//        } else {
+//            Log.d(TAG, "0 rows");
+//        }
+//    }
+//endregion
 }

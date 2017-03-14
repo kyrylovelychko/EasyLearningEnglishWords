@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_my_dictionaries"
+        android:icon="@drawable/ic_delete_black_24dp"
+        android:orderInCategory="1"
+        android:title="@string/navigation_my_dictionaries" />
+
+    <item
+        android:id="@+id/navigation_studying"
+        android:icon="@drawable/ic_delete_black_24dp"
+        android:orderInCategory="1"
+        android:title="@string/navigation_studying" />
+
+    <item
+        android:id="@+id/navigation_settings"
+        android:icon="@drawable/ic_delete_black_24dp"
+        android:orderInCategory="1"
+        android:title="@string/navigation_settings" />
+
+    <item
+        android:id="@+id/navigation_about_app"
+        android:icon="@drawable/ic_delete_black_24dp"
+        android:orderInCategory="1"
+        android:title="@string/navigation_about_app" />
+</menu>
