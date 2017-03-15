@@ -73,7 +73,7 @@ public class DictionariesListAdapter extends RecyclerView.Adapter<DictionariesLi
         holder.setRowID(cursor.getLong(cursor.getColumnIndex(Dictionaries._ID)));
         holder.name.setText(cursor.getString(cursor.getColumnIndex(Dictionaries.COLUMN_NAME)));
         long milisec = cursor.getLong(cursor.getColumnIndex(Dictionaries.COLUMN_DATE_OF_CHANGE)) * 1000;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
         holder.date_of_change.setText(sdf.format(new Date(milisec)));
     }
 

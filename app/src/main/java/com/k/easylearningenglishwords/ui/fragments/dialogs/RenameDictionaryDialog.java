@@ -16,9 +16,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 
-import com.k.easylearningenglishwords.ui.activities.MainActivity;
 import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription;
+import com.k.easylearningenglishwords.ui.activities.MainActivity;
 
 import java.util.Date;
 
@@ -42,7 +42,7 @@ public class RenameDictionaryDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Из Bundle Необходимо получить текущее имя словаря, прежде чем его менять на другое.
         // Если не получили - плохо.
-        if (getArguments().size() == 0) {
+        if (savedInstanceState != null && getArguments().size() == 0) {
             throw new IllegalArgumentException(getContext().getString(R.string.exc_empty_saved_instance_state));
         }
 
@@ -68,7 +68,7 @@ public class RenameDictionaryDialog extends DialogFragment {
                         // Сравниваем старое и новое название. Если не отличаются -
                         // уведомляем пользователя и ничего не делаем
                         if (oldDictionaryName.equals(newName)) {
-                            Snackbar.make(coordinatorLayout, R.string.snack_dictionary_name_not_changed, Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(coordinatorLayout, R.string.snack_dictionary_not_renamed, Snackbar.LENGTH_LONG).show();
                             return;
                         }
 
@@ -118,14 +118,17 @@ public class RenameDictionaryDialog extends DialogFragment {
     private void refreshInWordsTable(Uri dictionaryUri) {
         ContentValues cv = new ContentValues();
         cv.put(DatabaseDescription.Words.COLUMN_DICTIONARY, newName);
-        int updatedRows = getActivity().getContentResolver().update(
+        // Не получаем количество обновленных строчек, т.к. при попытке обновления Пустого словаря
+        // количество обновленных строк будет равно 0, хоть это и правильно.
+        getActivity().getContentResolver().update(
                 DatabaseDescription.Words.CONTENT_URI,
                 cv,
                 DatabaseDescription.Words.COLUMN_DICTIONARY + "=?",
                 new String[]{oldDictionaryName});
-        if (updatedRows > 0) {
-            Snackbar.make(coordinatorLayout, R.string.snack_dictionary_name_changed, Snackbar.LENGTH_LONG).show();
-        }
+
+        // Считаем, что обновление прошло и говорим об этом пользоавтелю.
+        Snackbar.make(coordinatorLayout, R.string.snack_dictionary_renamed, Snackbar.LENGTH_LONG).show();
+
         getFragmentManager().popBackStack();
         listener.onSelectDictionary(dictionaryUri);
 

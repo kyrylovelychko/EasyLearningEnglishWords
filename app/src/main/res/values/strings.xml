@@ -42,8 +42,6 @@
     <string name="dialog_button_save">Сохранить</string>
 
     <!--SnackBar-->
-    <string name="snack_dictionary_name_not_changed">Название словаря не изменилось</string>
-    <string name="snack_dictionary_name_changed">Название словаря обновлено</string>
     <string name="snack_dictionary_added">Новый словарь добавлен</string>
     <string name="snack_dictionary_not_added">Новый словарь не добавлен</string>
     <string name="snack_dictionary_has_existed">Словарь с таким названием уже есть</string>
@@ -51,11 +49,12 @@
     <string name="snack_word_not_added">Новое слово не добавлено</string>
     <string name="snack_word_updated">Слово обновлено</string>
     <string name="snack_word_not_updated">Слово не обновлено</string>
-    <string name="snack_choose_dictionary">Выберите словарь для сохранения слова</string>
+    <string name="snack_dictionary_not_renamed">Словарь не переименован</string>
+    <string name="snack_dictionary_renamed">Словарь переименован</string>
     <string name="snack_confirm_exit">Вы хотите выйти?</string>
     <string name="snack_exit">Выйти</string>
 
-    <!--Exceptions-->
+    <!--Exception-->
     <string name="exc_invalid_query_uri">Invalid QUERY URI </string>
     <string name="exc_invalid_insert_uri">Invalid INSERT URI </string>
     <string name="exc_invalid_update_uri">Invalid UPDATE URI </string>

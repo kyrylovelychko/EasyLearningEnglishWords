@@ -19,7 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.k.easylearningenglishwords.ui.ItemDevider;
+import com.k.easylearningenglishwords.ui.utils.ItemDevider;
 import com.k.easylearningenglishwords.ui.activities.MainActivity;
 import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.adapters.DictionaryAdapter;
@@ -81,7 +81,8 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
         //В Bundle получили Uri словаря. Используя Uri, находим название
         getDictionaryUriAndName();
 
-        FloatingActionButton addWordFAB = (FloatingActionButton) view.findViewById(R.id.addWordFAB);
+        FloatingActionButton addWordFAB = (FloatingActionButton) getActivity().findViewById(R.id.FAB);
+        addWordFAB.setImageResource(R.drawable.ic_add_black_24dp);
         addWordFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

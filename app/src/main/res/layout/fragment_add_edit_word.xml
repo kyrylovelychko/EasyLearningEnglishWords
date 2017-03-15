@@ -1,5 +1,5 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fragmentAddEditWord"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/coordinatorAddEditWord"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -20,8 +20,8 @@
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/enTextInputLayout"
                     android:layout_width="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
 
                     <EditText
                         android:layout_width="match_parent"
@@ -47,8 +47,8 @@
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/ruTextInputLayout"
                     android:layout_width="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
 
                     <EditText
                         android:layout_width="match_parent"
@@ -91,12 +91,4 @@
 
     </ScrollView>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/saveWordFAB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_save_black_24dp" />
-
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>

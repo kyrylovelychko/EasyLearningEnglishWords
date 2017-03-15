@@ -26,7 +26,7 @@ public class DeleteWordDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        if (getArguments().size() == 0) {
+        if (savedInstanceState != null && getArguments().size() == 0) {
             throw new IllegalArgumentException(getContext().getString(R.string.exc_empty_saved_instance_state));
         }
 

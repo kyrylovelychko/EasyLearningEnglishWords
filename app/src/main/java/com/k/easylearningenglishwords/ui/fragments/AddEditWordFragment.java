@@ -83,7 +83,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
     private int FROM_EN_TO_RU;
 
     private FloatingActionButton saveWordFAB;
-    private CoordinatorLayout coordinatorLayout;// Для SnackBar
+    private CoordinatorLayout coordinatorLayout;
 
     public AddEditWordFragment() {
         // Required empty public constructor
@@ -115,8 +115,10 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         translateToRu.setVisibility(View.GONE);
         translateToRu.setOnClickListener(getOnClickTranslate());
 
+        coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinatorLayout);
 
-        saveWordFAB = (FloatingActionButton) view.findViewById(R.id.saveWordFAB);
+        saveWordFAB = (FloatingActionButton) getActivity().findViewById(R.id.FAB);
+        saveWordFAB.setImageResource(R.drawable.ic_save_black_24dp);
         saveWordFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,9 +133,6 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
             }
         });
         updateSaveButtonFAB();
-
-        // Используется для отображения SnackBar с короткими сообщениями
-        coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinatorLayout);
 
         Bundle arguments = getArguments();
         if (arguments != null) {
@@ -342,7 +341,6 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
             }
         }
     }
-
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {

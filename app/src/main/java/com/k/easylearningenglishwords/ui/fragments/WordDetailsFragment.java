@@ -59,7 +59,8 @@ public class WordDetailsFragment extends Fragment
         ruWord = (TextView) view.findViewById(R.id.ru_word);
         dictionary = (TextView) view.findViewById(R.id.dictionary);
 
-        FloatingActionButton editWordFAB = (FloatingActionButton) view.findViewById(R.id.editWordFAB);
+        FloatingActionButton editWordFAB = (FloatingActionButton) getActivity().findViewById(R.id.FAB);
+        editWordFAB.setImageResource(R.drawable.ic_edit_black_24dp);
         editWordFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
