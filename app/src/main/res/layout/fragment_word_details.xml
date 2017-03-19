@@ -20,7 +20,7 @@
                 android:id="@+id/en"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/english_word" />
+                android:text="@string/layout_tv_english_word" />
 
             <TextView
                 android:id="@+id/en_word"
@@ -37,7 +37,7 @@
                 android:id="@+id/ru"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/russian_word" />
+                android:text="@string/layout_tv_russian_word" />
 
             <TextView
                 android:id="@+id/ru_word"
@@ -55,7 +55,7 @@
                 android:id="@+id/dict"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/dictionary" />
+                android:text="@string/layout_tv_dictionary" />
 
             <TextView
                 android:id="@+id/dictionary"

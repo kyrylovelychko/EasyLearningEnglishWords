@@ -73,6 +73,7 @@ public class DictionariesListFragment extends Fragment
         recyclerView.setHasFixedSize(true);
 
         FloatingActionButton addDictionaryFAB = (FloatingActionButton) getActivity().findViewById(R.id.FAB);
+        addDictionaryFAB.setVisibility(View.VISIBLE);
         addDictionaryFAB.setImageResource(R.drawable.ic_add_box_black_24dp);
         addDictionaryFAB.setOnClickListener(new View.OnClickListener() {
             @Override

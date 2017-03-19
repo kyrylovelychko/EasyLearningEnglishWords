@@ -53,7 +53,7 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Заполнение макета
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.word_element, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.element_word, parent, false);
         return new ViewHolder(view);
     }
 

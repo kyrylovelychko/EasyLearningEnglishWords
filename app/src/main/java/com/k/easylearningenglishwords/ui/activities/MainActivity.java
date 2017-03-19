@@ -23,6 +23,7 @@ import com.k.easylearningenglishwords.data.SQLite.DatabaseHelper;
 import com.k.easylearningenglishwords.ui.fragments.AddEditWordFragment;
 import com.k.easylearningenglishwords.ui.fragments.DictionariesListFragment;
 import com.k.easylearningenglishwords.ui.fragments.DictionaryFragment;
+import com.k.easylearningenglishwords.ui.fragments.StartTrainingFragment;
 import com.k.easylearningenglishwords.ui.fragments.WordDetailsFragment;
 import com.k.easylearningenglishwords.ui.fragments.dialogs.AddDictionaryDialog;
 import com.k.easylearningenglishwords.ui.fragments.dialogs.DeleteDictionaryDialog;
@@ -60,13 +61,20 @@ public class MainActivity
 
         initNavigationView();
 
-        //  Вывод фрагмента со списком словарей
         if (savedInstanceState == null) {
-            DictionariesListFragment dictionariesListFragment = new DictionariesListFragment();
+            StartTrainingFragment startTrainingFragment = new StartTrainingFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.fragmentContainer, dictionariesListFragment);
+            transaction.add(R.id.fragmentContainer, startTrainingFragment);
             transaction.commit();
         }
+
+        //  Вывод фрагмента со списком словарей
+//        if (savedInstanceState == null) {
+//            DictionariesListFragment dictionariesListFragment = new DictionariesListFragment();
+//            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//            transaction.add(R.id.fragmentContainer, dictionariesListFragment);
+//            transaction.commit();
+//        }
     }
 
     private void initNavigationView() {
@@ -86,6 +94,11 @@ public class MainActivity
                     case R.id.navigation_my_dictionaries:
                         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                         transaction.replace(R.id.fragmentContainer, new DictionariesListFragment());
+                        break;
+                    case R.id.navigation_training:
+                        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        transaction.replace(R.id.fragmentContainer, new StartTrainingFragment());
+                        break;
                 }
                 transaction.commit();
                 return true;

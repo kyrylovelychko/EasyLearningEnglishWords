@@ -25,8 +25,8 @@ public class DictionariesListAdapter extends RecyclerView.Adapter<DictionariesLi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        public TextView name;
-        public TextView date_of_change;
+        private TextView name;
+        private TextView date_of_change;
         private long rowID;
 
         // Настройка объекта ViewHolder элемента RecyclerView
@@ -46,6 +46,10 @@ public class DictionariesListAdapter extends RecyclerView.Adapter<DictionariesLi
         public void setRowID(long rowID) {
             this.rowID = rowID;
         }
+
+        public void setName(TextView name) {
+            this.name = name;
+        }
     }
 
 
@@ -62,7 +66,7 @@ public class DictionariesListAdapter extends RecyclerView.Adapter<DictionariesLi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Заполнение макета
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dictionary_element, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.element_dictionary, parent, false);
         return new ViewHolder(view);// ViewHolder текущего элемента
     }
 

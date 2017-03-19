@@ -2,18 +2,30 @@
     <string name="app_name">EasyLearningEnglishWords</string>
 
     <!--Layout-->
-    <string name="hint_en">По-английски</string>
-    <string name="hint_ru">По-русски</string>
-    <string name="english_word">Английский: </string>
-    <string name="russian_word">Русский: </string>
-    <string name="dictionary">Словарь: </string>
+    <string name="layout_tv_hint_en">По-английски</string>
+    <string name="layout_tv_hint_ru">По-русски</string>
+    <string name="layout_tv_english_word">Английский: </string>
+    <string name="layout_tv_russian_word">Русский: </string>
+    <string name="layout_tv_dictionary">Словарь: </string>
+    <string name="layout_tv_dictionaries">Словари:</string>
+    <string name="layout_tv_training_mode">Режим тренировки:</string>
+    <string name="layout_tv_translation_direction">Направление перевода:</string>
+    <string name="layout_tv_count_of_words">Количество слов:</string>
+    <string name="layout_rb_translate_word">Переведите слово</string>
+    <string name="layout_rb_choose_translate">Выберите перевод</string>
+    <string name="layout_rb_random">В случайном порядке</string>
+    <string name="layout_rb_like_in_a_dictionary">Как в словаре</string>
+    <string name="layout_rb_en_to_ru">С Английского на Русский</string>
+    <string name="layout_rb_ru_to_en">С Русского на Английский</string>
+    <string name="layout_btn_start_training">Начать тренировку</string>
+    <string name="layout_btn_choose_dictionaries">Выбрать словари</string>
 
     <!--Menu-->
     <string name="menu_add_new_word">Добавить слово</string>
     <string name="menu_rename_dictionary">Переименовать словарь</string>
     <string name="menu_delete_dictionary">Удалить словарь</string>
     <string name="navigation_my_dictionaries">Мои словари</string>
-    <string name="navigation_studying">Изучение слов</string>
+    <string name="navigation_training">Тренировка</string>
     <string name="navigation_settings">Настройки</string>
     <string name="navigation_about_app">О приложении</string>
     <string name="navigation_open">Открыть</string>
@@ -29,6 +41,7 @@
     <string name="title_add_dictionary_request">Введите название нового словаря:</string>
     <string name="title_dictionary_name">Название словаря</string>
     <string name="title_choose_translate">Выберите перевод</string>
+    <string name="title_choose_dictionaries">Словари для тренировки</string>
 
     <!--Dialogs-->
     <string name="dialog_choose_dictionary">Выберите словарь</string>
@@ -40,6 +53,8 @@
     <string name="dialog_button_ok">OK</string>
     <string name="dialog_button_cancel">Отмена</string>
     <string name="dialog_button_save">Сохранить</string>
+    <string name="dialog_button_all">Отметить все</string>
+    <string name="dialog_button_none">Снять все</string>
 
     <!--SnackBar-->
     <string name="snack_dictionary_added">Новый словарь добавлен</string>
@@ -63,6 +78,15 @@
     <string name="exc_insert_into_dictionaries_failed">Вставка в таблицу Dictionaries не произошла</string>
     <string name="exc_empty_saved_instance_state">Empty savedInstanceState</string>
 
-
+    <!--Arrays-->
+    <string-array name="count_of_words">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>30</item>
+        <item>50</item>
+        <item>Все</item>
+    </string-array>
 
 </resources>

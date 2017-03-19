@@ -8,10 +8,10 @@
         android:title="@string/navigation_my_dictionaries" />
 
     <item
-        android:id="@+id/navigation_studying"
+        android:id="@+id/navigation_training"
         android:icon="@drawable/ic_delete_black_24dp"
         android:orderInCategory="1"
-        android:title="@string/navigation_studying" />
+        android:title="@string/navigation_training" />
 
     <item
         android:id="@+id/navigation_settings"

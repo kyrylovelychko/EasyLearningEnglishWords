@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/coordinatorDictionariesList"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentDictionariesList"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="com.k.easylearningenglishwords.ui.fragments.DictionariesListFragment"
+    tools:showIn="@layout/activity_main">
 
-    <FrameLayout
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/fragmentDictionariesList"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/dictionariesRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.k.easylearningenglishwords.ui.fragments.DictionariesListFragment"
-        tools:showIn="@layout/activity_main">
+        android:layout_height="match_parent" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/dictionariesRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </FrameLayout>
-</android.support.design.widget.CoordinatorLayout>
+</FrameLayout>

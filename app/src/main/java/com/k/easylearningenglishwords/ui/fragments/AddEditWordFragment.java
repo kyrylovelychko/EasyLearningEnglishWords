@@ -63,7 +63,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
 
     // Uri текущего контакта
     private Uri wordUri;
-    // Добавление нового слова (true) или изменение (false)
+    // Добавление нового слова (true) или редактирование (false)
     private boolean addingNewWord = true;
 
     private TextInputLayout enTextInputLayout;
@@ -76,7 +76,6 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
 
 
     String[] dictionariesNameArray;
-    //private Cursor cursor;
     private int currentPositionInArray = 0;
 
     // Если 1 - пользователь сначала ввел английское слово, а потом русское. 0 - наоборот.
@@ -160,7 +159,6 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
             // словарей - этот список будем предлагать на выбор пользователю
             getLoaderManager().initLoader(DICTIONARIES_LOADER, null, this);
         }
-        enTextInputLayout.getEditText().setText("table");
     }
 
     @Override
@@ -253,6 +251,9 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                 Snackbar.make(coordinatorLayout, R.string.snack_word_added, Snackbar.LENGTH_LONG).show();
                 // Вызываем метод MainActivity для оповещения окончания вставки нового слова
                 listener.onAddEditWordCompleted(newWordUri, dictionaryName);
+                // В таблице словарей, для записи текущего словаря обновляем дату последнего изменения
+                // Используем метод MainActivity
+                listener.updateDateOfChangeDictionary(dictionaryName);
             } else {
                 // Ошибка вставки нового слова
                 Snackbar.make(coordinatorLayout, R.string.snack_word_not_added, Snackbar.LENGTH_LONG).show();
@@ -265,15 +266,14 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                 Snackbar.make(coordinatorLayout, R.string.snack_word_updated, Snackbar.LENGTH_LONG).show();
                 // Вызываем метод MainActivity для оповещения окончания обновления слова
                 listener.onAddEditWordCompleted(wordUri, dictionaryName);
+                // В таблице словарей, для записи текущего словаря обновляем дату последнего изменения
+                // Используем метод MainActivity
+                listener.updateDateOfChangeDictionary(dictionaryName);
             } else {
                 // Ошибка вставки нового слова
                 Snackbar.make(coordinatorLayout, R.string.snack_word_not_updated, Snackbar.LENGTH_LONG).show();
             }
         }
-
-        // В таблице словарей, для записи текущего словаря обновляем дату последнего изменения
-        // Используем метод MainActivity
-        listener.updateDateOfChangeDictionary(dictionaryName);
     }
 
     @Override
@@ -316,12 +316,13 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
             getLoaderManager().initLoader(DICTIONARIES_LOADER, null, this);
 
         } else if (loader.getId() == DICTIONARIES_LOADER) {
-            // После получения и обработки слова, стал известен словарь этого слова.
-            // Текущий словарь этого слова будет первым в списке предлоагаемых при выборе словаря.
-            // Остальные словари сортируются по дате - сверху последние
+            // Формируем список словарей, в которые пользователь может сохранить свое слово
             dictionariesNameArray = new String[data.getCount()];
             int counter;
             if (dictionaryName != null) {
+                // После получения и обработки слова, стал известен словарь этого слова.
+                // Текущий словарь этого слова будет первым в списке предлоагаемых при выборе словаря.
+                // Остальные словари сортируются по убыванию даты
                 dictionariesNameArray[0] = dictionaryName;
                 counter = 1;
                 while (data.moveToNext()) {

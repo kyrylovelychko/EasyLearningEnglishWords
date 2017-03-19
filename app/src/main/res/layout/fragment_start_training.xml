@@ -1,0 +1,156 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.k.easylearningenglishwords.ui.fragments.StartTrainingFragment">
+
+    <!-- TODO dimens, styles-->
+
+    <TextView
+        android:id="@+id/tvDictionary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="25dp"
+        android:text="@string/layout_tv_dictionaries"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btnChooseDictionaries"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignBaseline="@id/tvDictionary"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="75dp"
+        android:text="@string/layout_btn_choose_dictionaries"
+        android:textSize="15sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvDictionaries"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/btnChooseDictionaries"
+        tools:layout_height="0dp" />
+
+    <TextView
+        android:id="@+id/tvTrainingMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/rvDictionaries"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="25dp"
+        android:text="@string/layout_tv_training_mode"
+        android:textSize="20sp" />
+
+    <RadioGroup
+        android:id="@+id/rgTrainingMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvTrainingMode"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="10dp">
+
+        <RadioButton
+            android:id="@+id/rbTranslateWord"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/layout_rb_translate_word"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/rbChooseTranslate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/layout_rb_choose_translate"
+            android:textSize="16sp" />
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/tvTranslationDirection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/rgTrainingMode"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="25dp"
+        android:text="@string/layout_tv_translation_direction"
+        android:textSize="20sp" />
+
+    <RadioGroup
+        android:id="@+id/rgTranslationDirection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvTranslationDirection"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="10dp">
+
+        <RadioButton
+            android:id="@+id/rbRandom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/layout_rb_random"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/rbLikeInADictionary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/layout_rb_like_in_a_dictionary"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/rbEnToRu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/layout_rb_en_to_ru"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/rbRuToEn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/layout_rb_ru_to_en"
+            android:textSize="16sp" />
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/tvCountOfWords"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/rgTranslationDirection"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="25dp"
+        android:text="@string/layout_tv_count_of_words"
+        android:textSize="20sp" />
+
+    <Spinner
+        android:id="@+id/spnChooseCountOfWords"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvCountOfWords"
+        android:layout_alignBottom="@+id/tvCountOfWords"
+        android:layout_alignEnd="@+id/btnChooseDictionaries"
+        android:layout_alignRight="@+id/btnChooseDictionaries"
+        android:entries="@array/count_of_words"
+        android:textSize="15sp" />
+
+
+    <Button
+        android:id="@+id/btnStartTraining"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:text="@string/layout_btn_start_training"
+        android:textSize="18sp" />
+
+</RelativeLayout>
