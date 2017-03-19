@@ -1,7 +1,9 @@
 package com.k.easylearningenglishwords.ui.fragments;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,12 +12,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.k.easylearningenglishwords.R;
+import com.k.easylearningenglishwords.Utils.Constants;
 import com.k.easylearningenglishwords.adapters.DictionariesNamesListAdapter;
 import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription;
 
@@ -30,6 +35,7 @@ public class StartTrainingFragment extends Fragment {
     RecyclerView rvDictionaries;
     Button btnChooseDictionaries;
     Button btnStartTraining;
+    Spinner spnChooseCountOfWords;
     RadioGroup rgTrainingMode;
     RadioGroup rgTranslationDirection;
     RadioButton rbTranslateWord;
@@ -58,9 +64,17 @@ public class StartTrainingFragment extends Fragment {
 
         initViewComponents(view);
 
+        initSpinner();
+
         getActivity().findViewById(R.id.FAB).setVisibility(View.GONE);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(R.string.title_start_training);
     }
 
     private void initViewComponents(View view) {
@@ -78,6 +92,7 @@ public class StartTrainingFragment extends Fragment {
             }
         });
         btnStartTraining = (Button) view.findViewById(R.id.btnStartTraining);
+        spnChooseCountOfWords = (Spinner) view.findViewById(R.id.spnChooseCountOfWords);
         rgTrainingMode = (RadioGroup) view.findViewById(R.id.rgTrainingMode);
         rgTranslationDirection = (RadioGroup) view.findViewById(R.id.rgTranslationDirection);
         rbTranslateWord = (RadioButton) view.findViewById(R.id.rbTranslateWord);
@@ -86,6 +101,29 @@ public class StartTrainingFragment extends Fragment {
         rbLikeInADictionary = (RadioButton) view.findViewById(R.id.rbLikeInADictionary);
         rbEnToRu = (RadioButton) view.findViewById(R.id.rbEnToRu);
         rbRuToEn = (RadioButton) view.findViewById(R.id.rbRuToEn);
+    }
+
+    private void initSpinner() {
+        int currentPosition = 0;
+
+        ArrayAdapter<?> adapter = ArrayAdapter.createFromResource(
+                getActivity(), R.array.count_of_words, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnChooseCountOfWords.setAdapter(adapter);
+
+        SharedPreferences sPref = getActivity().getSharedPreferences(
+                Constants.SPREF_SETTINGS_FILE_NAME, Context.MODE_PRIVATE);
+        if (sPref.contains(Constants.SPREF_SPINNER_POSITION_COUNT_OF_WORDS)){
+            currentPosition = sPref.getInt(Constants.SPREF_SPINNER_POSITION_COUNT_OF_WORDS, 1);
+        } else {
+            SharedPreferences.Editor editor = sPref.edit();
+            editor.putInt(Constants.SPREF_SPINNER_POSITION_COUNT_OF_WORDS, 1);
+            editor.apply();
+            currentPosition = 1;
+        }
+
+        spnChooseCountOfWords.setSelection(currentPosition);
+
     }
 
     private void showDialogForChoosingDictionaries() {
@@ -144,5 +182,12 @@ public class StartTrainingFragment extends Fragment {
         }
     }
 
-
+    @Override
+    public void onStop() {
+        super.onStop();
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences(
+                Constants.SPREF_SETTINGS_FILE_NAME, Context.MODE_PRIVATE).edit();
+        editor.putInt(Constants.SPREF_SPINNER_POSITION_COUNT_OF_WORDS, spnChooseCountOfWords.getSelectedItemPosition());
+        editor.apply();
+    }
 }

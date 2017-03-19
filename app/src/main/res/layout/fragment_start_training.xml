@@ -139,7 +139,6 @@
         android:layout_alignBottom="@+id/tvCountOfWords"
         android:layout_alignEnd="@+id/btnChooseDictionaries"
         android:layout_alignRight="@+id/btnChooseDictionaries"
-        android:entries="@array/count_of_words"
         android:textSize="15sp" />
 
 
