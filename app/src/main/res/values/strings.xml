@@ -12,7 +12,7 @@
     <string name="layout_tv_translation_direction">Направление перевода:</string>
     <string name="layout_tv_count_of_words">Количество слов:</string>
     <string name="layout_rb_translate_word">Переведите слово</string>
-    <string name="layout_rb_choose_translate">Выберите перевод</string>
+    <string name="layout_rb_choose_translate">Выберите правильный перевод</string>
     <string name="layout_rb_random">В случайном порядке</string>
     <string name="layout_rb_like_in_a_dictionary">Как в словаре</string>
     <string name="layout_rb_en_to_ru">С Английского на Русский</string>

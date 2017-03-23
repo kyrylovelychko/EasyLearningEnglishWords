@@ -64,9 +64,6 @@ public class StartTrainingFragment extends Fragment {
 
         initViewComponents(view);
 
-        initSpinner();
-
-        getActivity().findViewById(R.id.FAB).setVisibility(View.GONE);
 
         return view;
     }
@@ -81,9 +78,11 @@ public class StartTrainingFragment extends Fragment {
         tvDictionary = (TextView) view.findViewById(R.id.tvDictionary);
         tvTrainingMode = (TextView) view.findViewById(R.id.tvTrainingMode);
         tvTranslationDirection = (TextView) view.findViewById(R.id.tvTranslationDirection);
+
         rvDictionaries = (RecyclerView) view.findViewById(R.id.rvDictionaries);
         rvDictionaries.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext(),
                 LinearLayoutManager.HORIZONTAL, false));
+
         btnChooseDictionaries = (Button) view.findViewById(R.id.btnChooseDictionaries);
         btnChooseDictionaries.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,15 +91,22 @@ public class StartTrainingFragment extends Fragment {
             }
         });
         btnStartTraining = (Button) view.findViewById(R.id.btnStartTraining);
+
         spnChooseCountOfWords = (Spinner) view.findViewById(R.id.spnChooseCountOfWords);
+        initSpinner();
+
         rgTrainingMode = (RadioGroup) view.findViewById(R.id.rgTrainingMode);
         rgTranslationDirection = (RadioGroup) view.findViewById(R.id.rgTranslationDirection);
+        setPositionsForRadioGroupsFromPreferences();
+
         rbTranslateWord = (RadioButton) view.findViewById(R.id.rbTranslateWord);
         rbChooseTranslate = (RadioButton) view.findViewById(R.id.rbChooseTranslate);
         rbRandom = (RadioButton) view.findViewById(R.id.rbRandom);
         rbLikeInADictionary = (RadioButton) view.findViewById(R.id.rbLikeInADictionary);
         rbEnToRu = (RadioButton) view.findViewById(R.id.rbEnToRu);
         rbRuToEn = (RadioButton) view.findViewById(R.id.rbRuToEn);
+
+        getActivity().findViewById(R.id.FAB).setVisibility(View.GONE);
     }
 
     private void initSpinner() {
@@ -113,14 +119,8 @@ public class StartTrainingFragment extends Fragment {
 
         SharedPreferences sPref = getActivity().getSharedPreferences(
                 Constants.SPREF_SETTINGS_FILE_NAME, Context.MODE_PRIVATE);
-        if (sPref.contains(Constants.SPREF_SPINNER_POSITION_COUNT_OF_WORDS)){
-            currentPosition = sPref.getInt(Constants.SPREF_SPINNER_POSITION_COUNT_OF_WORDS, 1);
-        } else {
-            SharedPreferences.Editor editor = sPref.edit();
-            editor.putInt(Constants.SPREF_SPINNER_POSITION_COUNT_OF_WORDS, 1);
-            editor.apply();
-            currentPosition = 1;
-        }
+
+        currentPosition = sPref.getInt(Constants.SPREF_SPN_POSITION_COUNT_OF_WORDS, 1);
 
         spnChooseCountOfWords.setSelection(currentPosition);
 
@@ -182,12 +182,34 @@ public class StartTrainingFragment extends Fragment {
         }
     }
 
+    private void setPositionsForRadioGroupsFromPreferences(){
+        int position;
+        SharedPreferences sPref = getActivity().getSharedPreferences(
+                Constants.SPREF_SETTINGS_FILE_NAME, Context.MODE_PRIVATE);
+
+        position = sPref.getInt(Constants.SPREF_RG_TRAINING_MODE_POSITION, 0);
+        rgTrainingMode.check(rgTrainingMode.getChildAt(position).getId());
+
+        position = sPref.getInt(Constants.SPREF_RG_TRANSLATION_POSITION, 0);
+        rgTranslationDirection.check(rgTranslationDirection.getChildAt(position).getId());
+    }
+
     @Override
     public void onStop() {
         super.onStop();
+        RadioButton checkedRadioButtonTrainingMode =
+                (RadioButton) getActivity().findViewById(rgTrainingMode.getCheckedRadioButtonId());
+        int checkedIndexTrainingMode = rgTrainingMode.indexOfChild(checkedRadioButtonTrainingMode);
+        RadioButton checkedRadioButtonTranslation =
+                (RadioButton) getActivity().findViewById(rgTranslationDirection.getCheckedRadioButtonId());
+        int checkedIndexTranslation = rgTranslationDirection.indexOfChild(checkedRadioButtonTranslation);
+
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(
                 Constants.SPREF_SETTINGS_FILE_NAME, Context.MODE_PRIVATE).edit();
-        editor.putInt(Constants.SPREF_SPINNER_POSITION_COUNT_OF_WORDS, spnChooseCountOfWords.getSelectedItemPosition());
+        editor.putInt(Constants.SPREF_RG_TRAINING_MODE_POSITION, checkedIndexTrainingMode);
+        editor.putInt(Constants.SPREF_RG_TRANSLATION_POSITION, checkedIndexTranslation);
+        editor.putInt(Constants.SPREF_SPN_POSITION_COUNT_OF_WORDS,
+                spnChooseCountOfWords.getSelectedItemPosition());
         editor.apply();
     }
 }
