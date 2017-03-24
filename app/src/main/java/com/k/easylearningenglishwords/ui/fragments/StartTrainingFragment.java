@@ -3,6 +3,7 @@ package com.k.easylearningenglishwords.ui.fragments;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.Utils.Constants;
 import com.k.easylearningenglishwords.adapters.DictionariesNamesListAdapter;
 import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription;
+import com.k.easylearningenglishwords.ui.activities.TranslateWordTrainingActivity;
 
 import java.util.ArrayList;
 
@@ -91,6 +93,7 @@ public class StartTrainingFragment extends Fragment {
             }
         });
         btnStartTraining = (Button) view.findViewById(R.id.btnStartTraining);
+        btnStartTraining.setOnClickListener(onClickBtnStartTraining());
 
         spnChooseCountOfWords = (Spinner) view.findViewById(R.id.spnChooseCountOfWords);
         initSpinner();
@@ -194,6 +197,20 @@ public class StartTrainingFragment extends Fragment {
         rgTranslationDirection.check(rgTranslationDirection.getChildAt(position).getId());
     }
 
+    private View.OnClickListener onClickBtnStartTraining(){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), TranslateWordTrainingActivity.class);
+                intent.putExtra(Constants.EXTRA_KEY_CHECKED_DICTIONARIES_LIST, namesOfCheckedDictionariesArray);
+//        intent.putExtra(Constants.EXTRA_KEY_TRAINING_MODE_ID, rgTrainingMode.getCheckedRadioButtonId());
+                intent.putExtra(Constants.EXTRA_KEY_TRANSLATION_DIRECTION_ID, rgTranslationDirection.getCheckedRadioButtonId());
+                intent.putExtra(Constants.EXTRA_KEY_COUNT_OF_WORDS, spnChooseCountOfWords.getSelectedItemPosition());
+                startActivity(intent);
+            }
+        };
+    }
+
     @Override
     public void onStop() {
         super.onStop();
@@ -212,4 +229,5 @@ public class StartTrainingFragment extends Fragment {
                 spnChooseCountOfWords.getSelectedItemPosition());
         editor.apply();
     }
+
 }

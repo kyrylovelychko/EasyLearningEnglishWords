@@ -22,13 +22,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+
         <provider
-            android:authorities="com.k.easylearningenglishwords.data"
             android:name=".data.SQLite.DatabaseContentProvider"
+            android:authorities="com.k.easylearningenglishwords.data"
             android:enabled="true"
-            android:exported="false"/>
-        
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.activities.TranslateWordTrainingActivity"
+            android:label="@string/title_translate_word_training"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>
