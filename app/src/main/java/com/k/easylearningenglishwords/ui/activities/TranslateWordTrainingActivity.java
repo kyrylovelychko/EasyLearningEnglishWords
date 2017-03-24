@@ -2,8 +2,8 @@ package com.k.easylearningenglishwords.ui.activities;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,7 +26,7 @@ public class TranslateWordTrainingActivity extends AppCompatActivity {
     //endregion
 
 
-    String[][] trainingWords;
+    ArrayList<String[]> trainingWords = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,17 +35,6 @@ public class TranslateWordTrainingActivity extends AppCompatActivity {
 
         initViewComponents();
 
-        getExtras();
-    }
-
-
-    private void initViewComponents() {
-        tvTextToTranslate = (TextView) findViewById(R.id.tv_text_to_translate);
-        etTranslatedText = (EditText) findViewById(R.id.et_translated_text);
-        btnStopTraining = (Button) findViewById(R.id.btn_stop_training);
-    }
-
-    public void getExtras() {
         Intent intent = getIntent();
         ArrayList namesOfDictionaries = intent.getParcelableArrayListExtra(
                 Constants.EXTRA_KEY_CHECKED_DICTIONARIES_LIST);
@@ -57,11 +46,18 @@ public class TranslateWordTrainingActivity extends AppCompatActivity {
         prepareDataForTraining(namesOfDictionaries, rIdTranslationDirection, positionCountOfWords);
     }
 
+
+    private void initViewComponents() {
+        tvTextToTranslate = (TextView) findViewById(R.id.tv_text_to_translate);
+        etTranslatedText = (EditText) findViewById(R.id.et_translated_text);
+        btnStopTraining = (Button) findViewById(R.id.btn_stop_training);
+    }
+
     private void prepareDataForTraining(ArrayList<String> namesOfDictionaries,
                                         int rIdTranslationDirection, int positionCountOfWords) {
         Cursor cursorForTraining;
         int maxCountOfWords = 0;
-//        String[][] allWordsFromSelectedDictionaries;
+        ArrayList<String[]> allWordsFromSelectedDictionaries = new ArrayList<>();
 
         for (int i = 0; i < namesOfDictionaries.size(); i++) {
             namesOfDictionaries.set(i, "\"" + namesOfDictionaries.get(i) + "\"");
@@ -83,55 +79,63 @@ public class TranslateWordTrainingActivity extends AppCompatActivity {
                     maxCountOfWords = cursorForTraining.getCount();
                 }
             }
-            trainingWords = new String[maxCountOfWords][2];
         } else {
+            return;
+
             //TODO error. empty cursor
         }
 
-
-        int i = 0;
-        Random random = new Random();
         switch (rIdTranslationDirection) {
             case R.id.rbRandom:
                 do {
-                    getPairOfWordsForTraining(cursorForTraining, random.nextInt(2), i);
-                    i++;
-                } while (cursorForTraining.moveToNext() && maxCountOfWords > i);
+                    allWordsFromSelectedDictionaries.add(
+                            getPairOfWordsForTraining(cursorForTraining, new Random().nextInt(2)));
+                } while (cursorForTraining.moveToNext());
                 break;
             case R.id.rbLikeInADictionary:
                 do {
                     int fromEnToRu = cursorForTraining.getInt(
                             cursorForTraining.getColumnIndex(Words.COLUMN_FROM_EN_TO_RU));
-                    getPairOfWordsForTraining(cursorForTraining, fromEnToRu, i);
-                    i++;
-                } while (cursorForTraining.moveToNext() && maxCountOfWords > i);
+                    allWordsFromSelectedDictionaries.add(
+                            getPairOfWordsForTraining(cursorForTraining, fromEnToRu));
+                } while (cursorForTraining.moveToNext());
                 break;
             case R.id.rbEnToRu:
                 do {
-                    getPairOfWordsForTraining(cursorForTraining, 1, i);
-                    i++;
-                } while (cursorForTraining.moveToNext() && maxCountOfWords > i);
+                    allWordsFromSelectedDictionaries.add(
+                            getPairOfWordsForTraining(cursorForTraining, 1));
+                } while (cursorForTraining.moveToNext());
                 break;
             case R.id.rbRuToEn:
                 do {
-                    getPairOfWordsForTraining(cursorForTraining, 0, i);
-                    i++;
-                } while (cursorForTraining.moveToNext() && maxCountOfWords > i);
+                    allWordsFromSelectedDictionaries.add(
+                            getPairOfWordsForTraining(cursorForTraining, 0));
+                } while (cursorForTraining.moveToNext());
                 break;
         }
+
+        int nextPosition = 0;
+        while (trainingWords.size() < maxCountOfWords){
+            nextPosition = new Random().nextInt(allWordsFromSelectedDictionaries.size());
+            trainingWords.add(allWordsFromSelectedDictionaries.get(nextPosition));
+            allWordsFromSelectedDictionaries.remove(nextPosition);
+        }
+
     }
 
-    private void getPairOfWordsForTraining(Cursor cursor, int fromEnToRu, int index) {
+    private String[] getPairOfWordsForTraining(Cursor cursor, int fromEnToRu) {
+        String[] pairOfWords = new String[2];
         switch (fromEnToRu) {
             case 0:
-                trainingWords[index][0] = cursor.getString(cursor.getColumnIndex(Words.COLUMN_RU));
-                trainingWords[index][1] = cursor.getString(cursor.getColumnIndex(Words.COLUMN_EN));
+                pairOfWords[0] = cursor.getString(cursor.getColumnIndex(Words.COLUMN_RU));
+                pairOfWords[1] = cursor.getString(cursor.getColumnIndex(Words.COLUMN_EN));
                 break;
             case 1:
-                trainingWords[index][0] = cursor.getString(cursor.getColumnIndex(Words.COLUMN_EN));
-                trainingWords[index][1] = cursor.getString(cursor.getColumnIndex(Words.COLUMN_RU));
+                pairOfWords[0] = cursor.getString(cursor.getColumnIndex(Words.COLUMN_EN));
+                pairOfWords[1] = cursor.getString(cursor.getColumnIndex(Words.COLUMN_RU));
                 break;
         }
+        return pairOfWords;
     }
 
 }
