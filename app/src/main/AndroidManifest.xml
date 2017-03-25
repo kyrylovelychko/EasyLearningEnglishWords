@@ -24,7 +24,7 @@
         </activity>
 
         <provider
-            android:name=".data.SQLite.DatabaseContentProvider"
+            android:name=".data.sqlite.DatabaseContentProvider"
             android:authorities="com.k.easylearningenglishwords.data"
             android:enabled="true"
             android:exported="false" />

@@ -1,4 +1,4 @@
-package com.k.easylearningenglishwords.data.network.YandexTranslate;
+package com.k.easylearningenglishwords.data.network.yandextranslate;
 
 
 import com.google.gson.annotations.Expose;

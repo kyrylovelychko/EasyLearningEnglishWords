@@ -21,7 +21,7 @@ import android.view.ViewGroup;
 
 import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.adapters.DictionariesListAdapter;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription;
 import com.k.easylearningenglishwords.ui.utils.ItemDevider;
 
 public class DictionariesListFragment extends Fragment

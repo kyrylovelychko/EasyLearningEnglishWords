@@ -23,8 +23,8 @@ import com.k.easylearningenglishwords.ui.utils.ItemDevider;
 import com.k.easylearningenglishwords.ui.activities.MainActivity;
 import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.adapters.DictionaryAdapter;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseHelper;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseHelper;
 
 public class DictionaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 

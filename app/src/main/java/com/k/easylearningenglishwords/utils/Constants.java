@@ -1,4 +1,4 @@
-package com.k.easylearningenglishwords.Utils;
+package com.k.easylearningenglishwords.utils;
 
 public class Constants {
 

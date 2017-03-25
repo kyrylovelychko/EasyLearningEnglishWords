@@ -18,8 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Dictionaries;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseHelper;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription.Dictionaries;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseHelper;
 import com.k.easylearningenglishwords.ui.fragments.AddEditWordFragment;
 import com.k.easylearningenglishwords.ui.fragments.DictionariesListFragment;
 import com.k.easylearningenglishwords.ui.fragments.DictionaryFragment;

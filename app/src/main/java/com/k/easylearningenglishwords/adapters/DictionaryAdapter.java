@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Words;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription.Words;
 
 public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.ViewHolder> {
 

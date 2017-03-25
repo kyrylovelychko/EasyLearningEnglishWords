@@ -16,9 +16,9 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Dictionaries;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseHelper;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription.Dictionaries;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseHelper;
 
 import java.util.Date;
 

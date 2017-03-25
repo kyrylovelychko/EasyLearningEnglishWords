@@ -1,4 +1,4 @@
-package com.k.easylearningenglishwords.data.network.YandexDictionary;
+package com.k.easylearningenglishwords.data.network.yandexdictionary;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -1,4 +1,4 @@
-package com.k.easylearningenglishwords.data.SQLite;
+package com.k.easylearningenglishwords.data.sqlite;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;

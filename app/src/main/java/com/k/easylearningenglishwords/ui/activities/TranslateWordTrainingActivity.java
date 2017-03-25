@@ -10,9 +10,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.Utils.Constants;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Words;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseHelper;
+import com.k.easylearningenglishwords.utils.Constants;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription.Words;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.Random;

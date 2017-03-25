@@ -26,12 +26,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Dictionaries;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Words;
-import com.k.easylearningenglishwords.data.network.YandexDictionary.YandexDictionaryResponse;
-import com.k.easylearningenglishwords.data.network.YandexDictionary.YandexDictionaryRetrofit;
-import com.k.easylearningenglishwords.data.network.YandexTranslate.YandexTranslateResponse;
-import com.k.easylearningenglishwords.data.network.YandexTranslate.YandexTranslateRetrofit;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription.Dictionaries;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription.Words;
+import com.k.easylearningenglishwords.data.network.yandexdictionary.YandexDictionaryResponse;
+import com.k.easylearningenglishwords.data.network.yandexdictionary.YandexDictionaryRetrofit;
+import com.k.easylearningenglishwords.data.network.yandextranslate.YandexTranslateResponse;
+import com.k.easylearningenglishwords.data.network.yandextranslate.YandexTranslateRetrofit;
 import com.k.easylearningenglishwords.ui.activities.MainActivity;
 import com.k.easylearningenglishwords.ui.fragments.dialogs.AddDictionaryDialog;
 

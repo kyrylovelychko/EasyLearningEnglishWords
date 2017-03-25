@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.k.easylearningenglishwords.ui.activities.MainActivity;
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Words;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription.Words;
 
 public class WordDetailsFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor> {

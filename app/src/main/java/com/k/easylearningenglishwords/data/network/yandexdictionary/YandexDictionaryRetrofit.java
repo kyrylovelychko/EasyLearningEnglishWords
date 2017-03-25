@@ -1,4 +1,4 @@
-package com.k.easylearningenglishwords.data.network.YandexDictionary;
+package com.k.easylearningenglishwords.data.network.yandexdictionary;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;

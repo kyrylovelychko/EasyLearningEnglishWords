@@ -9,8 +9,8 @@ import android.support.v4.app.DialogFragment;
 
 import com.k.easylearningenglishwords.ui.activities.MainActivity;
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Dictionaries;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription.Words;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription.Dictionaries;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription.Words;
 
 
 public class DeleteDictionaryDialog extends DialogFragment {

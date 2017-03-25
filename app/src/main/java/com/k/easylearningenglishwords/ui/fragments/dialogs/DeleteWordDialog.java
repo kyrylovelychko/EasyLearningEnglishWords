@@ -12,7 +12,7 @@ import android.support.v4.app.DialogFragment;
 
 import com.k.easylearningenglishwords.ui.activities.MainActivity;
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.data.SQLite.DatabaseDescription;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription;
 
 
 public class DeleteWordDialog extends DialogFragment {
