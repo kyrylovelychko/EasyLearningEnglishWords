@@ -11,6 +11,7 @@
     <string name="layout_tv_training_mode">Режим тренировки:</string>
     <string name="layout_tv_translation_direction">Направление перевода:</string>
     <string name="layout_tv_count_of_words">Количество слов:</string>
+    <string name="layout_tv_from"> из </string>
     <string name="layout_rb_translate_word">Переведите слово</string>
     <string name="layout_rb_choose_translate">Выберите правильный перевод</string>
     <string name="layout_rb_random">В случайном порядке</string>
@@ -19,6 +20,7 @@
     <string name="layout_rb_ru_to_en">С Русского на Английский</string>
     <string name="layout_btn_start_training">Начать тренировку</string>
     <string name="layout_btn_choose_dictionaries">Выбрать словари</string>
+    <string name="layout_switch_auto_continue">Переходить к новому слову</string>
 
     <!--Menu-->
     <string name="menu_add_new_word">Добавить слово</string>
@@ -44,15 +46,18 @@
     <string name="title_start_training">Тренировка</string>
     <string name="title_translate_word_training">Переведите слово или фразу</string>
     <string name="title_choose_dictionaries">Словари для тренировки</string>
+    <string name="title_exit_training">Выход</string>
 
     <!--Dialogs-->
     <string name="dialog_choose_dictionary">Выберите словарь</string>
     <string name="dialog_new_dictionary">Новый словарь</string>
     <string name="dialog_message_delete_dictionary">Внимание! Словарь и все слова этого словаря будут удалены!</string>
     <string name="dialog_message_confirm_delete">Вы хотите удалить слово?</string>
+    <string name="dialog_message_confirm_exit_training">Вы хотите отменить тренировку? Результат будет потерян.</string>
     <string name="dialog_button_add">Добавить</string>
     <string name="dialog_button_delete">Удалить</string>
     <string name="dialog_button_ok">OK</string>
+    <string name="dialog_button_exit">Выйти</string>
     <string name="dialog_button_cancel">Отмена</string>
     <string name="dialog_button_save">Сохранить</string>
     <string name="dialog_button_all">Отметить все</string>
@@ -79,6 +84,7 @@
     <string name="exc_insert_into_words_failed">Вставка в таблицу Words не произошла</string>
     <string name="exc_insert_into_dictionaries_failed">Вставка в таблицу Dictionaries не произошла</string>
     <string name="exc_empty_saved_instance_state">Empty savedInstanceState</string>
+    <string name="exc_system_random_error">System Random Error</string>
 
     <!--Arrays-->
     <string-array name="count_of_words">

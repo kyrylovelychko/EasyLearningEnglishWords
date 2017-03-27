@@ -3,4 +3,8 @@
     <color name="colorPrimary">#616161</color>
     <color name="colorPrimaryDark">#212121</color>
     <color name="colorAccent">#ffea00</color>
+    <color name="colorTrainingFont">#e9e7e7</color>
+    <color name="wrongAnswer">#ec6f6f</color>
+    <color name="transparent">#00FFFFFF</color>
+    <color name="correctAnswer">#6cde68</color>
 </resources>

@@ -28,7 +28,6 @@ public class DeleteDictionaryDialog extends DialogFragment {
         builder.setTitle(R.string.title_confirm_delete_dictionary)
                 .setMessage(R.string.dialog_message_delete_dictionary)
                 .setIcon(R.drawable.ic_warning_yellow_24dp)
-                .setCancelable(false)
                 .setPositiveButton(R.string.dialog_button_delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -43,7 +42,8 @@ public class DeleteDictionaryDialog extends DialogFragment {
                         getFragmentManager().popBackStack();
                     }
                 })
-                .setNegativeButton(R.string.dialog_button_cancel, null);
+                .setNegativeButton(R.string.dialog_button_cancel, null)
+                .setCancelable(false);
 
         return builder.create();
     }

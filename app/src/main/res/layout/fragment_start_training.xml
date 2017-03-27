@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="25dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="16dp"
         android:text="@string/layout_tv_dictionaries"
         android:textSize="20sp" />
 
@@ -41,7 +41,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@id/rvDictionaries"
         android:layout_marginLeft="25dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="16dp"
         android:text="@string/layout_tv_training_mode"
         android:textSize="20sp" />
 
@@ -77,7 +77,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@id/rgTrainingMode"
         android:layout_marginLeft="25dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="16dp"
         android:text="@string/layout_tv_translation_direction"
         android:textSize="20sp" />
 
@@ -127,7 +127,7 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@id/rgTranslationDirection"
         android:layout_marginLeft="25dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="16dp"
         android:text="@string/layout_tv_count_of_words"
         android:textSize="20sp" />
 
@@ -135,11 +135,10 @@
         android:id="@+id/spnChooseCountOfWords"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tvCountOfWords"
-        android:layout_alignBottom="@+id/tvCountOfWords"
-        android:layout_alignEnd="@+id/btnChooseDictionaries"
-        android:layout_alignRight="@+id/btnChooseDictionaries"
-        android:textSize="15sp" />
+        android:textSize="15sp"
+        android:layout_alignTop="@+id/tvCountOfWords"
+        android:layout_alignRight="@+id/switchAutoContinue"
+        android:layout_alignEnd="@+id/switchAutoContinue" />
 
 
     <Button
@@ -151,5 +150,19 @@
         android:layout_marginBottom="16dp"
         android:text="@string/layout_btn_start_training"
         android:textSize="18sp" />
+
+    <Switch
+        android:id="@+id/switchAutoContinue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tvCountOfWords"
+        android:layout_alignStart="@+id/tvCountOfWords"
+        android:layout_below="@+id/tvCountOfWords"
+        android:layout_marginEnd="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/layout_switch_auto_continue"
+        android:textColor="@color/colorPrimary"
+        android:textSize="20sp" />
 
 </RelativeLayout>

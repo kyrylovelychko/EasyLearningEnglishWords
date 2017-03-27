@@ -18,13 +18,14 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.utils.Constants;
 import com.k.easylearningenglishwords.adapters.DictionariesNamesListAdapter;
 import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription;
 import com.k.easylearningenglishwords.ui.activities.TranslateWordTrainingActivity;
+import com.k.easylearningenglishwords.utils.Constants;
 
 import java.util.ArrayList;
 
@@ -46,6 +47,7 @@ public class StartTrainingFragment extends Fragment {
     RadioButton rbLikeInADictionary;
     RadioButton rbEnToRu;
     RadioButton rbRuToEn;
+    Switch switchAutoContinue;
     // endregion
 
     Cursor cursor;
@@ -66,7 +68,9 @@ public class StartTrainingFragment extends Fragment {
 
         initViewComponents(view);
 
-
+//        namesOfCheckedDictionariesArray.add("Привет");
+//        adapterChosenDictionaries = new DictionariesNamesListAdapter(namesOfCheckedDictionariesArray);
+//        rvDictionaries.setAdapter(adapterChosenDictionaries);
         return view;
     }
 
@@ -108,6 +112,9 @@ public class StartTrainingFragment extends Fragment {
         rbLikeInADictionary = (RadioButton) view.findViewById(R.id.rbLikeInADictionary);
         rbEnToRu = (RadioButton) view.findViewById(R.id.rbEnToRu);
         rbRuToEn = (RadioButton) view.findViewById(R.id.rbRuToEn);
+
+        switchAutoContinue = (Switch) view.findViewById(R.id.switchAutoContinue);
+        setSwitchFromPreferences();
 
         getActivity().findViewById(R.id.FAB).setVisibility(View.GONE);
     }
@@ -197,15 +204,22 @@ public class StartTrainingFragment extends Fragment {
         rgTranslationDirection.check(rgTranslationDirection.getChildAt(position).getId());
     }
 
+    private void setSwitchFromPreferences(){
+        SharedPreferences sPref = getActivity().getSharedPreferences(
+                Constants.SPREF_SETTINGS_FILE_NAME, Context.MODE_PRIVATE);
+
+        switchAutoContinue.setChecked(sPref.getBoolean(Constants.SPREF_SWITCH_AUTO_CONTINUE, false));
+    }
+
     private View.OnClickListener onClickBtnStartTraining(){
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), TranslateWordTrainingActivity.class);
                 intent.putExtra(Constants.EXTRA_KEY_CHECKED_DICTIONARIES_LIST, namesOfCheckedDictionariesArray);
-//        intent.putExtra(Constants.EXTRA_KEY_TRAINING_MODE_ID, rgTrainingMode.getCheckedRadioButtonId());
                 intent.putExtra(Constants.EXTRA_KEY_TRANSLATION_DIRECTION_ID, rgTranslationDirection.getCheckedRadioButtonId());
-                intent.putExtra(Constants.EXTRA_KEY_COUNT_OF_WORDS, spnChooseCountOfWords.getSelectedItemPosition());
+                intent.putExtra(Constants.EXTRA_KEY_POSITION_COUNT_OF_WORDS, spnChooseCountOfWords.getSelectedItemPosition());
+                intent.putExtra(Constants.EXTRA_KEY_AUTO_CONTINUE,  switchAutoContinue.isChecked());
                 startActivity(intent);
             }
         };
@@ -217,9 +231,10 @@ public class StartTrainingFragment extends Fragment {
         RadioButton checkedRadioButtonTrainingMode =
                 (RadioButton) getActivity().findViewById(rgTrainingMode.getCheckedRadioButtonId());
         int checkedIndexTrainingMode = rgTrainingMode.indexOfChild(checkedRadioButtonTrainingMode);
-        RadioButton checkedRadioButtonTranslation =
-                (RadioButton) getActivity().findViewById(rgTranslationDirection.getCheckedRadioButtonId());
-        int checkedIndexTranslation = rgTranslationDirection.indexOfChild(checkedRadioButtonTranslation);
+        RadioButton checkedRadioButtonTranslation = (RadioButton)
+                getActivity().findViewById(rgTranslationDirection.getCheckedRadioButtonId());
+        int checkedIndexTranslation =
+                rgTranslationDirection.indexOfChild(checkedRadioButtonTranslation);
 
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(
                 Constants.SPREF_SETTINGS_FILE_NAME, Context.MODE_PRIVATE).edit();
@@ -227,6 +242,7 @@ public class StartTrainingFragment extends Fragment {
         editor.putInt(Constants.SPREF_RG_TRANSLATION_POSITION, checkedIndexTranslation);
         editor.putInt(Constants.SPREF_SPN_POSITION_COUNT_OF_WORDS,
                 spnChooseCountOfWords.getSelectedItemPosition());
+        editor.putBoolean(Constants.SPREF_SWITCH_AUTO_CONTINUE, switchAutoContinue.isChecked());
         editor.apply();
     }
 
