@@ -61,20 +61,20 @@ public class MainActivity
 
         initNavigationView();
 
-        if (savedInstanceState == null) {
-            StartTrainingFragment startTrainingFragment = new StartTrainingFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.fragmentContainer, startTrainingFragment);
-            transaction.commit();
-        }
-
-        //  Вывод фрагмента со списком словарей
 //        if (savedInstanceState == null) {
-//            DictionariesListFragment dictionariesListFragment = new DictionariesListFragment();
+//            StartTrainingFragment startTrainingFragment = new StartTrainingFragment();
 //            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//            transaction.add(R.id.fragmentContainer, dictionariesListFragment);
+//            transaction.add(R.id.fragmentContainer, startTrainingFragment);
 //            transaction.commit();
 //        }
+
+        //  Вывод фрагмента со списком словарей
+        if (savedInstanceState == null) {
+            DictionariesListFragment dictionariesListFragment = new DictionariesListFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(R.id.fragmentContainer, dictionariesListFragment);
+            transaction.commit();
+        }
     }
 
     private void initNavigationView() {
@@ -249,7 +249,7 @@ public class MainActivity
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() == 0){
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
             Snackbar.make(findViewById(R.id.coordinatorLayout), R.string.snack_confirm_exit, Snackbar.LENGTH_LONG)
                     .setAction(R.string.snack_exit, new View.OnClickListener() {
                         @Override

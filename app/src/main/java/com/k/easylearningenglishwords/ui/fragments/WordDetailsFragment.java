@@ -60,6 +60,7 @@ public class WordDetailsFragment extends Fragment
         dictionary = (TextView) view.findViewById(R.id.dictionary);
 
         FloatingActionButton editWordFAB = (FloatingActionButton) getActivity().findViewById(R.id.FAB);
+        editWordFAB.show();
         editWordFAB.setImageResource(R.drawable.ic_edit_black_24dp);
         editWordFAB.setOnClickListener(new View.OnClickListener() {
             @Override

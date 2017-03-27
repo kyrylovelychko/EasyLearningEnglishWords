@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.adapters.DictionariesListAdapter;
 import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription;
-import com.k.easylearningenglishwords.ui.utils.ItemDevider;
+import com.k.easylearningenglishwords.ui.utils.ItemDivider;
 
 public class DictionariesListFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -68,13 +68,13 @@ public class DictionariesListFragment extends Fragment
                 });
         recyclerView.setAdapter(dictionariesListAdapter);
 
-        recyclerView.addItemDecoration(new ItemDevider(getContext()));
+        recyclerView.addItemDecoration(new ItemDivider(getContext()));
 
         recyclerView.setHasFixedSize(true);
 
         FloatingActionButton addDictionaryFAB = (FloatingActionButton) getActivity().findViewById(R.id.FAB);
-        addDictionaryFAB.setVisibility(View.VISIBLE);
-        addDictionaryFAB.setImageResource(R.drawable.ic_add_box_black_24dp);
+        addDictionaryFAB.show();
+        addDictionaryFAB.setImageResource(R.drawable.ic_library_add_black_24dp);
         addDictionaryFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

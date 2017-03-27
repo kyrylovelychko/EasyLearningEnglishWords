@@ -1,0 +1,19 @@
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_rename_dictionary"
+        android:icon="@drawable/ic_edit_black_24dp"
+        android:orderInCategory="1"
+        android:title="@string/menu_rename_dictionary"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_delete_dictionary"
+        android:icon="@drawable/ic_delete_black_24dp"
+        android:orderInCategory="2"
+        android:title="@string/menu_delete_dictionary"
+        app:showAsAction="ifRoom" />
+
+</menu>
