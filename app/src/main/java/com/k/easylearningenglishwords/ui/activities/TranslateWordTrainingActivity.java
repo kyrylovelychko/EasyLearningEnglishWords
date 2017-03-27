@@ -97,9 +97,9 @@ public class TranslateWordTrainingActivity extends AppCompatActivity {
         etTranslatedText.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
         btnExitTraining = (Button) findViewById(R.id.btnExitTraining);
-        btnExitTraining.setOnClickListener(onClickExitTraining());
+        btnExitTraining.setOnClickListener(onClickBtnExitTraining());
         btnHelpTraining = (Button) findViewById(R.id.btnHelpTraining);
-        btnHelpTraining.setOnClickListener(onClickHelpTraining());
+        btnHelpTraining.setOnClickListener(onClickBtnHelpTraining());
         btnNextWord = (Button) findViewById(R.id.btnNextWord);
         btnNextWord.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,9 +138,6 @@ public class TranslateWordTrainingActivity extends AppCompatActivity {
                 }
             }
         } else {
-            return;
-
-            //TODO error. empty cursor
         }
 
         switch (rIdTranslationDirection) {
@@ -256,7 +253,7 @@ public class TranslateWordTrainingActivity extends AppCompatActivity {
         showBtnNextWord(false);
     }
 
-    private View.OnClickListener onClickExitTraining() {
+    private View.OnClickListener onClickBtnExitTraining() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -265,7 +262,7 @@ public class TranslateWordTrainingActivity extends AppCompatActivity {
         };
     }
 
-    private View.OnClickListener onClickHelpTraining() {
+    private View.OnClickListener onClickBtnHelpTraining() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {

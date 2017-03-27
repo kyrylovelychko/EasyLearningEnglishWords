@@ -13,7 +13,7 @@
     <string name="layout_tv_count_of_words">Количество слов:</string>
     <string name="layout_tv_from"> из </string>
     <string name="layout_rb_translate_word">Переведите слово</string>
-    <string name="layout_rb_choose_translate">Выберите правильный перевод</string>
+    <string name="layout_rb_choose_translate">Выберите правильный перевод (Недоступно)</string>
     <string name="layout_rb_random">В случайном порядке</string>
     <string name="layout_rb_like_in_a_dictionary">Как в словаре</string>
     <string name="layout_rb_en_to_ru">С Английского на Русский</string>
@@ -75,6 +75,8 @@
     <string name="snack_dictionary_renamed">Словарь переименован</string>
     <string name="snack_confirm_exit">Вы хотите выйти?</string>
     <string name="snack_exit">Выйти</string>
+    <string name="snack_choose_dictionary">Выберите словарь для тренировки</string>
+    <string name="snack_empty_dictionaries">Выбранные словари пустые</string>
 
     <!--Exception-->
     <string name="exc_invalid_query_uri">Invalid QUERY URI </string>

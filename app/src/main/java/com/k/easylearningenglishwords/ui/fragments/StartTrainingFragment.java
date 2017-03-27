@@ -7,9 +7,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +27,7 @@ import android.widget.TextView;
 import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.adapters.DictionariesNamesListAdapter;
 import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseHelper;
 import com.k.easylearningenglishwords.ui.activities.TranslateWordTrainingActivity;
 import com.k.easylearningenglishwords.utils.Constants;
 
@@ -192,7 +196,7 @@ public class StartTrainingFragment extends Fragment {
         }
     }
 
-    private void setPositionsForRadioGroupsFromPreferences(){
+    private void setPositionsForRadioGroupsFromPreferences() {
         int position;
         SharedPreferences sPref = getActivity().getSharedPreferences(
                 Constants.SPREF_SETTINGS_FILE_NAME, Context.MODE_PRIVATE);
@@ -204,25 +208,73 @@ public class StartTrainingFragment extends Fragment {
         rgTranslationDirection.check(rgTranslationDirection.getChildAt(position).getId());
     }
 
-    private void setSwitchFromPreferences(){
+    private void setSwitchFromPreferences() {
         SharedPreferences sPref = getActivity().getSharedPreferences(
                 Constants.SPREF_SETTINGS_FILE_NAME, Context.MODE_PRIVATE);
 
         switchAutoContinue.setChecked(sPref.getBoolean(Constants.SPREF_SWITCH_AUTO_CONTINUE, false));
     }
 
-    private View.OnClickListener onClickBtnStartTraining(){
+    private View.OnClickListener onClickBtnStartTraining() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), TranslateWordTrainingActivity.class);
-                intent.putExtra(Constants.EXTRA_KEY_CHECKED_DICTIONARIES_LIST, namesOfCheckedDictionariesArray);
-                intent.putExtra(Constants.EXTRA_KEY_TRANSLATION_DIRECTION_ID, rgTranslationDirection.getCheckedRadioButtonId());
-                intent.putExtra(Constants.EXTRA_KEY_POSITION_COUNT_OF_WORDS, spnChooseCountOfWords.getSelectedItemPosition());
-                intent.putExtra(Constants.EXTRA_KEY_AUTO_CONTINUE,  switchAutoContinue.isChecked());
-                startActivity(intent);
+                switch (rgTrainingMode.getCheckedRadioButtonId()){
+                    case R.id.rbTranslateWord:
+                        startTranslateWordTraining();
+                        break;
+                    case R.id.rbChooseTranslate:
+
+                        break;
+                }
+
             }
         };
+    }
+
+    private void startTranslateWordTraining(){
+        if (namesOfCheckedDictionariesArray.size() == 0) {
+            showDialogForChoosingDictionaries();
+        } else {
+            if (isChosenDictionariesEmpty(new ArrayList<>(namesOfCheckedDictionariesArray))) {
+                return;
+            } else {
+                Intent intent = new Intent(getContext(), TranslateWordTrainingActivity.class);
+                intent.putExtra(Constants.EXTRA_KEY_CHECKED_DICTIONARIES_LIST,
+                        namesOfCheckedDictionariesArray);
+                intent.putExtra(Constants.EXTRA_KEY_TRANSLATION_DIRECTION_ID,
+                        rgTranslationDirection.getCheckedRadioButtonId());
+                intent.putExtra(Constants.EXTRA_KEY_POSITION_COUNT_OF_WORDS,
+                        spnChooseCountOfWords.getSelectedItemPosition());
+                intent.putExtra(Constants.EXTRA_KEY_AUTO_CONTINUE,
+                        switchAutoContinue.isChecked());
+                startActivity(intent);
+            }
+        }
+    }
+
+    private boolean isChosenDictionariesEmpty(ArrayList<String> namesForQuery){
+        Cursor cursor;
+        for (int i = 0; i < namesForQuery.size(); i++) {
+            namesForQuery.set(i, "\"" + namesForQuery.get(i) + "\"");
+        }
+        String sqlQuery = "SELECT * FROM " + DatabaseDescription.Words.TABLE_NAME
+                + " WHERE " + DatabaseDescription.Words.COLUMN_DICTIONARY
+                + " IN (" + TextUtils.join(", ", namesForQuery) + ") ORDER BY "
+                + DatabaseDescription.Words.COLUMN_DATE_OF_CHANGE + " COLLATE NOCASE DESC";
+
+        cursor = new DatabaseHelper(getContext()).getReadableDatabase().rawQuery(
+                sqlQuery, null);
+
+        if (cursor.getCount() == 0) {
+            CoordinatorLayout coordinatorLayout = (CoordinatorLayout) getActivity()
+                    .findViewById(R.id.coordinatorLayout);
+            Snackbar.make(coordinatorLayout, R.string.snack_empty_dictionaries,
+                    Snackbar.LENGTH_LONG).show();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
