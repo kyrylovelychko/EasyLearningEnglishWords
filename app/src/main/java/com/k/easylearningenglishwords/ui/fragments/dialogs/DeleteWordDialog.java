@@ -18,7 +18,7 @@ import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription;
 public class DeleteWordDialog extends DialogFragment {
 
     public interface DeleteWordDialogListener{
-        void updateDateOfChangeDictionary(String dictionaryName);
+        void changeDateOfChangeDictionary(String dictionaryName);
     }
 
     private DeleteWordDialogListener listener;
@@ -51,9 +51,10 @@ public class DeleteWordDialog extends DialogFragment {
                                 null,
                                 null);
 
-                        cursor.moveToFirst();
-                        String str =cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_DICTIONARY));
-                        listener.updateDateOfChangeDictionary(str);
+                        if (cursor.moveToFirst()) {
+                            String str = cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_DICTIONARY));
+                            listener.changeDateOfChangeDictionary(str);
+                        }
                         getFragmentManager().popBackStack();
                     }
                 })

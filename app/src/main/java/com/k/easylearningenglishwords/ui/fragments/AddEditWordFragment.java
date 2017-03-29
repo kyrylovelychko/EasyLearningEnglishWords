@@ -51,7 +51,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         void onAddEditWordCompleted(Uri wordUri, String dictionaryName);
 
         //Вызвается при обновлении даты последнего изменения конкретного словаря
-        void updateDateOfChangeDictionary(String dictionaryName);
+        void changeDateOfChangeDictionary(String dictionaryName);
     }
 
     // Константа для идентификации Loader
@@ -253,7 +253,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                 listener.onAddEditWordCompleted(newWordUri, dictionaryName);
                 // В таблице словарей, для записи текущего словаря обновляем дату последнего изменения
                 // Используем метод MainActivity
-                listener.updateDateOfChangeDictionary(dictionaryName);
+                listener.changeDateOfChangeDictionary(dictionaryName);
             } else {
                 // Ошибка вставки нового слова
                 Snackbar.make(coordinatorLayout, R.string.snack_word_not_added, Snackbar.LENGTH_LONG).show();
@@ -268,7 +268,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                 listener.onAddEditWordCompleted(wordUri, dictionaryName);
                 // В таблице словарей, для записи текущего словаря обновляем дату последнего изменения
                 // Используем метод MainActivity
-                listener.updateDateOfChangeDictionary(dictionaryName);
+                listener.changeDateOfChangeDictionary(dictionaryName);
             } else {
                 // Ошибка вставки нового слова
                 Snackbar.make(coordinatorLayout, R.string.snack_word_not_updated, Snackbar.LENGTH_LONG).show();

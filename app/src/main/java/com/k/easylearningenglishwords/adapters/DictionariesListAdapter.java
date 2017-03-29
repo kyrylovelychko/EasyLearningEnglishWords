@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.k.easylearningenglishwords.R;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription;
 import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription.Dictionaries;
 
 import java.text.SimpleDateFormat;
@@ -26,14 +27,16 @@ public class DictionariesListAdapter extends RecyclerView.Adapter<DictionariesLi
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private TextView name;
-        private TextView date_of_change;
+        private TextView dateOfChange;
+        private TextView countOfWords;
         private long rowID;
 
         // Настройка объекта ViewHolder элемента RecyclerView
         public ViewHolder(View itemView) {
             super(itemView);
-            name = (TextView) itemView.findViewById(R.id.dictionary_name);
-            date_of_change = (TextView) itemView.findViewById(R.id.dictionary_date_of_change);
+            name = (TextView) itemView.findViewById(R.id.dictionaryName);
+            dateOfChange = (TextView) itemView.findViewById(R.id.dictionaryDateOfChange);
+            countOfWords = (TextView) itemView.findViewById(R.id.countOfWords);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -54,8 +57,10 @@ public class DictionariesListAdapter extends RecyclerView.Adapter<DictionariesLi
 
 
     // Переменные экземпляров DictionariesListAdapter
-    private Cursor cursor = null;
+    private Cursor cursorDictionariesList = null;
+    private Cursor cursorCountOfWords = null;
     private final DictionariesListClickListener clickListener;
+    private String text;
 
     // Конструктор
     public DictionariesListAdapter(DictionariesListClickListener clickListener) {
@@ -65,31 +70,58 @@ public class DictionariesListAdapter extends RecyclerView.Adapter<DictionariesLi
     // Подготовка нового элемента списка и его объекта ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        text = parent.getResources().getString(R.string.layout_tv_word_s);
         // Заполнение макета
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.element_dictionary, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.element_dictionaries_list, parent, false);
         return new ViewHolder(view);// ViewHolder текущего элемента
     }
 
     // Назначает текст элемента списка
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        cursor.moveToPosition(position);
-        holder.setRowID(cursor.getLong(cursor.getColumnIndex(Dictionaries._ID)));
-        holder.name.setText(cursor.getString(cursor.getColumnIndex(Dictionaries.COLUMN_NAME)));
-        long milisec = cursor.getLong(cursor.getColumnIndex(Dictionaries.COLUMN_DATE_OF_CHANGE)) * 1000;
+        cursorDictionariesList.moveToPosition(position);
+        holder.setRowID(cursorDictionariesList.getLong(cursorDictionariesList.getColumnIndex(Dictionaries._ID)));
+        String dictionaryName = cursorDictionariesList.getString(cursorDictionariesList.getColumnIndex(Dictionaries.COLUMN_NAME));
+        holder.name.setText(dictionaryName);
+
+        long milisec = cursorDictionariesList.getLong(cursorDictionariesList.getColumnIndex(Dictionaries.COLUMN_DATE_OF_CHANGE)) * 1000;
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-        holder.date_of_change.setText(sdf.format(new Date(milisec)));
+        holder.dateOfChange.setText(sdf.format(new Date(milisec)));
+
+        holder.countOfWords.setText(text + " " + String.valueOf(getCountOfWordsInDictionary(dictionaryName)));
     }
 
     // Возвращает количество элементов, предоставляемых адаптером
     @Override
     public int getItemCount() {
-        return (cursor != null) ? cursor.getCount() : 0;
+        return (cursorDictionariesList != null) ? cursorDictionariesList.getCount() : 0;
     }
 
-    public void swapCursor(Cursor cursor){
-        this.cursor = cursor;
+    public void swapCursorDictionariesList(Cursor cursor){
+        this.cursorDictionariesList = cursor;
         notifyDataSetChanged();
+    }
+
+    public void swapCursorCountOfWords(Cursor cursor){
+        this.cursorCountOfWords = cursor;
+        notifyDataSetChanged();
+    }
+
+    private int getCountOfWordsInDictionary(String dictionaryName) {
+        int count = 0;
+        String currentName;
+        if (cursorCountOfWords.moveToFirst()) {
+            do {
+                currentName = cursorCountOfWords.getString(cursorCountOfWords.getColumnIndex(
+                        DatabaseDescription.Words.COLUMN_DICTIONARY));
+                if (currentName.equals(dictionaryName)) {
+                    count = cursorCountOfWords.getInt(cursorCountOfWords.getColumnIndex("counter"));
+                    return count;
+                }
+            } while (cursorCountOfWords.moveToNext());
+        }
+
+        return 0;
     }
 
 }

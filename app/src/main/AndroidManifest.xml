@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.activities.MainActivity"
-            android:label=""
+            android:label="EasyLearningEnglishWords"
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation"
             android:screenOrientation="portrait">

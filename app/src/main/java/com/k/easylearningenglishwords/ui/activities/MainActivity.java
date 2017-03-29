@@ -19,7 +19,7 @@ import android.view.View;
 
 import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription.Dictionaries;
-import com.k.easylearningenglishwords.data.sqlite.DatabaseHelper;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseMaster;
 import com.k.easylearningenglishwords.ui.fragments.AddEditWordFragment;
 import com.k.easylearningenglishwords.ui.fragments.DictionariesListFragment;
 import com.k.easylearningenglishwords.ui.fragments.DictionaryFragment;
@@ -210,29 +210,21 @@ public class MainActivity
 
     @Override
     public void onAddEditWordCompleted(Uri wordUri, String dictionaryName) {
-        updateDateOfChangeDictionary(dictionaryName);
+        changeDateOfChangeDictionary(dictionaryName);
     }
 
     // Обновление даты последнего изменения для словаря в таблице словарвей
     @Override
-    public void updateDateOfChangeDictionary(String dictionaryName) {
+    public void changeDateOfChangeDictionary(String dictionaryName) {
         // Получаем _ID словаря по имени
-        Cursor cursor = new DatabaseHelper(this).getReadableDatabase().query(
-                Dictionaries.TABLE_NAME,
-                null,
-                Dictionaries.COLUMN_NAME + "=?",
-                new String[]{dictionaryName},
-                null,
-                null,
-                null);
+        Cursor cursor = DatabaseMaster.getInstance(this)
+                .updateDateOfChangeDictionary(dictionaryName);
         if (cursor.getCount() > 0) {
             // Обновляем дату последнего изменения словаря по Uri словаря
             cursor.moveToFirst();
             int id = cursor.getInt(cursor.getColumnIndex(Dictionaries._ID));
             Uri dictionaryUri = Dictionaries.buildDictionariesUri(id);
             ContentValues cv = new ContentValues();
-//            cv.put(Dictionaries._ID, id);
-//            cv.put(Dictionaries.COLUMN_NAME, dictionaryName);
             cv.put(Dictionaries.COLUMN_DATE_OF_CHANGE, new Date().getTime() / 1000);
             int updatedRows = getContentResolver().update(
                     dictionaryUri,

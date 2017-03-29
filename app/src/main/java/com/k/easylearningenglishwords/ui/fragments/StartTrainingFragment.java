@@ -28,6 +28,7 @@ import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.adapters.DictionariesNamesListAdapter;
 import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription;
 import com.k.easylearningenglishwords.data.sqlite.DatabaseHelper;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseMaster;
 import com.k.easylearningenglishwords.ui.activities.TranslateWordTrainingActivity;
 import com.k.easylearningenglishwords.utils.Constants;
 
@@ -175,13 +176,7 @@ public class StartTrainingFragment extends Fragment {
     }
 
     private void initDictionariesArray() {
-        cursor = getActivity().getContentResolver().query(
-                DatabaseDescription.Dictionaries.CONTENT_URI,
-                null,
-                null,
-                null,
-                DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE + " COLLATE NOCASE DESC"
-        );
+        cursor = DatabaseMaster.getInstance(getContext()).getAllDictionaries();
 
         allDictionariesArray = new String[cursor.getCount()];
         checkedDictionariesArray = new boolean[cursor.getCount()];

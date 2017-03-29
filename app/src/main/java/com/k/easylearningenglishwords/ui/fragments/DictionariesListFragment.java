@@ -21,7 +21,8 @@ import android.view.ViewGroup;
 
 import com.k.easylearningenglishwords.R;
 import com.k.easylearningenglishwords.adapters.DictionariesListAdapter;
-import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription.Dictionaries;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription.Words;
 import com.k.easylearningenglishwords.ui.utils.ItemDivider;
 
 public class DictionariesListFragment extends Fragment
@@ -40,6 +41,7 @@ public class DictionariesListFragment extends Fragment
     }
 
     private static final int DICTIONARIES_LIST_LOADER = 0;
+    private static final int COUNT_OF_WORDS_IN_DICTIONARY_LOADER = 1;
 
     // Сообщает MainActivity о действии во фрагменте
     private DictionariesListFragmentListener listener;
@@ -110,6 +112,7 @@ public class DictionariesListFragment extends Fragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getLoaderManager().initLoader(DICTIONARIES_LIST_LOADER, null, this);
+        getLoaderManager().initLoader(COUNT_OF_WORDS_IN_DICTIONARY_LOADER, null, this);
     }
 
     // Вызывается из MainActivity при обновлении базы данных другим фрагментом
@@ -122,11 +125,18 @@ public class DictionariesListFragment extends Fragment
         switch (id) {
             case DICTIONARIES_LIST_LOADER:
                 return new CursorLoader(getActivity(),
-                        DatabaseDescription.Dictionaries.CONTENT_URI,
+                        Dictionaries.CONTENT_URI,
                         null,
                         null,
                         null,
-                        DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE + " COLLATE NOCASE DESC");
+                        Dictionaries.COLUMN_DATE_OF_CHANGE + " COLLATE NOCASE DESC");
+            case COUNT_OF_WORDS_IN_DICTIONARY_LOADER:
+                return new CursorLoader(getActivity(),
+                        Words.CONTENT_URI,
+                        new String[]{Words.COLUMN_DICTIONARY + ", COUNT(_id) AS counter"},
+                        new String(Words._ID + " >= 0) GROUP BY (" + Words.COLUMN_DICTIONARY),
+                        null,
+                        null);
             default:
                 return null;
         }
@@ -136,14 +146,24 @@ public class DictionariesListFragment extends Fragment
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         switch (loader.getId()) {
             case DICTIONARIES_LIST_LOADER:
-                dictionariesListAdapter.swapCursor(data);
+                dictionariesListAdapter.swapCursorDictionariesList(data);
+                break;
+            case COUNT_OF_WORDS_IN_DICTIONARY_LOADER:
+                dictionariesListAdapter.swapCursorCountOfWords(data);
                 break;
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        dictionariesListAdapter.swapCursor(null);
+        switch (loader.getId()) {
+            case DICTIONARIES_LIST_LOADER:
+                dictionariesListAdapter.swapCursorDictionariesList(null);
+                break;
+            case COUNT_OF_WORDS_IN_DICTIONARY_LOADER:
+                dictionariesListAdapter.swapCursorCountOfWords(null);
+                break;
+        }
     }
 
     @Override

@@ -46,7 +46,7 @@ public class DatabaseContentProvider extends ContentProvider {
     }
 
 
-        @Nullable
+    @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
@@ -123,7 +123,7 @@ public class DatabaseContentProvider extends ContentProvider {
         int numberOfRowsDeleted;
         String id;
 
-        switch (uriMatcher.match(uri)){
+        switch (uriMatcher.match(uri)) {
             case ONE_WORD:
                 id = uri.getLastPathSegment();
                 numberOfRowsDeleted = dbHelper.getWritableDatabase().delete(
@@ -147,7 +147,7 @@ public class DatabaseContentProvider extends ContentProvider {
                 throw new IllegalArgumentException(getContext().getString(R.string.exc_invalid_delete_uri) + uri);
         }
 
-        if (numberOfRowsDeleted != 0){
+        if (numberOfRowsDeleted != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
@@ -178,7 +178,7 @@ public class DatabaseContentProvider extends ContentProvider {
                 throw new IllegalArgumentException(getContext().getString(R.string.exc_invalid_update_uri) + uri);
         }
 
-        if (numberOfRowsUpdated != 0){
+        if (numberOfRowsUpdated != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
