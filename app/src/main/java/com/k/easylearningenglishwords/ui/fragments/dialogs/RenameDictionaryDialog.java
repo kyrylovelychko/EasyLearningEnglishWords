@@ -50,6 +50,7 @@ public class RenameDictionaryDialog extends DialogFragment {
         dictionaryName = (EditText) view.findViewById(R.id.dictionaryNameEditText);
         // Проставляем EditText текущее имя словаря
         dictionaryName.setText(getArguments().getString(MainActivity.DICTIONARY_NAME));
+        dictionaryName.setSelection(dictionaryName.getText().length());
         // Сохраняем старое (пока еще текущее) имя словаря
         oldDictionaryName = dictionaryName.getText().toString();
 

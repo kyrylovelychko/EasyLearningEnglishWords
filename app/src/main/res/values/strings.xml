@@ -2,11 +2,11 @@
     <string name="app_name">EasyLearningEnglishWords</string>
 
     <!--Layout-->
-    <string name="layout_tv_hint_en">По-английски</string>
-    <string name="layout_tv_hint_ru">По-русски</string>
-    <string name="layout_tv_english_word">Английский: </string>
-    <string name="layout_tv_russian_word">Русский: </string>
-    <string name="layout_tv_dictionary">Словарь: </string>
+    <string name="layout_tv_hint_en">На английском</string>
+    <string name="layout_tv_hint_ru">На русском</string>
+    <string name="layout_tv_english_word">На английском:</string>
+    <string name="layout_tv_russian_word">На русском:</string>
+    <string name="layout_tv_dictionary">Словарь:</string>
     <string name="layout_tv_dictionaries">Словари:</string>
     <string name="layout_tv_training_mode">Режим тренировки:</string>
     <string name="layout_tv_translation_direction">Направление перевода:</string>
