@@ -4,16 +4,11 @@
     android:layout_height="match_parent"
     tools:context="com.k.easylearningenglishwords.ui.fragments.StartTrainingFragment">
 
-    <!-- TODO dimens, styles-->
-
     <TextView
         android:id="@+id/tvDictionary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
+        style="@style/FinalTextViewStartTraining"
         android:layout_marginTop="16dp"
-        android:text="@string/layout_tv_dictionaries"
-        android:textSize="18sp" />
+        android:text="@string/layout_tv_dictionaries" />
 
     <Button
         android:id="@+id/btnChooseDictionaries"
@@ -40,14 +35,9 @@
 
     <TextView
         android:id="@+id/tvTrainingMode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        style="@style/FinalTextViewStartTraining"
         android:layout_below="@id/rvDictionaries"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="12dp"
-        android:text="@string/layout_tv_training_mode"
-        android:textSize="18sp" />
+        android:text="@string/layout_tv_training_mode" />
 
     <RadioGroup
         android:id="@+id/rgTrainingMode"
@@ -59,34 +49,25 @@
 
         <RadioButton
             android:id="@+id/rbTranslateWord"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RadioButtonStartTraining"
             android:checked="true"
-            android:text="@string/layout_rb_translate_word"
-            android:textSize="16sp" />
+            android:text="@string/layout_rb_translate_word" />
 
         <RadioButton
             android:id="@+id/rbChooseTranslate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RadioButtonStartTraining"
             android:checked="false"
-            android:text="@string/layout_rb_choose_translate"
-            android:textSize="16sp"
             android:clickable="false"
-            android:textColor="@color/unavailable"/>
+            android:text="@string/layout_rb_choose_translate"
+            android:textColor="@color/unavailable" />
 
     </RadioGroup>
 
     <TextView
         android:id="@+id/tvTranslationDirection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tvTrainingMode"
-        android:layout_alignStart="@+id/tvTrainingMode"
-        android:layout_below="@+id/rgTrainingMode"
-        android:layout_marginTop="12dp"
-        android:text="@string/layout_tv_translation_direction"
-        android:textSize="18sp" />
+        style="@style/FinalTextViewStartTraining"
+        android:layout_below="@id/rgTrainingMode"
+        android:text="@string/layout_tv_translation_direction" />
 
     <RadioGroup
         android:id="@+id/rgTranslationDirection"
@@ -98,68 +79,57 @@
 
         <RadioButton
             android:id="@+id/rbRandom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RadioButtonStartTraining"
             android:checked="true"
-            android:text="@string/layout_rb_random"
-            android:textSize="16sp" />
+            android:text="@string/layout_rb_random" />
 
         <RadioButton
             android:id="@+id/rbLikeInADictionary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/layout_rb_like_in_a_dictionary"
-            android:textSize="16sp" />
+            style="@style/RadioButtonStartTraining"
+            android:text="@string/layout_rb_like_in_a_dictionary" />
 
         <RadioButton
             android:id="@+id/rbEnToRu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/layout_rb_en_to_ru"
-            android:textSize="16sp" />
+            style="@style/RadioButtonStartTraining"
+            android:text="@string/layout_rb_en_to_ru" />
 
         <RadioButton
             android:id="@+id/rbRuToEn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/layout_rb_ru_to_en"
-            android:textSize="16sp" />
+            style="@style/RadioButtonStartTraining"
+            android:text="@string/layout_rb_ru_to_en" />
 
     </RadioGroup>
 
     <TextView
         android:id="@+id/tvCountOfWords"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        style="@style/FinalTextViewStartTraining"
         android:layout_below="@id/rgTranslationDirection"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="12dp"
-        android:text="@string/layout_tv_count_of_words"
-        android:textSize="18sp" />
+        android:text="@string/layout_tv_count_of_words" />
 
     <Spinner
         android:id="@+id/spnChooseCountOfWords"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:layout_alignTop="@+id/tvCountOfWords"
+        android:layout_alignEnd="@+id/switchAutoContinue"
         android:layout_alignRight="@+id/switchAutoContinue"
-        android:layout_alignEnd="@+id/switchAutoContinue" />
+        android:layout_alignTop="@+id/tvCountOfWords"
+        android:textSize="15sp" />
 
     <Switch
         android:id="@+id/switchAutoContinue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tvCountOfWords"
-        android:layout_alignStart="@+id/tvCountOfWords"
-        android:layout_below="@+id/tvCountOfWords"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/tvCountOfWords"
         android:layout_marginEnd="25dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginRight="25dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
         android:checked="true"
         android:text="@string/layout_switch_auto_continue"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="18sp" />
 
     <Button

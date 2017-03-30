@@ -25,8 +25,6 @@ import com.k.easylearningenglishwords.utils.Constants;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static android.R.color.white;
-
 public class TranslateWordTrainingActivity extends AppCompatActivity {
 
     //region ===== Поля для UI =====
@@ -211,7 +209,8 @@ public class TranslateWordTrainingActivity extends AppCompatActivity {
             if (s.length() >= answer.length()) {
                 if (s.toString().equalsIgnoreCase(answer)) {
                     btnHelpTraining.setClickable(false);
-                    etTranslatedText.setBackgroundColor(getResources().getColor(R.color.correctAnswer));
+//                    etTranslatedText.setBackgroundColor(getResources().getColor(R.color.correctAnswer));
+                    etTranslatedText.setBackgroundResource(R.drawable.shape_corners_15_green);
                     if (autoContinue) {
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -225,12 +224,14 @@ public class TranslateWordTrainingActivity extends AppCompatActivity {
                 } else {
                     btnHelpTraining.setClickable(true);
                     showBtnNextWord(false);
-                    etTranslatedText.setBackgroundColor(getResources().getColor(R.color.wrongAnswer));
+//                    etTranslatedText.setBackgroundColor(getResources().getColor(R.color.wrongAnswer));
+                    etTranslatedText.setBackgroundResource(R.drawable.shape_corners_15_red);
                 }
             } else {
                 btnHelpTraining.setClickable(true);
                 showBtnNextWord(false);
-                etTranslatedText.setBackgroundColor(getResources().getColor(white));
+//                etTranslatedText.setBackgroundColor(getResources().getColor(white));
+                etTranslatedText.setBackgroundResource(R.drawable.shape_corners_15_white);
             }
         }
     };
