@@ -19,14 +19,12 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        public TextView wordFrom;
-        public TextView wordTo;
+        public TextView word;
         private long rowId;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            wordFrom = (TextView) itemView.findViewById(R.id.wordFrom);
-            wordTo = (TextView) itemView.findViewById(R.id.wordTo);
+            word = (TextView) itemView.findViewById(R.id.word);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -53,23 +51,26 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Заполнение макета
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.element_word, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.element_in_dictionary, parent, false);
         return new ViewHolder(view);
     }
 
     // Назначает текст элемента списка
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        String wordEn;
+        String wordRu;
+
         cursor.moveToPosition(position);
         holder.setRowId(cursor.getLong(cursor.getColumnIndex(DatabaseDescription.Words._ID)));
+        wordEn = cursor.getString(cursor.getColumnIndex(Words.COLUMN_EN));
+        wordRu = cursor.getString(cursor.getColumnIndex(Words.COLUMN_RU));
         switch (cursor.getInt(cursor.getColumnIndex(Words.COLUMN_FROM_EN_TO_RU))){
             case Words.FROM_EN_TO_RU_TRUE:
-                holder.wordFrom.setText(cursor.getString(cursor.getColumnIndex(Words.COLUMN_EN)));
-                holder.wordTo.setText(cursor.getString(cursor.getColumnIndex(Words.COLUMN_RU)));
+                holder.word.setText(wordEn + " - " + wordRu);
                 break;
             case Words.FROM_EN_TO_RU_FALSE:
-                holder.wordFrom.setText(cursor.getString(cursor.getColumnIndex(Words.COLUMN_RU)));
-                holder.wordTo.setText(cursor.getString(cursor.getColumnIndex(Words.COLUMN_EN)));
+                holder.word.setText(wordRu + " - " + wordEn);
                 break;
         }
     }
