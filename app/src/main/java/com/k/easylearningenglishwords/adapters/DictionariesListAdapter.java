@@ -72,7 +72,7 @@ public class DictionariesListAdapter extends RecyclerView.Adapter<DictionariesLi
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         text = parent.getResources().getString(R.string.layout_tv_word_s);
         // Заполнение макета
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.element_dictionaries_list, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.element_in_dictionaries_list, parent, false);
         return new ViewHolder(view);// ViewHolder текущего элемента
     }
 
