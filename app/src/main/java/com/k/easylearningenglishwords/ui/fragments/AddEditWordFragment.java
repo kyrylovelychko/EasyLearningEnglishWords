@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -26,12 +25,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.k.easylearningenglishwords.R;
-import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription.Dictionaries;
-import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription.Words;
 import com.k.easylearningenglishwords.data.network.yandexdictionary.YandexDictionaryResponse;
 import com.k.easylearningenglishwords.data.network.yandexdictionary.YandexDictionaryRetrofit;
 import com.k.easylearningenglishwords.data.network.yandextranslate.YandexTranslateResponse;
 import com.k.easylearningenglishwords.data.network.yandextranslate.YandexTranslateRetrofit;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription.Dictionaries;
+import com.k.easylearningenglishwords.data.sqlite.DatabaseDescription.Words;
 import com.k.easylearningenglishwords.ui.activities.MainActivity;
 import com.k.easylearningenglishwords.ui.fragments.dialogs.AddDictionaryDialog;
 
@@ -52,6 +51,8 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
 
         //Вызвается при обновлении даты последнего изменения конкретного словаря
         void changeDateOfChangeDictionary(String dictionaryName);
+
+        void showSnackBar(int snackTextRId);
     }
 
     // Константа для идентификации Loader
@@ -82,7 +83,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
     private int FROM_EN_TO_RU;
 
     private FloatingActionButton saveWordFAB;
-    private CoordinatorLayout coordinatorLayout;
+    private Snackbar snackbar;
 
     public AddEditWordFragment() {
         // Required empty public constructor
@@ -113,8 +114,6 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         translateToEn.setOnClickListener(getOnClickTranslate());
         translateToRu.setVisibility(View.GONE);
         translateToRu.setOnClickListener(getOnClickTranslate());
-
-        coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.coordinatorLayout);
 
         saveWordFAB = (FloatingActionButton) getActivity().findViewById(R.id.FAB);
         saveWordFAB.setImageResource(R.drawable.ic_save_black_24dp);
@@ -203,17 +202,15 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         // Если 1 - пользователь сначала ввел английское слово, а потом русское. 0 - наоборот.
         @Override
         public void afterTextChanged(Editable s) {
-            if (!enTextInputLayout.getEditText().getText().toString().equals("") &&
-                    ruTextInputLayout.getEditText().getText().toString().equals("")) {
+            String enText = enTextInputLayout.getEditText().getText().toString();
+            String ruText = ruTextInputLayout.getEditText().getText().toString();
+            if (!enText.equals("") && ruText.equals("")) {
                 FROM_EN_TO_RU = Words.FROM_EN_TO_RU_TRUE;
                 translateToRu.setVisibility(View.VISIBLE);
-                translateToRu.setEnabled(true);
-            } else if (enTextInputLayout.getEditText().getText().toString().equals("") &&
-                    !ruTextInputLayout.getEditText().getText().toString().equals("")) {
+            } else if (enText.equals("") && !ruText.equals("")) {
                 FROM_EN_TO_RU = Words.FROM_EN_TO_RU_FALSE;
                 translateToEn.setVisibility(View.VISIBLE);
-            } else if (enTextInputLayout.getEditText().getText().toString().equals("") &&
-                    ruTextInputLayout.getEditText().getText().toString().equals("")) {
+            } else {
                 translateToEn.setVisibility(View.GONE);
                 translateToRu.setVisibility(View.GONE);
             }
@@ -248,7 +245,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
             Uri newWordUri = getActivity().getContentResolver().insert(Words.CONTENT_URI, contentValues);
             if (newWordUri != null) {
                 // Если слово успешно добавлено, уведомляем пользователя.
-                Snackbar.make(coordinatorLayout, R.string.snack_word_added, Snackbar.LENGTH_LONG).show();
+                listener.showSnackBar(R.string.snack_word_added);
                 // Вызываем метод MainActivity для оповещения окончания вставки нового слова
                 listener.onAddEditWordCompleted(newWordUri, dictionaryName);
                 // В таблице словарей, для записи текущего словаря обновляем дату последнего изменения
@@ -256,14 +253,14 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                 listener.changeDateOfChangeDictionary(dictionaryName);
             } else {
                 // Ошибка вставки нового слова
-                Snackbar.make(coordinatorLayout, R.string.snack_word_not_added, Snackbar.LENGTH_LONG).show();
+                listener.showSnackBar(R.string.snack_word_not_added);
             }
         } else {
             // Если обновление существующего слова, делаем обновление записи таблицы слов
             int updatedRows = getActivity().getContentResolver().update(wordUri, contentValues, null, null);
             if (updatedRows > 0) {
                 // Если слово успешно добавлено, уведомляем пользователя.
-                Snackbar.make(coordinatorLayout, R.string.snack_word_updated, Snackbar.LENGTH_LONG).show();
+                listener.showSnackBar(R.string.snack_word_updated);
                 // Вызываем метод MainActivity для оповещения окончания обновления слова
                 listener.onAddEditWordCompleted(wordUri, dictionaryName);
                 // В таблице словарей, для записи текущего словаря обновляем дату последнего изменения
@@ -271,7 +268,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                 listener.changeDateOfChangeDictionary(dictionaryName);
             } else {
                 // Ошибка вставки нового слова
-                Snackbar.make(coordinatorLayout, R.string.snack_word_not_updated, Snackbar.LENGTH_LONG).show();
+                listener.showSnackBar(R.string.snack_word_not_updated);
             }
         }
     }
@@ -400,6 +397,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                         lang = "ru-en";
                         break;
                 }
+
                 if (text.contains(" ")) {
                     tryToTranslateText(text, lang);
                 } else {
@@ -417,9 +415,11 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                     switch (FROM_EN_TO_RU) {
                         case Words.FROM_EN_TO_RU_TRUE:
                             ruTextInputLayout.getEditText().setText(response.body().text.get(0).trim());
+                            ruTextInputLayout.getEditText().setSelection(ruTextInputLayout.getEditText().getText().length());
                             break;
                         case Words.FROM_EN_TO_RU_FALSE:
                             enTextInputLayout.getEditText().setText(response.body().text.get(0).trim());
+                            enTextInputLayout.getEditText().setSelection(enTextInputLayout.getEditText().getText().length());
                             break;
                     }
                 }
@@ -481,9 +481,11 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                         switch (FROM_EN_TO_RU) {
                             case Words.FROM_EN_TO_RU_TRUE:
                                 ruTextInputLayout.getEditText().setText(arrayList.get(checkedPosition).trim());
+                                ruTextInputLayout.getEditText().setSelection(ruTextInputLayout.getEditText().getText().length());
                                 break;
                             case Words.FROM_EN_TO_RU_FALSE:
                                 enTextInputLayout.getEditText().setText(arrayList.get(checkedPosition).trim());
+                                enTextInputLayout.getEditText().setSelection(enTextInputLayout.getEditText().getText().length());
                                 break;
                         }
                     }

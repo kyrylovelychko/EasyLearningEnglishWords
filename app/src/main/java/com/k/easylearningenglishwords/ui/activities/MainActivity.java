@@ -51,6 +51,7 @@ public class MainActivity
 
     Toolbar toolbar;
     DrawerLayout drawerLayout;
+    Snackbar snackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +141,7 @@ public class MainActivity
         dialog.setArguments(arguments);
         dialog.show(getSupportFragmentManager(), "rename dictionary");
     }
+
 
     @Override
     public void onDeleteDictionary(String dictionaryName) {
@@ -238,6 +240,19 @@ public class MainActivity
     }
 
     //endregion
+
+    @Override
+    public void showSnackBar(int snackTextRId) {
+        snackbar = Snackbar.make(findViewById(R.id.coordinatorLayout), snackTextRId, Snackbar.LENGTH_LONG);
+//        snackbar.show();
+    }
+
+    @Override
+    public void dismissSnackBar() {
+        if (snackbar != null) {
+            snackbar.dismiss();
+        }
+    }
 
     @Override
     public void onBackPressed() {

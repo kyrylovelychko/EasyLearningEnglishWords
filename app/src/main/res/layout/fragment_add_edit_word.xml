@@ -1,87 +1,124 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/translateToEnBtn"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/ic_yandex_translate"
+        app:layout_constraintBottom_toBottomOf="@+id/enTextInputLayout"
+        app:layout_constraintDimensionRatio="w,1:1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/enTextInputLayout"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/enTextInputLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/translateToEnBtn"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <EditText
+            android:id="@+id/enText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:hint="@string/layout_tv_hint_en"
+            android:imeOptions="actionNext"
+            android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/enTextInputLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/ruTextInputLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/enTextInputLayout"
+        app:layout_constraintRight_toLeftOf="@+id/translateToRuBtn"
+        android:layout_marginRight="16dp">
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="@string/layout_tv_hint_en"
-                    android:imeOptions="actionNext"
-                    android:inputType="text" />
-            </android.support.design.widget.TextInputLayout>
-
-            <Button
-                android:id="@+id/translateToEnBtn"
-                android:layout_width="42dp"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimaryDark" />
-
-        </LinearLayout>
-
-        <LinearLayout
+        <EditText
+            android:id="@+id/ruText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:hint="@string/layout_tv_hint_ru"
+            android:imeOptions="actionNext"
+            android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/ruTextInputLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
+    <Button
+        android:id="@+id/translateToRuBtn"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="0dp"
+        android:background="@drawable/ic_yandex_translate"
+        app:layout_constraintBottom_toBottomOf="@+id/ruTextInputLayout"
+        app:layout_constraintDimensionRatio="h,1:1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ruTextInputLayout"
+        app:layout_constraintVertical_bias="0.0" />
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="@string/layout_tv_hint_ru"
-                    android:imeOptions="actionNext"
-                    android:inputType="text" />
-            </android.support.design.widget.TextInputLayout>
+    <TextView
+        android:id="@+id/dictionary"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="24dp"
+        android:gravity="center_vertical"
+        android:textAlignment="viewStart"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/chooseDictionaryButton"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toRightOf="@+id/textView6"
+        app:layout_constraintRight_toLeftOf="@+id/chooseDictionaryButton"
+        app:layout_constraintTop_toBottomOf="@+id/ruTextInputLayout"
+        app:layout_constraintVertical_bias="0.5" />
 
-            <Button
-                android:id="@+id/translateToRuBtn"
-                android:layout_width="42dp"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimaryDark" />
+    <Button
+        android:id="@+id/chooseDictionaryButton"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="0dp"
+        android:background="@drawable/ic_library_books_black_24dp"
+        app:layout_constraintDimensionRatio="w,1:1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dictionary" />
 
-        </LinearLayout>
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="0dp"
+        android:gravity="center_vertical"
+        android:text="@string/layout_tv_dictionary"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/dictionary"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dictionary"
+        app:layout_constraintVertical_bias="0.0" />
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/dictionary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-
-            <Button
-                android:id="@+id/chooseDictionaryButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/ic_search_black_24dp" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-</ScrollView>
+</android.support.constraint.ConstraintLayout>

@@ -31,6 +31,8 @@ public class WordDetailsFragment extends Fragment
 
         //Вызывается при удалении слова
         void onDeleteWord(Uri wordUri);
+
+        void dismissSnackBar();
     }
 
     private static final int WORD_LOADER = 0;
@@ -65,6 +67,7 @@ public class WordDetailsFragment extends Fragment
         editWordFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                listener.dismissSnackBar();
                 listener.onEditWord(wordUri);
             }
         });

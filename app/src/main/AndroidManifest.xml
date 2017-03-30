@@ -16,6 +16,7 @@
             android:name=".ui.activities.MainActivity"
             android:label="EasyLearningEnglishWords"
             android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
             <intent-filter>
