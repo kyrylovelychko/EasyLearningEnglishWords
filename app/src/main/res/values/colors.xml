@@ -4,8 +4,7 @@
     <color name="colorPrimaryDark">#616161</color>
     <color name="colorAccent">#ffea00</color>
     <color name="colorTrainingFont">#e9e7e7</color>
-    <color name="wrongAnswer">#ec6f6f</color>
-    <color name="transparent">#00FFFFFF</color>
-    <color name="correctAnswer">#6cde68</color>
+    <color name="wrongAnswer">#ef9a9a</color>
+    <color name="correctAnswer">#a5d6a7</color>
     <color name="unavailable">#5e5e5e</color>
 </resources>
