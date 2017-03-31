@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EasyLearningEnglishWords</string>
+    <string name="app_name">Мои словари</string>
 
     <!--Layout-->
     <string name="layout_tv_hint_en">На английском</string>

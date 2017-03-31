@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.k.easylearningenglishwords">
+    package="com.velychko.kyrylo.mydictionaries">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -13,8 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.activities.MainActivity"
-            android:label="EasyLearningEnglishWords"
+            android:name="com.velychko.kyrylo.mydictionaries.ui.activities.MainActivity"
+            android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize"
             android:configChanges="orientation"
@@ -26,16 +26,15 @@
         </activity>
 
         <activity
-            android:name=".ui.activities.TranslateWordTrainingActivity"
-            android:label="@string/title_translate_word_training"
+            android:name="com.velychko.kyrylo.mydictionaries.ui.activities.TranslateWordTrainingActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
         </activity>
 
         <provider
-            android:name=".data.sqlite.DatabaseContentProvider"
-            android:authorities="com.k.easylearningenglishwords.data"
+            android:name="com.velychko.kyrylo.mydictionaries.data.sqlite.DatabaseContentProvider"
+            android:authorities="com.velychko.kyrylo.mydictionaries.data"
             android:enabled="true"
             android:exported="false" />
     </application>
