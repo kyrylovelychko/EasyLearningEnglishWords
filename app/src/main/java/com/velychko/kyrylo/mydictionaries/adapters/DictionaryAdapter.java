@@ -14,13 +14,69 @@ import com.velychko.kyrylo.mydictionaries.data.sqlite.DatabaseDescription.Words;
 
 public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.ViewHolder> {
 
+    // Интерфейс реализуется DictionaryAdapter для обработки
+    // прикосновения к элементу в списке RecyclerView
     public interface DictionaryClickListener {
         void onClick(Uri wordUri);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
-        public TextView word;
-        private long rowId;
+    //region ===== Поля класса =====
+    // Курсор для получения списка словарей
+    private Cursor cursor = null;
+    // Экземпляр внутреннего интерфейса
+    private final DictionaryClickListener clickListener;
+    //endregion
+
+    // Конструктор
+    public DictionaryAdapter(DictionaryClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
+
+    // Подготовка нового элемента списка и его объекта ViewHolder
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.element_in_dictionary, parent, false);
+        return new ViewHolder(view);
+    }
+
+    // Заполнение полей элемента списка
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        String wordEn;
+        String wordRu;
+
+        // В зависимости от того, какое слово пользователь ввел первым, учитываем порядок перевода -
+        // с русского на английский, либо с английского на русский
+        cursor.moveToPosition(position);
+        holder.setRowId(cursor.getLong(cursor.getColumnIndex(DatabaseDescription.Words._ID)));
+        wordEn = cursor.getString(cursor.getColumnIndex(Words.COLUMN_EN));
+        wordRu = cursor.getString(cursor.getColumnIndex(Words.COLUMN_RU));
+        switch (cursor.getInt(cursor.getColumnIndex(Words.COLUMN_FROM_EN_TO_RU))) {
+            case Words.FROM_EN_TO_RU_TRUE:
+                holder.word.setText(wordEn + " - " + wordRu);
+                break;
+            case Words.FROM_EN_TO_RU_FALSE:
+                holder.word.setText(wordRu + " - " + wordEn);
+                break;
+        }
+    }
+
+    // Возвращает количество элементов, предоставляемых адаптером
+    @Override
+    public int getItemCount() {
+        return (cursor != null) ? cursor.getCount() : 0;
+    }
+
+    // Обновление курсора для получения списка словарей
+    public void swapCursor(Cursor cursor) {
+        this.cursor = cursor;
+        notifyDataSetChanged();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView word; // Пара слов в формате en-ru или ru-en
+        private long rowId; // Идентификатор записи базы данных для контакта во ViewHolder
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -38,51 +94,4 @@ public class DictionaryAdapter extends RecyclerView.Adapter<DictionaryAdapter.Vi
         }
     }
 
-    // Переменные экземпляров
-    private Cursor cursor = null;
-    private final DictionaryClickListener clickListener;
-
-    // Конструктор
-    public DictionaryAdapter(DictionaryClickListener clickListener) {
-        this.clickListener = clickListener;
-    }
-
-    // Подготовка нового элемента списка и его объекта ViewHolder
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Заполнение макета
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.element_in_dictionary, parent, false);
-        return new ViewHolder(view);
-    }
-
-    // Назначает текст элемента списка
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        String wordEn;
-        String wordRu;
-
-        cursor.moveToPosition(position);
-        holder.setRowId(cursor.getLong(cursor.getColumnIndex(DatabaseDescription.Words._ID)));
-        wordEn = cursor.getString(cursor.getColumnIndex(Words.COLUMN_EN));
-        wordRu = cursor.getString(cursor.getColumnIndex(Words.COLUMN_RU));
-        switch (cursor.getInt(cursor.getColumnIndex(Words.COLUMN_FROM_EN_TO_RU))){
-            case Words.FROM_EN_TO_RU_TRUE:
-                holder.word.setText(wordEn + " - " + wordRu);
-                break;
-            case Words.FROM_EN_TO_RU_FALSE:
-                holder.word.setText(wordRu + " - " + wordEn);
-                break;
-        }
-    }
-
-    // Возвращает количество элементов, предоставляемых адаптером
-    @Override
-    public int getItemCount() {
-        return (cursor != null) ? cursor.getCount() : 0;
-    }
-
-    public void swapCursor(Cursor cursor){
-        this.cursor = cursor;
-        notifyDataSetChanged();
-    }
 }

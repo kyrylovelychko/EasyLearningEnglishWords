@@ -18,7 +18,7 @@ import android.widget.EditText;
 
 import com.velychko.kyrylo.mydictionaries.R;
 import com.velychko.kyrylo.mydictionaries.data.sqlite.DatabaseDescription;
-import com.velychko.kyrylo.mydictionaries.ui.activities.MainActivity;
+import com.velychko.kyrylo.mydictionaries.utils.Constants;
 
 import java.util.Date;
 
@@ -37,6 +37,7 @@ public class RenameDictionaryDialog extends DialogFragment {
 
     private CoordinatorLayout coordinatorLayout;
     private RenameDictionaryDialogListener listener;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public class RenameDictionaryDialog extends DialogFragment {
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_add_dictionary, null);
         dictionaryName = (EditText) view.findViewById(R.id.dictionaryNameEditText);
         // Проставляем EditText текущее имя словаря
-        dictionaryName.setText(getArguments().getString(MainActivity.DICTIONARY_NAME));
+        dictionaryName.setText(getArguments().getString(Constants.ARGS_DICTIONARY_NAME));
         dictionaryName.setSelection(dictionaryName.getText().length());
         // Сохраняем старое (пока еще текущее) имя словаря
         oldDictionaryName = dictionaryName.getText().toString();
@@ -64,12 +65,14 @@ public class RenameDictionaryDialog extends DialogFragment {
                 .setPositiveButton(R.string.dialog_button_save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Получем новое название словаря, которое ввел и захотел сохранить пользователь
+                        // Получем новое название словаря, которое ввел и захотел сохранить
+                        // пользователь
                         newName = dictionaryName.getText().toString().trim();
                         // Сравниваем старое и новое название. Если не отличаются -
                         // уведомляем пользователя и ничего не делаем
                         if (oldDictionaryName.equals(newName)) {
-                            Snackbar.make(coordinatorLayout, R.string.snack_dictionary_not_renamed, Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(coordinatorLayout, R.string.snack_dictionary_not_renamed,
+                                    Snackbar.LENGTH_LONG).show();
                             return;
                         }
 
@@ -99,7 +102,8 @@ public class RenameDictionaryDialog extends DialogFragment {
             long id = cursor.getInt(cursor.getColumnIndex(DatabaseDescription.Dictionaries._ID));
             ContentValues cv = new ContentValues();
             cv.put(DatabaseDescription.Dictionaries.COLUMN_NAME, newName);
-            cv.put(DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE, new Date().getTime() / 1000);
+            cv.put(DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE,
+                    new Date().getTime() / 1000);
             int updatedRows = getActivity().getContentResolver().update(
                     DatabaseDescription.Dictionaries.buildDictionariesUri(id),
                     cv,

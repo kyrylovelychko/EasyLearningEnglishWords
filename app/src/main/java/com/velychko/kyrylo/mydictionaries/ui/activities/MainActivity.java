@@ -32,6 +32,8 @@ import com.velychko.kyrylo.mydictionaries.ui.fragments.dialogs.RenameDictionaryD
 
 import java.util.Date;
 
+import static com.velychko.kyrylo.mydictionaries.utils.Constants.*;
+
 public class MainActivity
         extends AppCompatActivity
         implements DictionariesListFragment.DictionariesListFragmentListener,
@@ -40,14 +42,6 @@ public class MainActivity
         AddEditWordFragment.AddEditWordFragmentListener,
         DeleteWordDialog.DeleteWordDialogListener,
         RenameDictionaryDialog.RenameDictionaryDialogListener {
-
-    //region ===== Константы =====
-    // Ключ для сохранения Uri словаря в переданном объекте Bundle
-    public static final String DICTIONARY_URI = "dictionary_uri";
-    public static final String DICTIONARY_NAME = "dictionary_name";
-    // Ключ для сохранения Uri слова в переданном объекте Bundle
-    public static final String WORD_URI = "word_uri";
-    //endregion
 
     Toolbar toolbar;
     DrawerLayout drawerLayout;
@@ -62,14 +56,7 @@ public class MainActivity
 
         initNavigationView();
 
-//        if (savedInstanceState == null) {
-//            StartTrainingFragment startTrainingFragment = new StartTrainingFragment();
-//            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//            transaction.add(R.id.fragmentContainer, startTrainingFragment);
-//            transaction.commit();
-//        }
-
-        //  Вывод фрагмента со списком словарей
+        // Первоначальный экран - фрагмент со списком словарей
         if (savedInstanceState == null) {
             DictionariesListFragment dictionariesListFragment = new DictionariesListFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -81,7 +68,8 @@ public class MainActivity
     private void initNavigationView() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_open, R.string.navigation_close);
+        ActionBarDrawerToggle toggle =
+                new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_open, R.string.navigation_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -93,11 +81,17 @@ public class MainActivity
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 switch (item.getItemId()) {
                     case R.id.navigation_my_dictionaries:
-                        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        // Очищаем BackStack. Кто теперь нажмет назад - выйдет из пиложения
+                        getSupportFragmentManager()
+                                .popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        // Запуск фрагмента со списком всех словарей
                         transaction.replace(R.id.fragmentContainer, new DictionariesListFragment());
                         break;
                     case R.id.navigation_training:
-                        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        // Очищаем BackStack. Кто теперь нажмет назад - выйдет из пиложения
+                        getSupportFragmentManager()
+                                .popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        // Запуск фрагмента с тренировками
                         transaction.replace(R.id.fragmentContainer, new StartTrainingFragment());
                         break;
                 }
@@ -122,7 +116,7 @@ public class MainActivity
         // Uri словаря передаем параметром
         DictionaryFragment dictionaryFragment = new DictionaryFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable(DICTIONARY_URI, dictionaryUri);
+        arguments.putParcelable(ARGS_DICTIONARY_URI, dictionaryUri);
         dictionaryFragment.setArguments(arguments);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -137,7 +131,7 @@ public class MainActivity
         // Имя словаря передаем параметром
         RenameDictionaryDialog dialog = new RenameDictionaryDialog();
         Bundle arguments = new Bundle();
-        arguments.putString(DICTIONARY_NAME, dictionaryName);
+        arguments.putString(ARGS_DICTIONARY_NAME, dictionaryName);
         dialog.setArguments(arguments);
         dialog.show(getSupportFragmentManager(), "rename dictionary");
     }
@@ -149,7 +143,7 @@ public class MainActivity
         // Имя словаря передаем параметром
         DeleteDictionaryDialog dialog = new DeleteDictionaryDialog();
         Bundle arguments = new Bundle();
-        arguments.putString(DICTIONARY_NAME, dictionaryName);
+        arguments.putString(ARGS_DICTIONARY_NAME, dictionaryName);
         dialog.setArguments(arguments);
         dialog.show(getSupportFragmentManager(), "delete dictionary");
     }
@@ -161,6 +155,8 @@ public class MainActivity
     @Override
     public void onAddWord(String dictionaryName) {
         // Вывод фрагмента добавления/редактирования слова
+        // Первый параметр = null - это значит, что будем добавлять новое слово в указанный словарь
+        // dictionaryName
         displayAddEditWordFragment(null, dictionaryName);
     }
 
@@ -170,7 +166,7 @@ public class MainActivity
         // Uri слова передаем параметром
         WordDetailsFragment wordDetailsFragment = new WordDetailsFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable(WORD_URI, wordUri);
+        arguments.putParcelable(ARGS_WORD_URI, wordUri);
         wordDetailsFragment.setArguments(arguments);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -182,6 +178,8 @@ public class MainActivity
     @Override
     public void onEditWord(Uri wordUri) {
         // Вывод фрагмента добавления/редактирования слова
+        // Первый параметр = wordUri - это значит, что будем редактировать существующее слово
+        // с указанным Uri
         displayAddEditWordFragment(wordUri, null);
     }
 
@@ -189,7 +187,7 @@ public class MainActivity
     public void onDeleteWord(Uri wordUri) {
         DeleteWordDialog dialog = new DeleteWordDialog();
         Bundle arguments = new Bundle();
-        arguments.putParcelable(WORD_URI, wordUri);
+        arguments.putParcelable(ARGS_WORD_URI, wordUri);
         dialog.setArguments(arguments);
         dialog.show(getSupportFragmentManager(), "delete word");
     }
@@ -197,11 +195,12 @@ public class MainActivity
     private void displayAddEditWordFragment(Uri wordUri, String dictionaryName) {
         // Вывод фрагмента добавления/редактирования слова
         // Если редактирование слова - Uri слова передаем параметром
-        // Если добавление нового слова - Uri будет содержать null
+        // Если добавление нового слова - Uri будет содержать null,
+        // а передаем имя словаря нового слова
         AddEditWordFragment addEditWordFragment = new AddEditWordFragment();
         Bundle arguments = new Bundle();
-        arguments.putParcelable(WORD_URI, wordUri);
-        arguments.putString(DICTIONARY_NAME, dictionaryName);
+        arguments.putParcelable(ARGS_WORD_URI, wordUri);
+        arguments.putString(ARGS_DICTIONARY_NAME, dictionaryName);
         addEditWordFragment.setArguments(arguments);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -212,6 +211,7 @@ public class MainActivity
 
     @Override
     public void onAddEditWordCompleted(Uri wordUri, String dictionaryName) {
+        // После любого изменения в слове, надо обновить дату последнего изменения его словаря
         changeDateOfChangeDictionary(dictionaryName);
     }
 
@@ -241,23 +241,36 @@ public class MainActivity
 
     //endregion
 
+    //region ===== SnackBar =====
+
     @Override
     public void showSnackBar(int snackTextRId) {
-        snackbar = Snackbar.make(findViewById(R.id.coordinatorLayout), snackTextRId, Snackbar.LENGTH_LONG);
+        snackbar = Snackbar.make(findViewById(R.id.coordinatorLayout), snackTextRId,
+                Snackbar.LENGTH_LONG);
+        // Если показывать все нужные SnackBar'ы, на некоторых устройствах наблюдается проблема
+        // с отображением FAB. Поэтому некотрые снэкбары временно недоступны
 //        snackbar.show();
     }
 
     @Override
+    // Спрятать snackbar
     public void dismissSnackBar() {
         if (snackbar != null) {
             snackbar.dismiss();
         }
     }
 
+    //endregion ===== SnackBar =====
+
+    // По нажатию на кнопку Назад смотрим на BackStack. Если он пустой - запрашиваем подтверждение
+    // на выход из приложения. Если нет - идем назад на один фрагмент.
+    // Перед запуском фрагментов, с которых приложение не должно возвращаться назад, а должно
+    // закрывать приложение, очищается BackStack
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-            Snackbar.make(findViewById(R.id.coordinatorLayout), R.string.snack_confirm_exit, Snackbar.LENGTH_LONG)
+            Snackbar.make(findViewById(R.id.coordinatorLayout), R.string.snack_confirm_exit,
+                    Snackbar.LENGTH_LONG)
                     .setAction(R.string.snack_exit, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -269,38 +282,4 @@ public class MainActivity
         }
     }
 
-
-//region checkDB
-//    private void checkDB() {
-//        final String TAG = "TESTMYBD";
-//
-//        SQLiteDatabase database = new DatabaseHelper(this).getWritableDatabase();
-//        Cursor cursor_1 = database.query(DatabaseDescription.Dictionaries.TABLE_NAME, null, null, null, null, null, null);
-//
-//        if (cursor_1.moveToFirst()) {
-//            do {
-//                Log.d(TAG, "ID = " + cursor_1.getInt(cursor_1.getColumnIndex(DatabaseDescription.Dictionaries._ID)) +
-//                        ", Name = " + cursor_1.getString(cursor_1.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME)) +
-//                        ", Date = " + cursor_1.getInt(cursor_1.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE)));
-//            } while (cursor_1.moveToNext());
-//        } else {
-//            Log.d(TAG, "0 rows");
-//        }
-//
-//        Cursor cursor = database.query(DatabaseDescription.Words.TABLE_NAME, null, null, null, null, null, null);
-//
-//        if (cursor.moveToFirst()) {
-//            do {
-//                Log.d(TAG, "ID = " + cursor.getInt(cursor.getColumnIndex(DatabaseDescription.Words._ID)) +
-//                        ", EN = " + cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_EN)) +
-//                        ", RU = " + cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_RU)) +
-//                        ", FROM_EN_TO_RU = " + cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_FROM_EN_TO_RU)) +
-//                        ", Dictionary = " + cursor.getString(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_DICTIONARY)) +
-//                        ", Date = " + cursor.getInt(cursor.getColumnIndex(DatabaseDescription.Words.COLUMN_DATE_OF_CHANGE)));
-//            } while (cursor.moveToNext());
-//        } else {
-//            Log.d(TAG, "0 rows");
-//        }
-//    }
-//endregion
 }

@@ -18,7 +18,8 @@ public class DatabaseDescription {
         public static final String TABLE_NAME = "dictionaries";
 
         // Объект Uri для таблицы dictionaries
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+                .appendPath(TABLE_NAME).build();
 
         // Имена столбцов таблицы
         public static final String COLUMN_NAME = "name";
@@ -26,7 +27,7 @@ public class DatabaseDescription {
 
 
         // Создание Uri для конкретного слова
-        public static Uri buildDictionariesUri (long id){
+        public static Uri buildDictionariesUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
@@ -40,7 +41,8 @@ public class DatabaseDescription {
         public static final String TABLE_NAME = "words";
 
         // Объект Uri для таблицы words
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_NAME).build();
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+                .appendPath(TABLE_NAME).build();
 
         // Имена столбцов таблицы
         public static final String COLUMN_EN = "en";
@@ -51,7 +53,7 @@ public class DatabaseDescription {
 
 
         // Создание Uri для конкретного слова
-        public static Uri buildWordsUri (long id){
+        public static Uri buildWordsUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }

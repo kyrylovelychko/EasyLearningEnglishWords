@@ -19,17 +19,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.velychko.kyrylo.mydictionaries.ui.utils.ItemDivider;
-import com.velychko.kyrylo.mydictionaries.ui.activities.MainActivity;
 import com.velychko.kyrylo.mydictionaries.R;
 import com.velychko.kyrylo.mydictionaries.adapters.DictionaryAdapter;
 import com.velychko.kyrylo.mydictionaries.data.sqlite.DatabaseDescription;
 import com.velychko.kyrylo.mydictionaries.data.sqlite.DatabaseHelper;
+import com.velychko.kyrylo.mydictionaries.ui.utils.ItemDivider;
+
+import static com.velychko.kyrylo.mydictionaries.utils.Constants.ARGS_DICTIONARY_URI;
 
 public class DictionaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public interface DictionaryFragmentListener {
-
         //Вызывается при выборе слова в словаре
         void onSelectWord(Uri wordUri);
 
@@ -43,8 +43,11 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
         void onRenameDictionary(String dictionaryName);
     }
 
+    //region ===== Константы =====
     private static final int DICTIONARY_LOADER = 0;
+    //endregion
 
+    //region ===== Поля класса =====
     //Uri текущего словаря
     private Uri dictionaryUri;
     //Название текущего словаря
@@ -54,14 +57,28 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
     private DictionaryFragmentListener listener;
 
     private DictionaryAdapter dictionaryAdapter;
-
+    //endregion
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         setHasOptionsMenu(true);
 
         View view = inflater.inflate(R.layout.fragment_dictionary, container, false);
+
+        //В Bundle получили Uri словаря. Используя Uri, находим название
+        getDictionaryUriAndName();
+
+        initViewComponents(view);
+
+        getActivity().setTitle(dictionaryName);
+
+        return view;
+    }
+
+    // Инициализация компонентов экрана
+    private void initViewComponents(View view) {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.wordsRecyclerView);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
@@ -76,10 +93,8 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
 
         recyclerView.addItemDecoration(new ItemDivider(getContext()));
 
-        //В Bundle получили Uri словаря. Используя Uri, находим название
-        getDictionaryUriAndName();
-
-        FloatingActionButton addWordFAB = (FloatingActionButton) getActivity().findViewById(R.id.FAB);
+        FloatingActionButton addWordFAB =
+                (FloatingActionButton) getActivity().findViewById(R.id.FAB);
         addWordFAB.show();
         addWordFAB.setImageResource(R.drawable.ic_add_black_24dp);
         addWordFAB.setOnClickListener(new View.OnClickListener() {
@@ -88,18 +103,13 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
                 listener.onAddWord(dictionaryName);
             }
         });
-
-        //Установка заголовка
-        getActivity().setTitle(dictionaryName);
-
-        return view;
     }
 
     //В Bundle получили Uri словаря. Используя Uri, находим название
     private void getDictionaryUriAndName() {
         Bundle arguments = getArguments();
         if (arguments != null) {
-            dictionaryUri = arguments.getParcelable(MainActivity.DICTIONARY_URI);
+            dictionaryUri = arguments.getParcelable(ARGS_DICTIONARY_URI);
             Cursor cursor = new DatabaseHelper(getActivity()).getReadableDatabase().
                     query(DatabaseDescription.Dictionaries.TABLE_NAME,
                             null,
@@ -110,7 +120,8 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
                             null);
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
-                dictionaryName = cursor.getString(cursor.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME));
+                dictionaryName = cursor.getString(
+                        cursor.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME));
             }
         }
     }
@@ -146,7 +157,6 @@ public class DictionaryFragment extends Fragment implements LoaderManager.Loader
             default:
                 return null;
         }
-
     }
 
     @Override

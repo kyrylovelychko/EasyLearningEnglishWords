@@ -78,6 +78,7 @@
     <string name="snack_exit">Выйти</string>
     <string name="snack_choose_dictionary">Выберите словарь для тренировки</string>
     <string name="snack_empty_dictionaries">Выбранные словари пустые</string>
+    <string name="snack_translate_problem">Перевод не возможен. Обратитесь к разработчику.</string>
 
     <!--Exception-->
     <string name="exc_invalid_query_uri">Invalid QUERY URI </string>

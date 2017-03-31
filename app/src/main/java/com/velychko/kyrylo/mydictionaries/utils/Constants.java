@@ -13,4 +13,9 @@ public class Constants {
     public static final String EXTRA_KEY_TRANSLATION_DIRECTION_ID = "translation_direction_id";
     public static final String EXTRA_KEY_POSITION_COUNT_OF_WORDS = "count_of_words";
     public static final String EXTRA_KEY_AUTO_CONTINUE = "auto_continue";
+
+    public static final String ARGS_DICTIONARY_URI = "auto_continue";
+    public static final String ARGS_DICTIONARY_NAME = "dictionary_name";
+    public static final String ARGS_WORD_URI = "word_uri";
+
 }

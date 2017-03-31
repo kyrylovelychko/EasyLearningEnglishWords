@@ -42,31 +42,38 @@ public class AddDictionaryDialog extends DialogFragment {
                 .setPositiveButton(R.string.dialog_button_add, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dictionaryName = (EditText) getDialog().findViewById(R.id.dictionaryNameEditText);
+                        dictionaryName =
+                                (EditText) getDialog().findViewById(R.id.dictionaryNameEditText);
 
                         // Ищем словарь (в таблице словарей) с именем, которое ввел пользователь.
                         // Если нашли, значит словарь с таким именем уже есть - сообщаем пользователю,
                         // новый не добавляем. Если нет, добавляем новый словарь.
-                        Cursor dictionaryExistCursor = new DatabaseHelper(getActivity()).getReadableDatabase().
-                                query(Dictionaries.TABLE_NAME,
-                                        null,
-                                        Dictionaries.COLUMN_NAME + "=?",
-                                        new String[]{""+ dictionaryName.getText().toString().trim()},
-                                        null,
-                                        null,
-                                        null);
+                        Cursor dictionaryExistCursor =
+                                new DatabaseHelper(getActivity()).getReadableDatabase().
+                                        query(Dictionaries.TABLE_NAME,
+                                                null,
+                                                Dictionaries.COLUMN_NAME + "=?",
+                                                new String[]{"" + dictionaryName.getText().toString().trim()},
+                                                null,
+                                                null,
+                                                null);
                         if (dictionaryExistCursor.getCount() == 0) {
                             ContentValues cv = new ContentValues();
-                            cv.put(Dictionaries.COLUMN_NAME, dictionaryName.getText().toString().trim());
+                            cv.put(Dictionaries.COLUMN_NAME, dictionaryName.getText()
+                                    .toString().trim());
                             cv.put(Dictionaries.COLUMN_DATE_OF_CHANGE, new Date().getTime() / 1000);
-                            Uri newDictionaryUri = getActivity().getContentResolver().insert(DatabaseDescription.Dictionaries.CONTENT_URI, cv);
+                            Uri newDictionaryUri = getActivity().getContentResolver()
+                                    .insert(DatabaseDescription.Dictionaries.CONTENT_URI, cv);
                             if (newDictionaryUri != null) {
-                                Snackbar.make(coordinatorLayout, R.string.snack_dictionary_added, Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(coordinatorLayout, R.string.snack_dictionary_added,
+                                        Snackbar.LENGTH_LONG).show();
                             } else {
-                                Snackbar.make(coordinatorLayout, R.string.snack_dictionary_not_added, Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(coordinatorLayout, R.string.snack_dictionary_not_added,
+                                        Snackbar.LENGTH_LONG).show();
                             }
                         } else {
-                            Snackbar.make(coordinatorLayout, R.string.snack_dictionary_has_existed, Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(coordinatorLayout, R.string.snack_dictionary_has_existed,
+                                    Snackbar.LENGTH_LONG).show();
                         }
 
                     }

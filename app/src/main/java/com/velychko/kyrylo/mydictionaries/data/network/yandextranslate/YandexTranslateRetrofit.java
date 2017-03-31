@@ -8,7 +8,10 @@ import retrofit2.http.Query;
 
 public class YandexTranslateRetrofit {
 
-    private static final String API_KEY = "trnsl.1.1.20170312T185630Z.999885ba056dff88.c6b112b4cab8c824c4616ba1deb5f3e8ca6c1f1e";
+    // API_KEY ключ приложения
+    private static final String API_KEY =
+            "trnsl.1.1.20170312T185630Z.999885ba056dff88.c6b112b4cab8c824c4616ba1deb5f3e8ca6c1f1e";
+    // Базовый URL
     private static final String BASE_URL = "https://translate.yandex.net/api/";
 
     private static ApiInterface apiInterface;
@@ -33,6 +36,7 @@ public class YandexTranslateRetrofit {
         apiInterface = retrofit.create(ApiInterface.class);
     }
 
+    // Перевод текста при помощи Яндекс Переводчика
     public static Call<YandexTranslateResponse> translateText(String text, String lang) {
         return apiInterface.translateText(API_KEY, text, lang);
     }

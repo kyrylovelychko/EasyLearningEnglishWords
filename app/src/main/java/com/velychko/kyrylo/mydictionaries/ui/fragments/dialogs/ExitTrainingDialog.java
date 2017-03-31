@@ -23,7 +23,8 @@ public class ExitTrainingDialog extends DialogFragment {
                 .setPositiveButton(R.string.dialog_button_exit, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        TranslateWordTrainingActivity activity = (TranslateWordTrainingActivity) getActivity();
+                        TranslateWordTrainingActivity activity =
+                                (TranslateWordTrainingActivity) getActivity();
                         activity.setDoExit(true);
                         getActivity().onBackPressed();
                     }
@@ -31,7 +32,8 @@ public class ExitTrainingDialog extends DialogFragment {
                 .setNegativeButton(R.string.dialog_button_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        TranslateWordTrainingActivity activity = (TranslateWordTrainingActivity) getActivity();
+                        TranslateWordTrainingActivity activity =
+                                (TranslateWordTrainingActivity) getActivity();
                         activity.setDoExit(false);
                     }
                 })

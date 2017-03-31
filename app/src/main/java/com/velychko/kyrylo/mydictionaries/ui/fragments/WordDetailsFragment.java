@@ -17,36 +17,46 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.velychko.kyrylo.mydictionaries.ui.activities.MainActivity;
 import com.velychko.kyrylo.mydictionaries.R;
 import com.velychko.kyrylo.mydictionaries.data.sqlite.DatabaseDescription.Words;
+
+import static com.velychko.kyrylo.mydictionaries.utils.Constants.ARGS_WORD_URI;
 
 public class WordDetailsFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public interface WordDetailsFragmentListener {
-
         //Вызывается при редактировании слова
         void onEditWord(Uri wordUri);
 
         //Вызывается при удалении слова
         void onDeleteWord(Uri wordUri);
 
+        // Принудительное закрытие SnackBar
         void dismissSnackBar();
     }
 
+    //region ===== Константы =====
     private static final int WORD_LOADER = 0;
+    //endregion
 
+    //region ===== Поля класса =====
     // Сообщает MainActivity о действии во фрагменте
     private WordDetailsFragmentListener listener;
     // Uri выбранного слова
     private Uri wordUri;
 
+    // На английском
     private TextView enWord;
+    // На русском
     private TextView ruWord;
+    // Словарь
     private TextView dictionary;
+    //endregion
+    private FloatingActionButton editWordFAB;
 
     public WordDetailsFragment() {
+        // Required empty public constructor
     }
 
     @Override
@@ -57,34 +67,13 @@ public class WordDetailsFragment extends Fragment
 
         View view = inflater.inflate(R.layout.fragment_word_details, container, false);
 
-        enWord = (TextView) view.findViewById(R.id.en_word);
-        ruWord = (TextView) view.findViewById(R.id.ru_word);
-        dictionary = (TextView) view.findViewById(R.id.dictionary);
+        initViewComponents(view);
 
-        FloatingActionButton editWordFAB = (FloatingActionButton) getActivity().findViewById(R.id.FAB);
-        editWordFAB.show();
-        editWordFAB.setImageResource(R.drawable.ic_edit_black_24dp);
-        editWordFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.dismissSnackBar();
-                listener.onEditWord(wordUri);
-            }
-        });
+        getArgumentsFromBundle();
 
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            wordUri = arguments.getParcelable(MainActivity.WORD_URI);
-            getLoaderManager().initLoader(WORD_LOADER, null, this);
-        }
+        getActivity().setTitle(R.string.title_word_details);
 
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().setTitle(R.string.title_word_details);
     }
 
     @Override
@@ -97,6 +86,33 @@ public class WordDetailsFragment extends Fragment
     public void onDetach() {
         super.onDetach();
         listener = null;
+    }
+
+    // Инициализация компонентов экрана
+    private void initViewComponents(View view) {
+        enWord = (TextView) view.findViewById(R.id.en_word);
+        ruWord = (TextView) view.findViewById(R.id.ru_word);
+        dictionary = (TextView) view.findViewById(R.id.dictionary);
+
+        editWordFAB = (FloatingActionButton) getActivity().findViewById(R.id.FAB);
+        editWordFAB.show();
+        editWordFAB.setImageResource(R.drawable.ic_edit_black_24dp);
+        editWordFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.dismissSnackBar();
+                listener.onEditWord(wordUri);
+            }
+        });
+    }
+
+    // Получение данных из аргументов Bundle
+    private void getArgumentsFromBundle() {
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            wordUri = arguments.getParcelable(ARGS_WORD_URI);
+            getLoaderManager().initLoader(WORD_LOADER, null, this);
+        }
     }
 
     @Override
@@ -143,38 +159,5 @@ public class WordDetailsFragment extends Fragment
         }
         return super.onOptionsItemSelected(item);
     }
-
-//    // Удаление слова
-//    private void deleteWord() {
-//        // FragmentManager используется для отображения confirmDelete
-//        confirmDelete.show(getFragmentManager(), "confirm delete");
-//    }
-//
-//    // DialogFragment для подтверждения удаления слова
-//    private final DialogFragment confirmDelete = new DialogFragment(){
-//        // Создание объекта AlertDialog и его возвращение
-//        @NonNull
-//        @Override
-//        public Dialog onCreateDialog(Bundle savedInstanceState) {
-//            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//
-//            builder.setTitle(R.string.confirm_delete_title);
-//            builder.setMessage(R.string.confirm_delete_message);
-//
-//            builder.setPositiveButton(R.string.button_delete, new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    // объект ContentResolver используется для вызова delete в DatabaseContentProvider.
-//                    // последние два аргумента равны null, потому что идентификатор записи удаляемого
-//                    // контакта встроен в URI
-//                    getActivity().getContentResolver().delete(wordUri, null, null);
-//                    listener.onDeletWord();// Оповещение слушателя
-//                }
-//            });
-//
-//            builder.setNegativeButton(R.string.button_cancel, null);
-//            return builder.create();
-//        }
-//    };
 
 }

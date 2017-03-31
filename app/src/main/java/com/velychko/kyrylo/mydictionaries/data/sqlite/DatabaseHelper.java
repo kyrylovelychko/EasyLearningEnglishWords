@@ -13,9 +13,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    // Создание таблицы Words при создании базы данных
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // Создание таблицы Words при создании базы данных
         final String CREATE_DICTIONARIES_TABLE =
                 "CREATE TABLE " + DatabaseDescription.Dictionaries.TABLE_NAME + "(" +
                         DatabaseDescription.Dictionaries._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -23,6 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         DatabaseDescription.Dictionaries.COLUMN_DATE_OF_CHANGE + " INTEGER);";
         db.execSQL(CREATE_DICTIONARIES_TABLE);
 
+        // Создание таблицы Dictionaries при создании базы данных
         final String CREATE_WORDS_TABLE =
                 "CREATE TABLE " + DatabaseDescription.Words.TABLE_NAME + "(" +
                         DatabaseDescription.Words._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +

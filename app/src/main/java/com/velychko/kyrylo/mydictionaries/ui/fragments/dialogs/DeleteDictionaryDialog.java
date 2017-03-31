@@ -7,10 +7,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 
-import com.velychko.kyrylo.mydictionaries.ui.activities.MainActivity;
 import com.velychko.kyrylo.mydictionaries.R;
 import com.velychko.kyrylo.mydictionaries.data.sqlite.DatabaseDescription.Dictionaries;
 import com.velychko.kyrylo.mydictionaries.data.sqlite.DatabaseDescription.Words;
+import com.velychko.kyrylo.mydictionaries.utils.Constants;
 
 
 public class DeleteDictionaryDialog extends DialogFragment {
@@ -22,7 +22,7 @@ public class DeleteDictionaryDialog extends DialogFragment {
             throw new IllegalArgumentException(getContext().getString(R.string.exc_empty_saved_instance_state));
         }
 
-        final String dictionaryName = getArguments().getString(MainActivity.DICTIONARY_NAME);
+        final String dictionaryName = getArguments().getString(Constants.ARGS_DICTIONARY_NAME);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.title_confirm_delete_dictionary)
@@ -33,12 +33,12 @@ public class DeleteDictionaryDialog extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         getActivity().getContentResolver().delete(
                                 Dictionaries.CONTENT_URI,
-                                Dictionaries.COLUMN_NAME+"=?",
-                                new String[] {dictionaryName});
+                                Dictionaries.COLUMN_NAME + "=?",
+                                new String[]{dictionaryName});
                         getActivity().getContentResolver().delete(
                                 Words.CONTENT_URI,
-                                Words.COLUMN_DICTIONARY+"=?",
-                                new String[] {dictionaryName});
+                                Words.COLUMN_DICTIONARY + "=?",
+                                new String[]{dictionaryName});
                         getFragmentManager().popBackStack();
                     }
                 })

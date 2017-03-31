@@ -12,7 +12,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,6 @@ import android.widget.TextView;
 import com.velychko.kyrylo.mydictionaries.R;
 import com.velychko.kyrylo.mydictionaries.adapters.DictionariesNamesListAdapter;
 import com.velychko.kyrylo.mydictionaries.data.sqlite.DatabaseDescription;
-import com.velychko.kyrylo.mydictionaries.data.sqlite.DatabaseHelper;
 import com.velychko.kyrylo.mydictionaries.data.sqlite.DatabaseMaster;
 import com.velychko.kyrylo.mydictionaries.ui.activities.TranslateWordTrainingActivity;
 import com.velychko.kyrylo.mydictionaries.utils.Constants;
@@ -36,7 +34,8 @@ import java.util.ArrayList;
 
 public class StartTrainingFragment extends Fragment {
 
-    // region ===== Поля для UI =====
+    //region ===== Поля класса =====
+    // Поля для UI
     TextView tvDictionary;
     TextView tvTrainingMode;
     TextView tvTranslationDirection;
@@ -53,18 +52,18 @@ public class StartTrainingFragment extends Fragment {
     RadioButton rbEnToRu;
     RadioButton rbRuToEn;
     Switch switchAutoContinue;
-    // endregion
 
-    Cursor cursor;
     String[] allDictionariesArray;
     boolean[] checkedDictionariesArray;
     ArrayList<String> namesOfCheckedDictionariesArray = new ArrayList<>();
     DictionariesNamesListAdapter adapterChosenDictionaries;
+    Cursor cursor;
+    //endregion
 
+    // Конструктор
     public StartTrainingFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,18 +72,12 @@ public class StartTrainingFragment extends Fragment {
 
         initViewComponents(view);
 
-//        namesOfCheckedDictionariesArray.add("Привет");
-//        adapterChosenDictionaries = new DictionariesNamesListAdapter(namesOfCheckedDictionariesArray);
-//        rvDictionaries.setAdapter(adapterChosenDictionaries);
+        getActivity().setTitle(R.string.title_start_training);
+
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().setTitle(R.string.title_start_training);
-    }
-
+    // Инициализация компонентов экрана
     private void initViewComponents(View view) {
         tvDictionary = (TextView) view.findViewById(R.id.tvDictionary);
         tvTrainingMode = (TextView) view.findViewById(R.id.tvTrainingMode);
@@ -124,6 +117,7 @@ public class StartTrainingFragment extends Fragment {
         getActivity().findViewById(R.id.FAB).setVisibility(View.GONE);
     }
 
+    // Инициализация спиннера
     private void initSpinner() {
         int currentPosition = 0;
 
@@ -132,6 +126,7 @@ public class StartTrainingFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnChooseCountOfWords.setAdapter(adapter);
 
+        // Получаем последний выбранный пользователем вариант. Его и поставим по умолчанию
         SharedPreferences sPref = getActivity().getSharedPreferences(
                 Constants.SPREF_SETTINGS_FILE_NAME, Context.MODE_PRIVATE);
 
@@ -141,22 +136,27 @@ public class StartTrainingFragment extends Fragment {
 
     }
 
+    // Отображение диалога для выбора словаря
     private void showDialogForChoosingDictionaries() {
+        // Если курсор пустой, значит это в первый раз. При последующих открытиях диалога выбора
+        // словаря, список словарей заново не загружается
         if (cursor == null) {
             initDictionariesArray();
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.title_choose_dictionaries)
-                .setMultiChoiceItems(allDictionariesArray, checkedDictionariesArray, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                        checkedDictionariesArray[which] = isChecked;
-                    }
-                })
+                .setMultiChoiceItems(allDictionariesArray, checkedDictionariesArray,
+                        new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                                checkedDictionariesArray[which] = isChecked;
+                            }
+                        })
                 .setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        // Сохраняем имена выбранных словарей
                         namesOfCheckedDictionariesArray.clear();
 
                         for (int i = 0; i < checkedDictionariesArray.length; i++) {
@@ -165,7 +165,9 @@ public class StartTrainingFragment extends Fragment {
                             }
                         }
 
-                        adapterChosenDictionaries = new DictionariesNamesListAdapter(namesOfCheckedDictionariesArray);
+                        // Устанавливаем адаптер
+                        adapterChosenDictionaries =
+                                new DictionariesNamesListAdapter(namesOfCheckedDictionariesArray);
                         rvDictionaries.setAdapter(adapterChosenDictionaries);
                     }
                 })
@@ -175,6 +177,7 @@ public class StartTrainingFragment extends Fragment {
                 .show();
     }
 
+    // Получение списка слвоарей для тренировки (всех)
     private void initDictionariesArray() {
         cursor = DatabaseMaster.getInstance(getContext()).getAllDictionaries();
 
@@ -184,13 +187,16 @@ public class StartTrainingFragment extends Fragment {
         if (cursor.moveToFirst()) {
             int i = 0;
             do {
-                allDictionariesArray[i] = cursor.getString(cursor.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME));
+                allDictionariesArray[i] = cursor.getString(
+                        cursor.getColumnIndex(DatabaseDescription.Dictionaries.COLUMN_NAME));
                 checkedDictionariesArray[i] = false;
                 i++;
             } while (cursor.moveToNext());
         }
     }
 
+    // Установка значения по умолчанию для радиогрупп. Основывается на данных
+    // последнего использования (через SharedPreferences)
     private void setPositionsForRadioGroupsFromPreferences() {
         int position;
         SharedPreferences sPref = getActivity().getSharedPreferences(
@@ -203,18 +209,21 @@ public class StartTrainingFragment extends Fragment {
         rgTranslationDirection.check(rgTranslationDirection.getChildAt(position).getId());
     }
 
+    // Установка значения по умолчанию для свитча. Основывается на данных
+    // последнего использования (через SharedPreferences)
     private void setSwitchFromPreferences() {
         SharedPreferences sPref = getActivity().getSharedPreferences(
                 Constants.SPREF_SETTINGS_FILE_NAME, Context.MODE_PRIVATE);
 
-        switchAutoContinue.setChecked(sPref.getBoolean(Constants.SPREF_SWITCH_AUTO_CONTINUE, false));
+        switchAutoContinue.setChecked(sPref.getBoolean(Constants.SPREF_SWITCH_AUTO_CONTINUE, true));
     }
 
+    // По нажатию на кнопку начала тренировки запускается активити с тренировкой определенного типа
     private View.OnClickListener onClickBtnStartTraining() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (rgTrainingMode.getCheckedRadioButtonId()){
+                switch (rgTrainingMode.getCheckedRadioButtonId()) {
                     case R.id.rbTranslateWord:
                         startTranslateWordTraining();
                         break;
@@ -227,20 +236,26 @@ public class StartTrainingFragment extends Fragment {
         };
     }
 
-    private void startTranslateWordTraining(){
+    // Начать тренировку с переводом слов
+    private void startTranslateWordTraining() {
         if (namesOfCheckedDictionariesArray.size() == 0) {
             showDialogForChoosingDictionaries();
         } else {
+            // Проверяем, есть ли слова в выбранных словарях
             if (isChosenDictionariesEmpty(new ArrayList<>(namesOfCheckedDictionariesArray))) {
                 return;
             } else {
                 Intent intent = new Intent(getContext(), TranslateWordTrainingActivity.class);
+                // Список выбранных словарей
                 intent.putExtra(Constants.EXTRA_KEY_CHECKED_DICTIONARIES_LIST,
                         namesOfCheckedDictionariesArray);
+                // Направление перевода
                 intent.putExtra(Constants.EXTRA_KEY_TRANSLATION_DIRECTION_ID,
                         rgTranslationDirection.getCheckedRadioButtonId());
+                // Количество слов
                 intent.putExtra(Constants.EXTRA_KEY_POSITION_COUNT_OF_WORDS,
                         spnChooseCountOfWords.getSelectedItemPosition());
+                // Автоматический переход к новому слову
                 intent.putExtra(Constants.EXTRA_KEY_AUTO_CONTINUE,
                         switchAutoContinue.isChecked());
                 startActivity(intent);
@@ -248,18 +263,12 @@ public class StartTrainingFragment extends Fragment {
         }
     }
 
-    private boolean isChosenDictionariesEmpty(ArrayList<String> namesForQuery){
-        Cursor cursor;
-        for (int i = 0; i < namesForQuery.size(); i++) {
-            namesForQuery.set(i, "\"" + namesForQuery.get(i) + "\"");
-        }
-        String sqlQuery = "SELECT * FROM " + DatabaseDescription.Words.TABLE_NAME
-                + " WHERE " + DatabaseDescription.Words.COLUMN_DICTIONARY
-                + " IN (" + TextUtils.join(", ", namesForQuery) + ") ORDER BY "
-                + DatabaseDescription.Words.COLUMN_DATE_OF_CHANGE + " COLLATE NOCASE DESC";
-
-        cursor = new DatabaseHelper(getContext()).getReadableDatabase().rawQuery(
-                sqlQuery, null);
+    // Проверяем, есть ли слова в выбранных словарях
+    // Отбрасываем все слова, которые не имеют оба перевода
+    private boolean isChosenDictionariesEmpty(ArrayList<String> namesForQuery) {
+        // Получение всех слов из словарей, выбранных пользователем
+        Cursor cursor = DatabaseMaster.getInstance(getContext())
+                .getOnlyFullWordsFromSelectedDictionaries(namesForQuery);
 
         if (cursor.getCount() == 0) {
             CoordinatorLayout coordinatorLayout = (CoordinatorLayout) getActivity()
@@ -273,6 +282,7 @@ public class StartTrainingFragment extends Fragment {
     }
 
     @Override
+    // При закрытии фрагмента, сохраняем все в SharedPreferences
     public void onStop() {
         super.onStop();
         RadioButton checkedRadioButtonTrainingMode =

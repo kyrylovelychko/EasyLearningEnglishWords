@@ -28,7 +28,6 @@ import com.velychko.kyrylo.mydictionaries.ui.utils.ItemDivider;
 public class DictionariesListFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
-
     public interface DictionariesListFragmentListener {
         //Вызывается при выборе словаря в списке словарей
         void onSelectDictionary(Uri dictionaryUri);
@@ -40,57 +39,38 @@ public class DictionariesListFragment extends Fragment
         void onAddWord(String dictionaryName);
     }
 
+    //region ===== Константы =====
+    // Лоадер для получения списка всех словарей
     private static final int DICTIONARIES_LIST_LOADER = 0;
+    // Лоадер для получения количества слов в каждом словаре
     private static final int COUNT_OF_WORDS_IN_DICTIONARY_LOADER = 1;
+    //endregion
 
+    //region ===== Поля класса =====
     // Сообщает MainActivity о действии во фрагменте
     private DictionariesListFragmentListener listener;
 
     private DictionariesListAdapter dictionariesListAdapter;
+    //endregion
 
+    // Конструктор
     public DictionariesListFragment() {
+        // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         setHasOptionsMenu(true);
 
         View view = inflater.inflate(R.layout.fragment_dictionaries_list, container, false);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.dictionariesRecyclerView);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
+        initViewComponents(view);
 
-        dictionariesListAdapter = new DictionariesListAdapter(
-                new DictionariesListAdapter.DictionariesListClickListener() {
-                    @Override
-                    public void onClick(Uri dictionariesUri) {
-                        listener.onSelectDictionary(dictionariesUri);
-                    }
-                });
-        recyclerView.setAdapter(dictionariesListAdapter);
-
-        recyclerView.addItemDecoration(new ItemDivider(getContext()));
-
-        recyclerView.setHasFixedSize(true);
-
-        FloatingActionButton addDictionaryFAB = (FloatingActionButton) getActivity().findViewById(R.id.FAB);
-        addDictionaryFAB.show();
-        addDictionaryFAB.setImageResource(R.drawable.ic_library_add_black_24dp);
-        addDictionaryFAB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onAddDictionary();
-            }
-        });
+        getActivity().setTitle(R.string.title_my_dictionaries);
 
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getActivity().setTitle(R.string.title_my_dictionaries);
     }
 
     // Присваивание DictionariesListFragment при присоединении фрагмента
@@ -111,13 +91,36 @@ public class DictionariesListFragment extends Fragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        // Лоадер для получения списка всех словарей
         getLoaderManager().initLoader(DICTIONARIES_LIST_LOADER, null, this);
+        // Лоадер для получения количества слов в каждом словаре
         getLoaderManager().initLoader(COUNT_OF_WORDS_IN_DICTIONARY_LOADER, null, this);
     }
 
-    // Вызывается из MainActivity при обновлении базы данных другим фрагментом
-    public void updateDictionariesList() {
-        dictionariesListAdapter.notifyDataSetChanged();
+    // Инициализация компонентов экрана
+    private void initViewComponents(View view) {
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.dictionariesRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getBaseContext()));
+        dictionariesListAdapter = new DictionariesListAdapter(
+                new DictionariesListAdapter.DictionariesListClickListener() {
+                    @Override
+                    public void onClick(Uri dictionariesUri) {
+                        listener.onSelectDictionary(dictionariesUri);
+                    }
+                });
+        recyclerView.setAdapter(dictionariesListAdapter);
+        recyclerView.addItemDecoration(new ItemDivider(getContext()));
+
+        FloatingActionButton addDictionaryFAB =
+                (FloatingActionButton) getActivity().findViewById(R.id.FAB);
+        addDictionaryFAB.show();
+        addDictionaryFAB.setImageResource(R.drawable.ic_library_add_black_24dp);
+        addDictionaryFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onAddDictionary();
+            }
+        });
     }
 
     @Override

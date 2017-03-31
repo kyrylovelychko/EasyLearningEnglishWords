@@ -8,7 +8,10 @@ import retrofit2.http.Query;
 
 public class YandexDictionaryRetrofit {
 
-    private static final String API_KEY = "dict.1.1.20170313T104123Z.ba7a60a85e24935f.145ee166e540f050b6eb0ca5960fc79f13f849e9";
+    // API_KEY ключ приложения
+    private static final String API_KEY =
+            "dict.1.1.20170313T104123Z.ba7a60a85e24935f.145ee166e540f050b6eb0ca5960fc79f13f849e9";
+    // Базовый URL
     private static final String BASE_URL = "https://dictionary.yandex.net/api/";
 
     private static ApiInterface apiInterface;
@@ -33,6 +36,7 @@ public class YandexDictionaryRetrofit {
         apiInterface = retrofit.create(ApiInterface.class);
     }
 
+    // Перевод слова при помощи Яндекс Словаря
     public static Call<YandexDictionaryResponse> translateWord(String text, String lang) {
         return apiInterface.translateWord(API_KEY, text, lang);
     }
