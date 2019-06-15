@@ -26,6 +26,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.velychko.kyrylo.mydictionaries.R;
+import com.velychko.kyrylo.mydictionaries.data.network.microsofttranslate.MicrosoftTranslateResponse;
+import com.velychko.kyrylo.mydictionaries.data.network.microsofttranslate.MicrosoftTranslateRetrofit;
 import com.velychko.kyrylo.mydictionaries.data.network.yandexdictionary.YandexDictionaryResponse;
 import com.velychko.kyrylo.mydictionaries.data.network.yandexdictionary.YandexDictionaryRetrofit;
 import com.velychko.kyrylo.mydictionaries.data.network.yandextranslate.YandexTranslateResponse;
@@ -417,21 +419,22 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                 switch (FROM_EN_TO_RU) {
                     case Words.FROM_EN_TO_RU_TRUE:
                         text = enTextInputLayout.getEditText().getText().toString().trim();
-                        lang = "en-ru";
+                        lang = CONST_TRANSLATE_EN_TO_RU;
                         break;
                     case Words.FROM_EN_TO_RU_FALSE:
                         text = ruTextInputLayout.getEditText().getText().toString().trim();
-                        lang = "ru-en";
+                        lang = CONST_TRANSLATE_RU_TO_EN;
                         break;
                 }
 
+                translateViaMicrosoft(text, lang);
                 // Если в тексте есть пробелы - это текст. Переводим переводчиком.
                 // Если пробелов нет - это слово. Пробуем перевести словарем.
-                if (text.contains(" ")) {
-                    tryToTranslateText(text, lang);
-                } else {
-                    tryToTranslateWord(text, lang);
-                }
+//                if (text.contains(" ")) {
+//                    tryToTranslateText(text, lang);
+//                } else {
+//                    tryToTranslateWord(text, lang);
+//                }
             }
         };
     }
@@ -473,6 +476,51 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                 });
     }
 
+    private void translateViaMicrosoft(final String text, final String lang){
+        String translate_from = "";
+        String translate_to = "";
+        switch (lang){
+            case CONST_TRANSLATE_RU_TO_EN:
+                translate_from = "ru";
+                translate_to = "en";
+                break;
+            case CONST_TRANSLATE_EN_TO_RU:
+                translate_from = "en";
+                translate_to = "ru";
+                break;
+        }
+
+        MicrosoftTranslateRetrofit.translateText(translate_from, translate_to, text).enqueue(new Callback<List<MicrosoftTranslateResponse>>() {
+            @Override
+            public void onResponse(Call<List<MicrosoftTranslateResponse>> call, Response<List<MicrosoftTranslateResponse>> response) {
+                if (response.code() == 200) {
+                    switch (FROM_EN_TO_RU) {
+                        case Words.FROM_EN_TO_RU_TRUE:
+                            ruTextInputLayout.getEditText()
+                                    .setText(response.body().get(0).translations.get(0).text.trim());
+                            ruTextInputLayout.getEditText().setSelection(
+                                    ruTextInputLayout.getEditText().getText().length());
+                            break;
+                        case Words.FROM_EN_TO_RU_FALSE:
+                            enTextInputLayout.getEditText()
+                                    .setText(response.body().get(0).translations.get(0).text.trim());
+                            enTextInputLayout.getEditText().setSelection(
+                                    enTextInputLayout.getEditText().getText().length());
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MicrosoftTranslateResponse>> call, Throwable throwable) {
+                CoordinatorLayout coordinatorLayout = (CoordinatorLayout)
+                        getActivity().findViewById(R.id.coordinatorLayout);
+                Snackbar.make(coordinatorLayout, R.string.snack_translate_problem,
+                        Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
     // Перевод слова с помощью Словаря
     private void tryToTranslateWord(final String text, final String lang) {
         YandexDictionaryRetrofit.translateWord(text, lang)
@@ -487,7 +535,8 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
                             if (arrayList.size() > 0) {
                                 createDialogForChoosingTranslate(arrayList);
                             } else {
-                                tryToTranslateText(text, lang);
+                                translateViaMicrosoft(text, lang);
+//                                tryToTranslateText(text, lang);
                             }
                         }
                     }
@@ -510,7 +559,7 @@ public class AddEditWordFragment extends Fragment implements LoaderManager.Loade
         for (YandexDictionaryResponse.Def def : responseDef) {
             for (YandexDictionaryResponse.Tr tr : def.tr) {
                 if (arrayList.size() < 8) {
-                    arrayList.add(tr.text.toString());
+                    arrayList.add(tr.text);
                 } else {
                     break;
                 }

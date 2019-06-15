@@ -18,4 +18,7 @@ public class Constants {
     public static final String ARGS_DICTIONARY_NAME = "dictionary_name";
     public static final String ARGS_WORD_URI = "word_uri";
 
+    public static final String CONST_TRANSLATE_RU_TO_EN = "ru-en";
+    public static final String CONST_TRANSLATE_EN_TO_RU = "en-ru";
+
 }
